@@ -12,7 +12,6 @@
   - ページロード時に URL パラメータを読み込みフィルタを復元（`URLSearchParams`）
   - パラメータ: `type`, `year`, `scope`, `reviewed`, `invited`, `q`（検索語）
   - フィルタなし時は URL をクリーンに保つ（クエリ文字列なし）
-
 - 一覧ページ（`templates/index.html.j2`）：統計サマリーをヘッダー直下に表示
   - 総件数・年範囲（最古 – 最新）を表示
   - 種別ごとの件数をカラーチップで表示（件数が0の種別は非表示）
@@ -21,32 +20,25 @@
 - `build.py`：GitHub Actions `::error::` アノテーション対応
   - `GITHUB_ACTIONS=true` 環境下では `::error file=data/publications.yaml::` 形式で出力
   - ローカル実行時は従来通り `ERROR:` を stderr に出力
-  - Actions の「Annotations」欄にエラー内容が直接表示されるようになる
 - `tests/test_build.py`：`TestErrorOutput` クラスを追加（3件）
-- `build.py`：追加フィールドバリデーション（34件のテストを追加）
-  - `id` 文字種：英数字・ハイフン・アンダースコアのみ許容
-  - `authors`：必須・空リスト禁止
-  - `scope`：`domestic` / `international` のみ許容
-  - `registered_at`：`YYYY-MM-DD` 形式チェック（値の妥当性含む）
-  - `files` の各要素：`path` か `url` の少なくとも一方が必要
-  - `paper_type`（journal）：`full` / `short` のみ許容
-  - `source.status`（patent）：`applied` / `granted` のみ許容
-- `tests/test_build.py`：`TestValidateId`・`TestValidateAuthors`・`TestValidateScope`・`TestValidateRegisteredAt`・`TestValidateFiles`・`TestValidatePaperType`・`TestValidatePatentStatus` を追加（計34件）
+- `build.py`：追加フィールドバリデーション
+  - `id` 文字種・`authors` 必須・`scope` 列挙値・`registered_at` 形式
+  - `files` 各要素の `path`/`url`・`paper_type`・`source.status`
+- `tests/test_build.py`：バリデーション追加分テスト 44件追加（計72件）
 - `build.py`：`date` フォーマットの厳密バリデーションを追加
-  - `YYYY-MM-DD` / `YYYY-MM` の形式チェック（正規表現）
-  - `datetime.strptime` による値の妥当性チェック（月・日の範囲外を検出）
-  - PyYAML が `datetime.date` 型に変換した値も正しく処理
-- `tests/test_build.py`：`TestValidateDate` クラスを追加（10件）
 
 ### 変更
 
+- `static/export.js`：YAML エクスポートを簡易シリアライザから js-yaml（CDN 経由）に切り替え
+  - 長い文字列・ネストの深いオブジェクト・特殊文字などエッジケースを正確に処理
+  - `templates/index.html.j2`・`templates/entry.html.j2` に CDN スクリプトタグを追加
 - `.github/workflows/build.yml`：`workflow_dispatch` トリガーを追加（手動実行を可能に）
 - `.markdownlint.json`：MD013（行長制限）を無効化
 
 ### ドキュメント
 
 - `README.md`：sync 後に手動ビルドが必要な旨の注意書きを追加
-- `README.md`：sync-from-scholist.yml サンプルに `workflows: write` 権限を追加（欠落していた）
+- `README.md`：sync-from-scholist.yml サンプルから無効な `workflows: write` を削除、制限の説明を追加
 - `README.md`：markdownlint 警告を修正（テーブル区切り・コードブロック言語指定）
 
 ## [0.1.1] - 2026-06-02

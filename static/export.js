@@ -1,39 +1,6 @@
 'use strict';
 
-// ---- YAML シリアライザ（簡易版）----
-
-function toYaml(value, indent) {
-  indent = indent || 0;
-  const pad = '  '.repeat(indent);
-  if (value === null || value === undefined) return 'null';
-  if (typeof value === 'boolean') return value ? 'true' : 'false';
-  if (typeof value === 'number') return String(value);
-  if (typeof value === 'string') {
-    if (/[\n:#{}\[\],&*?|<>=!%@`]/.test(value) || value.trim() !== value || value === '') {
-      return JSON.stringify(value);
-    }
-    return value;
-  }
-  if (Array.isArray(value)) {
-    if (value.length === 0) return '[]';
-    return value.map(v => pad + '- ' + toYaml(v, indent + 1)).join('\n');
-  }
-  if (typeof value === 'object') {
-    const keys = Object.keys(value).filter(k => !k.startsWith('_'));
-    if (keys.length === 0) return '{}';
-    return keys.map(k => {
-      const v = value[k];
-      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
-        return pad + k + ':\n' + toYaml(v, indent + 1);
-      }
-      if (Array.isArray(v)) {
-        return pad + k + ':\n' + toYaml(v, indent + 1);
-      }
-      return pad + k + ': ' + toYaml(v, indent);
-    }).join('\n');
-  }
-  return String(value);
-}
+// js-yaml (CDN) が読み込まれていることを前提とする
 
 // ---- BibTeX 変換 ----
 
@@ -61,7 +28,7 @@ function entryToBibtex(entry) {
   }
 
   if (entry.date) {
-    fields.push(['year', entry.date.slice(0, 4)]);
+    fields.push(['year', String(entry.date).slice(0, 4)]);
   }
 
   const src = entry.source || {};
@@ -107,7 +74,7 @@ function exportEntries(entries, format) {
   });
 
   if (format === 'yaml') {
-    const text = 'entries:\n' + clean.map(e => '  - ' + toYaml(e, 2).replace(/^  /gm, '')).join('\n\n');
+    const text = jsyaml.dump({ entries: clean }, { indent: 2, lineWidth: -1, noRefs: true });
     download('publications.yaml', text, 'text/yaml');
   } else if (format === 'json') {
     download('publications.json', JSON.stringify({ entries: clean }, null, 2), 'application/json');
