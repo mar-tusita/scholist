@@ -7,6 +7,16 @@
 
 ### 追加
 
+- `build.py`：追加フィールドバリデーション（34件のテストを追加）
+  - `id` 文字種：英数字・ハイフン・アンダースコアのみ許容
+  - `authors`：必須・空リスト禁止
+  - `scope`：`domestic` / `international` のみ許容
+  - `registered_at`：`YYYY-MM-DD` 形式チェック（値の妥当性含む）
+  - `files` の各要素：`path` か `url` の少なくとも一方が必要
+  - `paper_type`（journal）：`full` / `short` のみ許容
+  - `source.status`（patent）：`applied` / `granted` のみ許容
+- `tests/test_build.py`：`TestValidateId`・`TestValidateAuthors`・`TestValidateScope`・`TestValidateRegisteredAt`・`TestValidateFiles`・`TestValidatePaperType`・`TestValidatePatentStatus` を追加（計34件）
+
 - `build.py`：`date` フォーマットの厳密バリデーションを追加
   - `YYYY-MM-DD` / `YYYY-MM` の形式チェック（正規表現）
   - `datetime.strptime` による値の妥当性チェック（月・日の範囲外を検出）

@@ -13,8 +13,12 @@ from jinja2 import Environment, FileSystemLoader
 
 
 VALID_TYPES = {"conference", "journal", "talk", "patent", "award", "book", "misc", "other"}
+VALID_SCOPES = {"domestic", "international"}
+VALID_PAPER_TYPES = {"full", "short"}
+VALID_PATENT_STATUSES = {"applied", "granted"}
 
 _DATE_RE = re.compile(r"^\d{4}-\d{2}(-\d{2})?$")
+_ID_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
 
 
 def _valid_date(value):
@@ -54,18 +58,61 @@ def validate(entries):
     errors = []
     for e in entries:
         eid = e.get("id", "<no id>")
+
+        # id: 重複チェック
         if eid in ids:
             errors.append(f"id が重複しています: {eid}")
         ids.add(eid)
+
+        # id: 使用可能文字チェック（英数字・ハイフン・アンダースコアのみ）
+        if eid != "<no id>" and not _ID_RE.match(str(eid)):
+            errors.append(f"id='{eid}': id に使用できない文字が含まれています（英数字・ハイフン・アンダースコアのみ）")
+
+        # title / title_en: 少なくとも一方が必要
         if not e.get("title") and not e.get("title_en"):
             errors.append(f"id={eid}: title または title_en が必要です")
+
+        # type: 定義済み8種のみ
         if e.get("type") not in VALID_TYPES:
             errors.append(f"id={eid}: 不明な type '{e.get('type')}'")
+
+        # authors: 必須・空リスト禁止
+        authors = e.get("authors")
+        if not authors:
+            errors.append(f"id={eid}: authors は1名以上必要です")
+
+        # date: 形式チェック
         if not _valid_date(e.get("date")):
-            errors.append(
-                f"id={eid}: date の形式が不正です: '{e.get('date')}'"
-                "（YYYY-MM-DD または YYYY-MM）"
-            )
+            errors.append(f"id={eid}: date の形式が不正です: '{e.get('date')}'（YYYY-MM-DD または YYYY-MM）")
+
+        # registered_at: 形式チェック（YYYY-MM-DD のみ）
+        rat = e.get("registered_at")
+        if rat is not None:
+            s = str(rat)
+            if not (re.match(r"^\d{4}-\d{2}-\d{2}$", s) and _valid_date(s)):
+                errors.append(f"id={eid}: registered_at の形式が不正です: '{rat}'（YYYY-MM-DD）")
+
+        # scope: domestic / international のみ
+        scope = e.get("scope")
+        if scope is not None and scope not in VALID_SCOPES:
+            errors.append(f"id={eid}: scope は 'domestic' または 'international' でなければなりません: '{scope}'")
+
+        # files: 各要素に path か url が必要
+        for i, f in enumerate(e.get("files") or []):
+            if not f.get("path") and not f.get("url"):
+                errors.append(f"id={eid}: files[{i}] に path または url が必要です")
+
+        # paper_type: journal のみ検証
+        paper_type = e.get("paper_type")
+        if paper_type is not None and e.get("type") == "journal" and paper_type not in VALID_PAPER_TYPES:
+            errors.append(f"id={eid}: paper_type は 'full' または 'short' でなければなりません: '{paper_type}'")
+
+        # source.status: patent のみ検証
+        if e.get("type") == "patent":
+            status = (e.get("source") or {}).get("status")
+            if status is not None and status not in VALID_PATENT_STATUSES:
+                errors.append(f"id={eid}: source.status は 'applied' または 'granted' でなければなりません: '{status}'")
+
     if errors:
         for err in errors:
             print(f"ERROR: {err}", file=sys.stderr)

@@ -8,53 +8,201 @@ from build import validate, sort_entries, highlight_authors, read_version
 class TestValidate:
     def test_ok(self):
         entries = [
-            {"id": "a", "type": "conference", "title": "タイトル"},
-            {"id": "b", "type": "journal",    "title_en": "Title"},
-            {"id": "c", "type": "talk",       "title": "T", "title_en": "T"},
+            {"id": "a", "type": "conference", "title": "タイトル",  "authors": ["山田 太郎"]},
+            {"id": "b", "type": "journal",    "title_en": "Title",  "authors": ["山田 太郎"]},
+            {"id": "c", "type": "talk",       "title": "T", "title_en": "T", "authors": ["山田 太郎"]},
         ]
-        validate(entries)  # 例外・sys.exit が起きなければ合格
+        validate(entries)
 
     def test_duplicate_id(self):
         entries = [
-            {"id": "dup", "type": "conference", "title": "A"},
-            {"id": "dup", "type": "journal",    "title": "B"},
+            {"id": "dup", "type": "conference", "title": "A", "authors": ["山田 太郎"]},
+            {"id": "dup", "type": "journal",    "title": "B", "authors": ["山田 太郎"]},
         ]
         with pytest.raises(SystemExit) as exc:
             validate(entries)
         assert exc.value.code == 1
 
     def test_missing_title(self):
-        entries = [{"id": "a", "type": "conference"}]
+        entries = [{"id": "a", "type": "conference", "authors": ["山田 太郎"]}]
         with pytest.raises(SystemExit) as exc:
             validate(entries)
         assert exc.value.code == 1
 
     def test_invalid_type(self):
-        entries = [{"id": "a", "type": "unknown", "title": "T"}]
+        entries = [{"id": "a", "type": "unknown", "title": "T", "authors": ["山田 太郎"]}]
         with pytest.raises(SystemExit) as exc:
             validate(entries)
         assert exc.value.code == 1
 
     def test_all_valid_types(self):
         valid_types = ["conference", "journal", "talk", "patent", "award", "book", "misc", "other"]
-        entries = [{"id": t, "type": t, "title": "T"} for t in valid_types]
+        entries = [{"id": t, "type": t, "title": "T", "authors": ["山田 太郎"]} for t in valid_types]
         validate(entries)
 
     def test_multiple_errors_reported(self):
         entries = [
-            {"id": "dup", "type": "conference", "title": "A"},
-            {"id": "dup", "type": "bad_type"},        # ID重複 + title欠落 + 不明type
+            {"id": "dup", "type": "conference", "title": "A", "authors": ["山田 太郎"]},
+            {"id": "dup", "type": "bad_type"},        # ID重複 + title欠落 + 不明type + authors欠落
         ]
         with pytest.raises(SystemExit) as exc:
             validate(entries)
         assert exc.value.code == 1
 
 
+# ── validate: 追加フィールド ──────────────────────────────────────────────
+
+def _entry(**kwargs):
+    base = {"id": "a", "type": "misc", "title": "T", "authors": ["山田 太郎"]}
+    base.update(kwargs)
+    return [base]
+
+
+class TestValidateId:
+    def test_valid_alphanumeric(self):
+        validate(_entry(id="yamada-2024-ipsj"))
+
+    def test_valid_underscore(self):
+        validate(_entry(id="my_entry_01"))
+
+    def test_invalid_space(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(id="has space"))
+
+    def test_invalid_slash(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(id="has/slash"))
+
+    def test_invalid_dot(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(id="has.dot"))
+
+
+class TestValidateAuthors:
+    def test_single_author(self):
+        validate(_entry(authors=["山田 太郎"]))
+
+    def test_multiple_authors(self):
+        validate(_entry(authors=["山田 太郎", "鈴木 花子"]))
+
+    def test_empty_list(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(authors=[]))
+
+    def test_missing(self):
+        entry = [{"id": "a", "type": "misc", "title": "T"}]
+        with pytest.raises(SystemExit):
+            validate(entry)
+
+
+class TestValidateScope:
+    def test_domestic(self):
+        validate(_entry(scope="domestic"))
+
+    def test_international(self):
+        validate(_entry(scope="international"))
+
+    def test_none_ok(self):
+        validate(_entry())
+
+    def test_invalid(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(scope="foreign"))
+
+
+class TestValidateRegisteredAt:
+    def test_valid(self):
+        validate(_entry(registered_at="2024-03-20"))
+
+    def test_none_ok(self):
+        validate(_entry())
+
+    def test_invalid_format(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(registered_at="2024/03/20"))
+
+    def test_year_month_rejected(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(registered_at="2024-03"))
+
+    def test_invalid_day(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(registered_at="2024-02-30"))
+
+
+class TestValidateFiles:
+    def test_with_path(self):
+        validate(_entry(files=[{"label": "PDF", "path": "files/x.pdf"}]))
+
+    def test_with_url(self):
+        validate(_entry(files=[{"label": "PDF", "url": "https://example.com/x.pdf"}]))
+
+    def test_empty_list_ok(self):
+        validate(_entry(files=[]))
+
+    def test_no_files_field_ok(self):
+        validate(_entry())
+
+    def test_missing_both(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(files=[{"label": "PDF"}]))
+
+    def test_second_entry_invalid(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(files=[
+                {"label": "Slides", "path": "files/x.pdf"},
+                {"label": "PDF"},
+            ]))
+
+
+class TestValidatePaperType:
+    def test_full(self):
+        validate(_entry(type="journal", paper_type="full"))
+
+    def test_short(self):
+        validate(_entry(type="journal", paper_type="short"))
+
+    def test_none_ok(self):
+        validate(_entry(type="journal"))
+
+    def test_invalid_for_journal(self):
+        with pytest.raises(SystemExit):
+            validate(_entry(type="journal", paper_type="extended"))
+
+    def test_ignored_for_non_journal(self):
+        validate(_entry(type="conference", paper_type="extended"))
+
+
+class TestValidatePatentStatus:
+    def _patent(self, status=None):
+        src = {"patent_number": "特許第1号", "country": "JP"}
+        if status is not None:
+            src["status"] = status
+        return [{"id": "a", "type": "patent", "title": "T",
+                 "authors": ["山田 太郎"], "source": src}]
+
+    def test_granted(self):
+        validate(self._patent("granted"))
+
+    def test_applied(self):
+        validate(self._patent("applied"))
+
+    def test_none_ok(self):
+        validate(self._patent())
+
+    def test_invalid(self):
+        with pytest.raises(SystemExit):
+            validate(self._patent("pending"))
+
+    def test_ignored_for_non_patent(self):
+        validate(_entry(type="misc"))
+
+
 # ── sort_entries ──────────────────────────────────────────────────────────
 
 class TestValidateDate:
     def _e(self, date):
-        return [{"id": "a", "type": "misc", "title": "T", "date": date}]
+        return [{"id": "a", "type": "misc", "title": "T", "authors": ["山田 太郎"], "date": date}]
 
     def test_full_date(self):
         validate(self._e("2024-03-15"))
@@ -66,7 +214,7 @@ class TestValidateDate:
         validate(self._e(None))
 
     def test_no_date_field(self):
-        validate([{"id": "a", "type": "misc", "title": "T"}])
+        validate([{"id": "a", "type": "misc", "title": "T", "authors": ["山田 太郎"]}])
 
     def test_datetime_date_object(self):
         validate(self._e(datetime.date(2024, 3, 15)))
