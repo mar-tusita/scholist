@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### 修正
+
+- `README.md`：`sync-from-scholist.yml` サンプルから無効な `workflows: write` と `.github/workflows/build.yml` を削除
+  - `workflows` は `permissions` の有効なキーではなく YAML パースエラーを引き起こす
+  - `GITHUB_TOKEN` はワークフローファイルを書き込めないため `build.yml` は sync 対象外とし、手動コピーする旨を注記
+
 ### 追加
 
 - `build.py`：GitHub Actions `::error::` アノテーション対応
