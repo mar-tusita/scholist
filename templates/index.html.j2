@@ -191,6 +191,38 @@
       countDisplay.textContent = `${visible} 件表示`;
     }
 
+    function saveFiltersToUrl() {
+      const params = new URLSearchParams();
+      const addIfSet = (id, key) => {
+        const val = document.getElementById(id).value;
+        if (val) params.set(key, val);
+      };
+      addIfSet('filter-type', 'type');
+      addIfSet('filter-year', 'year');
+      addIfSet('filter-scope', 'scope');
+      addIfSet('filter-reviewed', 'reviewed');
+      addIfSet('filter-invited', 'invited');
+      const q = document.getElementById('search-input').value;
+      if (q) params.set('q', q);
+      const qs = params.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    }
+
+    function loadFiltersFromUrl() {
+      const params = new URLSearchParams(location.search);
+      const setVal = (id, key) => {
+        const val = params.get(key);
+        if (val !== null) document.getElementById(id).value = val;
+      };
+      setVal('filter-type', 'type');
+      setVal('filter-year', 'year');
+      setVal('filter-scope', 'scope');
+      setVal('filter-reviewed', 'reviewed');
+      setVal('filter-invited', 'invited');
+      const q = params.get('q');
+      if (q !== null) document.getElementById('search-input').value = q;
+    }
+
     function applyFilters() {
       const type = document.getElementById('filter-type').value;
       const year = document.getElementById('filter-year').value;
@@ -212,6 +244,7 @@
         if (match) visible++;
       });
       updateCount(visible);
+      saveFiltersToUrl();
     }
 
     ['filter-type', 'filter-year', 'filter-scope', 'filter-reviewed', 'filter-invited'].forEach(id => {
@@ -219,7 +252,8 @@
     });
     document.getElementById('search-input').addEventListener('input', applyFilters);
 
-    updateCount(rows.length);
+    loadFiltersFromUrl();
+    applyFilters();
   </script>
 </body>
 </html>

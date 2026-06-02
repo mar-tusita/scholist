@@ -7,6 +7,12 @@
 
 ### 追加
 
+- 一覧ページ（`templates/index.html.j2`）：フィルタ状態を URL クエリパラメータに保持
+  - フィルタ・検索変更時に `history.replaceState` で URL を更新（ブラウザ履歴には残さない）
+  - ページロード時に URL パラメータを読み込みフィルタを復元（`URLSearchParams`）
+  - パラメータ: `type`, `year`, `scope`, `reviewed`, `invited`, `q`（検索語）
+  - フィルタなし時は URL をクリーンに保つ（クエリ文字列なし）
+
 - 一覧ページ（`templates/index.html.j2`）：統計サマリーをヘッダー直下に表示
   - 総件数・年範囲（最古 – 最新）を表示
   - 種別ごとの件数をカラーチップで表示（件数が0の種別は非表示）
