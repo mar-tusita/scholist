@@ -305,7 +305,7 @@ jobs:
           fi
 
       - name: Trigger Build and Deploy
-        run: gh workflow run build.yml
+        run: gh workflow run build.yml --repo "${GITHUB_REPOSITORY}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
