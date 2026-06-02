@@ -13,10 +13,17 @@ const TYPE_MAP = {
   book:       'book',
   misc:       'misc',
   other:      'misc',
+  report:     'techreport',
 };
 
 function entryToBibtex(entry) {
-  const bibtype = TYPE_MAP[entry.type] || 'misc';
+  let bibtype;
+  if (entry.type === 'thesis') {
+    const degree = (entry.source || {}).degree;
+    bibtype = degree === 'doctoral' ? 'phdthesis' : degree === 'master' ? 'mastersthesis' : 'misc';
+  } else {
+    bibtype = TYPE_MAP[entry.type] || 'misc';
+  }
   const key = entry.id;
   const fields = [];
 
@@ -42,6 +49,11 @@ function entryToBibtex(entry) {
   if (src.isbn) fields.push(['isbn', '{' + src.isbn + '}']);
 
   if (entry.abstract) fields.push(['abstract', '{' + entry.abstract + '}']);
+  // thesis: school フィールドに機関名
+  if (entry.type === 'thesis' && src.institution) fields.push(['school', '{' + src.institution + '}']);
+  // report: institution・number フィールド
+  if (entry.type === 'report' && src.institution) fields.push(['institution', '{' + src.institution + '}']);
+  if (entry.type === 'report' && src.number) fields.push(['number', '{' + src.number + '}']);
   if (entry.organization) fields.push(['organization', '{' + entry.organization + '}']);
   if (entry.url) fields.push(['url', '{' + entry.url + '}']);
   if (entry.note) fields.push(['note', '{' + entry.note + '}']);

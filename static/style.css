@@ -66,6 +66,8 @@ header a {
 .summary-chip-patent     { background: #7c3aed; }
 .summary-chip-award      { background: #dc2626; }
 .summary-chip-book       { background: #4f46e5; }
+.summary-chip-thesis     { background: #db2777; }
+.summary-chip-report     { background: #ea580c; }
 .summary-chip-misc       { background: #4b5563; }
 .summary-chip-other      { background: #4b5563; }
 
@@ -202,6 +204,8 @@ header a {
 .badge-patent     { background: #ede9fe; color: #4c1d95; }
 .badge-award      { background: #fee2e2; color: #991b1b; }
 .badge-book       { background: #e0e7ff; color: #3730a3; }
+.badge-thesis     { background: #fce7f3; color: #9d174d; }
+.badge-report     { background: #fff7ed; color: #c2410c; }
 .badge-misc       { background: #f3f4f6; color: #374151; }
 .badge-other      { background: #f3f4f6; color: #374151; }
 .badge-invited    { background: #fce7f3; color: #9d174d; }
