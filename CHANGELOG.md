@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 修正
+
+- `extras/sync-from-scholist.yml`・`README.md`：`gh workflow run build.yml` に `--repo "${GITHUB_REPOSITORY}"` を追加
+  - `git remote add upstream` 後に `gh` CLI が scholist を誤認識して 403 エラーになる問題を解消
+
 ## [0.3.0] - 2026-06-02
 
 ### 追加
