@@ -13,6 +13,7 @@
 ### ドキュメント
 
 - `README.md`：sync 後に手動ビルドが必要な旨の注意書きを追加
+- `README.md`：sync-from-scholist.yml サンプルに `workflows: write` 権限を追加（欠落していた）
 - `README.md`：markdownlint 警告を修正（テーブル区切り・コードブロック言語指定）
 
 ## [0.1.1] - 2026-06-02

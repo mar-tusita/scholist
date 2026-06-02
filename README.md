@@ -209,6 +209,7 @@ on:
 
 permissions:
   contents: write
+  workflows: write
 
 jobs:
   sync:
