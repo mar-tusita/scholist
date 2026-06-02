@@ -203,7 +203,8 @@ class TestValidatePatentStatus:
 class TestErrorOutput:
     _bad = [{"id": "a", "type": "misc", "title": "T", "authors": [], "date": "bad"}]
 
-    def test_local_format_uses_stderr(self, capsys):
+    def test_local_format_uses_stderr(self, capsys, monkeypatch):
+        monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
         with pytest.raises(SystemExit):
             validate(self._bad)
         captured = capsys.readouterr()
