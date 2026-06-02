@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ entry.title or entry.title_en }} — {{ config.site_title }}</title>
+  <link rel="stylesheet" href="../../static/style.css">
+</head>
+<body>
+  <header>
+    <h1><a href="../../">{{ config.site_title }}</a></h1>
+  </header>
+
+  <article class="entry-detail">
+    <h2>
+      {% if entry.title %}{{ entry.title }}{% endif %}
+      {% if entry.title and entry.title_en %}<br>{% endif %}
+      {% if entry.title_en %}<span class="title-en-large">{{ entry.title_en }}</span>{% endif %}
+    </h2>
+
+    <div class="badges">
+      <span class="badge badge-{{ entry.type }}">{{ entry.type }}</span>
+      {% if entry.invited %}<span class="badge badge-invited">招待講演</span>{% endif %}
+      {% if entry.reviewed %}<span class="badge badge-reviewed">査読あり</span>{% endif %}
+      {% if entry.scope == 'international' %}<span class="badge badge-intl">国際</span>{% endif %}
+      {% if entry.scope == 'domestic' %}<span class="badge badge-dom">国内</span>{% endif %}
+    </div>
+
+    <table class="detail-table">
+      <tr>
+        <th>著者</th>
+        <td>
+          {% for a in entry._authors_hl %}
+            {%- if a.highlight -%}
+              {%- if a.style == 'bold' -%}
+                <strong>{{ a.name }}</strong>
+              {%- else -%}
+                <span class="author-highlight">{{ a.name }}</span>
+              {%- endif -%}
+            {%- else -%}
+              {{ a.name }}
+            {%- endif -%}
+            {%- if not loop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+
+      {% if entry.date %}
+      <tr>
+        <th>日付</th>
+        <td>{{ entry.date }}</td>
+      </tr>
+      {% endif %}
+
+      {% if entry.presenter %}
+      <tr>
+        <th>登壇者</th>
+        <td>{{ entry.presenter }}</td>
+      </tr>
+      {% endif %}
+
+      {% if entry.organization %}
+      <tr>
+        <th>組織・学会</th>
+        <td>{{ entry.organization }}</td>
+      </tr>
+      {% endif %}
+
+      {% if entry.type == 'conference' %}
+        {% if entry.venue %}
+        <tr><th>会議名</th><td>{{ entry.venue }}{% if entry.venue_abbr %} ({{ entry.venue_abbr }}){% endif %}</td></tr>
+        {% endif %}
+        {% if entry.location %}
+        <tr><th>開催地</th><td>{{ entry.location }}</td></tr>
+        {% endif %}
+        {% if entry.source %}
+          {% if entry.source.proceedings %}
+          <tr><th>論文集</th><td>{{ entry.source.proceedings }}</td></tr>
+          {% endif %}
+          {% if entry.source.pages %}
+          <tr><th>ページ</th><td>{{ entry.source.pages }}</td></tr>
+          {% endif %}
+        {% endif %}
+
+      {% elif entry.type == 'journal' %}
+        {% if entry.source %}
+          {% if entry.source.journal_name %}
+          <tr><th>誌名</th><td>{{ entry.source.journal_name }}</td></tr>
+          {% endif %}
+          {% if entry.source.volume is defined %}
+          <tr><th>巻・号</th><td>Vol.{{ entry.source.volume }}{% if entry.source.number is defined %}, No.{{ entry.source.number }}{% endif %}</td></tr>
+          {% endif %}
+          {% if entry.source.pages %}
+          <tr><th>ページ</th><td>{{ entry.source.pages }}</td></tr>
+          {% endif %}
+          {% if entry.source.doi %}
+          <tr><th>DOI</th><td><a href="https://doi.org/{{ entry.source.doi }}">{{ entry.source.doi }}</a></td></tr>
+          {% endif %}
+        {% endif %}
+
+      {% elif entry.type == 'talk' %}
+        {% if entry.venue %}
+        <tr><th>会場・イベント</th><td>{{ entry.venue }}</td></tr>
+        {% endif %}
+        {% if entry.location %}
+        <tr><th>開催地</th><td>{{ entry.location }}</td></tr>
+        {% endif %}
+        {% if entry.source and entry.source.description %}
+        <tr><th>備考</th><td>{{ entry.source.description }}</td></tr>
+        {% endif %}
+
+      {% elif entry.type == 'patent' %}
+        {% if entry.source %}
+          {% if entry.source.patent_number %}
+          <tr><th>特許番号</th><td>{{ entry.source.patent_number }}</td></tr>
+          {% endif %}
+          {% if entry.source.country %}
+          <tr><th>国</th><td>{{ entry.source.country }}</td></tr>
+          {% endif %}
+          {% if entry.source.status %}
+          <tr><th>状態</th><td>{{ '登録' if entry.source.status == 'granted' else '出願' }}</td></tr>
+          {% endif %}
+        {% endif %}
+
+      {% elif entry.type == 'award' %}
+        {% if entry.source %}
+          {% if entry.source.award_name %}
+          <tr><th>賞名</th><td>{{ entry.source.award_name }}</td></tr>
+          {% endif %}
+          {% if entry.source.org_giving_award %}
+          <tr><th>授与機関</th><td>{{ entry.source.org_giving_award }}</td></tr>
+          {% endif %}
+        {% endif %}
+
+      {% elif entry.type == 'book' %}
+        {% if entry.source %}
+          {% if entry.source.publisher %}
+          <tr><th>出版社</th><td>{{ entry.source.publisher }}</td></tr>
+          {% endif %}
+          {% if entry.source.isbn %}
+          <tr><th>ISBN</th><td>{{ entry.source.isbn }}</td></tr>
+          {% endif %}
+          {% if entry.source.editors %}
+          <tr><th>編者</th><td>{{ entry.source.editors | join(', ') }}</td></tr>
+          {% endif %}
+          {% if entry.source.chapter %}
+          <tr><th>章</th><td>{{ entry.source.chapter }}</td></tr>
+          {% endif %}
+          {% if entry.source.pages %}
+          <tr><th>ページ</th><td>{{ entry.source.pages }}</td></tr>
+          {% endif %}
+        {% endif %}
+
+      {% else %}
+        {% if entry.source and entry.source.description %}
+        <tr><th>出典</th><td>{{ entry.source.description }}</td></tr>
+        {% endif %}
+      {% endif %}
+
+      {% if entry.url %}
+      <tr>
+        <th>URL / DOI</th>
+        <td><a href="{{ entry.url }}">{{ entry.url }}</a></td>
+      </tr>
+      {% endif %}
+
+      {% if entry.note %}
+      <tr>
+        <th>備考</th>
+        <td>{{ entry.note }}</td>
+      </tr>
+      {% endif %}
+    </table>
+
+    {% if entry.files %}
+    <section class="files-section">
+      <h3>添付ファイル</h3>
+      <ul>
+        {% for f in entry.files %}
+        <li>
+          {% if f.path %}
+            <a href="../../{{ f.path }}">{{ f.label }}</a>
+          {% elif f.url %}
+            <a href="{{ f.url }}">{{ f.label }}</a>
+          {% else %}
+            {{ f.label }}
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    <section class="export-section">
+      <h3>このエントリをエクスポート</h3>
+      <button onclick="exportOne('yaml')">YAML</button>
+      <button onclick="exportOne('json')">JSON</button>
+      <button onclick="exportOne('bibtex')">BibTeX</button>
+    </section>
+  </article>
+
+  <footer>
+    <p>Generated by <a href="https://github.com/mar-tusita/scholist">scholist</a> {{ scholist_version }}</p>
+  </footer>
+
+  <script>
+    const ENTRY = {{ entry | tojson }};
+  </script>
+  <script src="../../static/export.js"></script>
+  <script>
+    function exportOne(format) {
+      exportEntries([ENTRY], format);
+    }
+  </script>
+</body>
+</html>

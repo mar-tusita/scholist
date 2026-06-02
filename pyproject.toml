@@ -1,0 +1,15 @@
+[project]
+name = "scholist"
+version = "0.1.0"
+description = "YAML-driven static research publication list generator"
+requires-python = ">=3.10"
+dependencies = [
+    "PyYAML",
+    "Jinja2",
+]
+
+[project.urls]
+Homepage = "https://github.com/mar-tusita/scholist"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

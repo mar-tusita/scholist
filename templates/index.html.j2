@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ config.site_title }}</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <header>
+    <h1>{{ config.site_title }}</h1>
+  </header>
+
+  <div class="controls">
+    <div class="filters">
+      <label>種別:
+        <select id="filter-type">
+          <option value="">すべて</option>
+          <option value="conference">会議</option>
+          <option value="journal">論文誌</option>
+          <option value="talk">講演</option>
+          <option value="patent">特許</option>
+          <option value="award">受賞</option>
+          <option value="book">書籍</option>
+          <option value="misc">解説等</option>
+          <option value="other">その他</option>
+        </select>
+      </label>
+
+      <label>年:
+        <select id="filter-year">
+          <option value="">すべて</option>
+          {% set years = [] %}
+          {% for e in entries %}
+            {% if e.date %}
+              {% set y = e.date[:4] %}
+              {% if y not in years %}
+                {% set _ = years.append(y) %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% for y in years | sort(reverse=True) %}
+            <option value="{{ y }}">{{ y }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>国内/国際:
+        <select id="filter-scope">
+          <option value="">すべて</option>
+          <option value="domestic">国内</option>
+          <option value="international">国際</option>
+        </select>
+      </label>
+
+      <label>査読:
+        <select id="filter-reviewed">
+          <option value="">すべて</option>
+          <option value="true">査読あり</option>
+          <option value="false">査読なし</option>
+        </select>
+      </label>
+
+      <label>招待:
+        <select id="filter-invited">
+          <option value="">すべて</option>
+          <option value="true">招待あり</option>
+          <option value="false">招待なし</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="search-box">
+      <input type="search" id="search-input" placeholder="タイトル・著者・会議名で検索...">
+    </div>
+
+    <div class="export-all">
+      <button onclick="exportAll('yaml')">全件 YAML</button>
+      <button onclick="exportAll('json')">全件 JSON</button>
+      <button onclick="exportAll('bibtex')">全件 BibTeX</button>
+    </div>
+  </div>
+
+  <div id="count-display" class="count-display"></div>
+
+  <table id="entries-table">
+    <thead>
+      <tr>
+        <th>年</th>
+        <th>種別</th>
+        <th>タイトル</th>
+        <th>著者</th>
+        <th>掲載先・会議</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+      <tr class="entry-row"
+          data-type="{{ e.type }}"
+          data-year="{{ e.date[:4] if e.date else '' }}"
+          data-scope="{{ e.scope if e.scope is defined else '' }}"
+          data-reviewed="{{ 'true' if e.reviewed else 'false' }}"
+          data-invited="{{ 'true' if e.invited else 'false' }}"
+          data-searchtext="{{ ([e.title or '', e.title_en or ''] + (e.authors or []) + [e.venue or '', e.organization or '']) | join(' ') | lower }}">
+        <td class="col-year">{{ e.date[:4] if e.date else '—' }}</td>
+        <td class="col-type">
+          <span class="badge badge-{{ e.type }}">{{ e.type }}</span>
+          {% if e.invited %}<span class="badge badge-invited">招待</span>{% endif %}
+          {% if e.reviewed %}<span class="badge badge-reviewed">査読</span>{% endif %}
+        </td>
+        <td class="col-title">
+          <a href="entries/{{ e.id }}/">{{ e.title or e.title_en }}</a>
+          {% if e.title and e.title_en %}
+            <span class="title-en">{{ e.title_en }}</span>
+          {% endif %}
+        </td>
+        <td class="col-authors">
+          {% for a in e._authors_hl %}
+            {%- if a.highlight -%}
+              {%- if a.style == 'bold' -%}
+                <strong>{{ a.name }}</strong>
+              {%- else -%}
+                <span class="author-highlight">{{ a.name }}</span>
+              {%- endif -%}
+            {%- else -%}
+              {{ a.name }}
+            {%- endif -%}
+            {%- if not loop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+        <td class="col-venue">
+          {% if e.type == 'conference' %}{{ e.venue or '' }}
+          {% elif e.type == 'journal' %}{{ e.source.journal_name if e.source else '' }}
+          {% elif e.type == 'talk' %}{{ e.venue or '' }}
+          {% elif e.type == 'award' %}{{ e.source.award_name if e.source else '' }}
+          {% elif e.type == 'book' %}{{ e.source.publisher if e.source else '' }}
+          {% else %}{{ e.source.description if e.source else '' }}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    // 全エントリデータ（エクスポート用）
+    const ALL_ENTRIES = {{ entries | tojson }};
+  </script>
+  <footer>
+    <p>Generated by <a href="https://github.com/mar-tusita/scholist">scholist</a> {{ scholist_version }}</p>
+  </footer>
+
+  <script src="static/export.js"></script>
+  <script>
+    const rows = Array.from(document.querySelectorAll('.entry-row'));
+    const countDisplay = document.getElementById('count-display');
+
+    function updateCount(visible) {
+      countDisplay.textContent = `${visible} 件表示`;
+    }
+
+    function applyFilters() {
+      const type = document.getElementById('filter-type').value;
+      const year = document.getElementById('filter-year').value;
+      const scope = document.getElementById('filter-scope').value;
+      const reviewed = document.getElementById('filter-reviewed').value;
+      const invited = document.getElementById('filter-invited').value;
+      const query = document.getElementById('search-input').value.toLowerCase();
+
+      let visible = 0;
+      rows.forEach(row => {
+        const match =
+          (!type || row.dataset.type === type) &&
+          (!year || row.dataset.year === year) &&
+          (!scope || row.dataset.scope === scope) &&
+          (!reviewed || row.dataset.reviewed === reviewed) &&
+          (!invited || row.dataset.invited === invited) &&
+          (!query || row.dataset.searchtext.includes(query));
+        row.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      updateCount(visible);
+    }
+
+    ['filter-type', 'filter-year', 'filter-scope', 'filter-reviewed', 'filter-invited'].forEach(id => {
+      document.getElementById(id).addEventListener('change', applyFilters);
+    });
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+
+    updateCount(rows.length);
+  </script>
+</body>
+</html>

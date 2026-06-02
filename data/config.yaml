@@ -1,0 +1,7 @@
+highlight_authors:
+  - "山田 太郎"
+  - "Taro Yamada"
+  - "T. Yamada"
+highlight_style: underline   # bold または underline
+
+site_title: "研究業績一覧"

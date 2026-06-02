@@ -1,0 +1,159 @@
+entries:
+  # ── 同日 2 件: YAML 記述順が保持されることを確認 ──────────────────
+  - id: "sample-2024-a-conf-domestic"
+    type: conference
+    title: "サンプル：国内会議（査読あり・招待あり）"         # title + title_en 両方あり
+    title_en: "Sample: Domestic Conference (Reviewed, Invited)"
+    authors:
+      - "山田 太郎"
+      - "鈴木 花子"
+    date: "2024-03-15"
+    registered_at: "2024-03-20"
+    organization: "情報処理学会"
+    presenter: "山田 太郎"
+    scope: domestic
+    invited: true
+    reviewed: true
+    venue: "情報処理学会 第86回全国大会"
+    venue_abbr: "IPSJ"
+    location: "東京"
+    source:
+      proceedings: "情報処理学会第86回全国大会講演論文集"
+      pages: "1-1 -- 1-2"
+    files:
+      - label: "発表スライド"
+        path: "files/sample-2024-a-slides.pdf"
+    note: "同日 2 件のうち 1 件目（YAML 記述順テスト用）"
+
+  - id: "sample-2024-b-conf-intl"
+    type: conference
+    title_en: "Sample: International Conference (title_en only)"  # title_en のみ
+    authors:
+      - "T. Yamada"
+      - "H. Suzuki"
+    date: "2024-03-15"
+    registered_at: "2024-03-21"
+    organization: "IEEE"
+    presenter: "T. Yamada"
+    scope: international
+    invited: false
+    reviewed: true
+    venue: "Sample International Conference (SIC 2024)"
+    venue_abbr: "SIC"
+    location: "Kyoto, Japan"
+    source:
+      proceedings: "Proceedings of SIC 2024"
+      pages: "100-111"
+    note: "同日 2 件のうち 2 件目（YAML 記述順テスト用）"
+
+  # ── journal ──────────────────────────────────────────────────────
+  - id: "sample-2023-journal"
+    type: journal
+    title: "サンプル：国内論文誌（査読あり・フルペーパー）"
+    title_en: "Sample: Domestic Journal Article (Full Paper)"
+    authors:
+      - "山田 太郎"
+      - "田中 次郎"
+    date: "2023-09"
+    registered_at: "2023-10-01"
+    organization: "情報処理学会"
+    scope: domestic
+    reviewed: true
+    paper_type: full
+    source:
+      journal_name: "情報処理学会論文誌"
+      volume: 64
+      number: 9
+      pages: "1-12"
+      doi: "10.xxxx/sample.64.1"
+    url: "https://doi.org/10.xxxx/sample.64.1"
+
+  # ── talk ─────────────────────────────────────────────────────────
+  - id: "sample-2022-talk"
+    type: talk
+    title: "サンプル：招待講演"                              # title のみ
+    authors:
+      - "山田 太郎"
+    date: "2022-06-10"
+    registered_at: "2022-06-15"
+    presenter: "山田 太郎"
+    invited: true
+    venue: "サンプル研究会"
+    location: "大阪"
+    source:
+      description: "サンプル研究会 第10回"
+
+  # ── award ────────────────────────────────────────────────────────
+  - id: "sample-2021-award"
+    type: award
+    title: "サンプル：受賞"
+    authors:
+      - "山田 太郎"
+      - "鈴木 花子"
+    date: "2021-03-05"
+    registered_at: "2021-03-10"
+    organization: "情報処理学会"
+    source:
+      award_name: "優秀論文賞"
+      org_giving_award: "情報処理学会"
+    note: "「サンプル論文」に対して授与"
+
+  # ── patent ───────────────────────────────────────────────────────
+  - id: "sample-2021-patent"
+    type: patent
+    title: "サンプル：特許（登録）"
+    authors:
+      - "山田 太郎"
+    date: "2021-11-01"
+    registered_at: "2021-11-05"
+    organization: "特許庁"
+    source:
+      patent_number: "特許第1234567号"
+      country: "JP"
+      status: granted
+
+  # ── book ─────────────────────────────────────────────────────────
+  - id: "sample-2020-book"
+    type: book
+    title: "サンプル：書籍（分担執筆）"
+    title_en: "Sample: Book Chapter"
+    authors:
+      - "山田 太郎"
+    date: "2020-04"
+    registered_at: "2020-05-01"
+    source:
+      publisher: "サンプル出版社"
+      isbn: "978-4-000-00000-0"
+      editors:
+        - "編者 一郎"
+      chapter: "第3章"
+      pages: "45-89"
+
+  # ── misc ─────────────────────────────────────────────────────────
+  - id: "sample-2019-misc"
+    type: misc
+    title: "サンプル：解説記事"
+    authors:
+      - "山田 太郎"
+    date: "2019-07-01"
+    source:
+      description: "サンプル学会誌 Vol.60 No.7"
+
+  # ── other ────────────────────────────────────────────────────────
+  - id: "sample-2018-other"
+    type: other
+    title: "サンプル：その他"
+    authors:
+      - "山田 太郎"
+    date: "2018-01-15"
+    source:
+      description: "その他の媒体"
+
+  # ── date なし: 末尾に来ることを確認 ──────────────────────────────
+  - id: "sample-no-date"
+    type: misc
+    title: "サンプル：日付なしエントリ（末尾ソートのテスト用）"
+    authors:
+      - "山田 太郎"
+    date: ~
+    note: "date が null のエントリは一覧の末尾に表示される"
