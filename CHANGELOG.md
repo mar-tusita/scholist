@@ -7,6 +7,12 @@
 
 ### 追加
 
+- `build.py`：GitHub Actions `::error::` アノテーション対応
+  - `GITHUB_ACTIONS=true` 環境下では `::error file=data/publications.yaml::` 形式で出力
+  - ローカル実行時は従来通り `ERROR:` を stderr に出力
+  - Actions の「Annotations」欄にエラー内容が直接表示されるようになる
+- `tests/test_build.py`：`TestErrorOutput` クラスを追加（3件）
+
 - `build.py`：追加フィールドバリデーション（34件のテストを追加）
   - `id` 文字種：英数字・ハイフン・アンダースコアのみ許容
   - `authors`：必須・空リスト禁止

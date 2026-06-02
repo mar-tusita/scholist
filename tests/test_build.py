@@ -198,6 +198,37 @@ class TestValidatePatentStatus:
         validate(_entry(type="misc"))
 
 
+# ── エラー出力形式 ────────────────────────────────────────────────────────
+
+class TestErrorOutput:
+    _bad = [{"id": "a", "type": "misc", "title": "T", "authors": [], "date": "bad"}]
+
+    def test_local_format_uses_stderr(self, capsys):
+        with pytest.raises(SystemExit):
+            validate(self._bad)
+        captured = capsys.readouterr()
+        assert "ERROR:" in captured.err
+        assert "::error" not in captured.out
+
+    def test_ci_format_uses_annotation(self, capsys, monkeypatch):
+        monkeypatch.setenv("GITHUB_ACTIONS", "true")
+        with pytest.raises(SystemExit):
+            validate(self._bad)
+        captured = capsys.readouterr()
+        assert "::error file=data/publications.yaml::" in captured.out
+        assert "ERROR:" not in captured.err
+
+    def test_ci_annotation_contains_message(self, capsys, monkeypatch):
+        monkeypatch.setenv("GITHUB_ACTIONS", "true")
+        bad = [{"id": "a", "type": "misc", "title": "T",
+                "authors": ["山田 太郎"], "date": "2024/01/01"}]
+        with pytest.raises(SystemExit):
+            validate(bad)
+        out = capsys.readouterr().out
+        assert "date" in out
+        assert "::error file=data/publications.yaml::" in out
+
+
 # ── sort_entries ──────────────────────────────────────────────────────────
 
 class TestValidateDate:

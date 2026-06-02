@@ -2,6 +2,7 @@
 """静的サイト生成スクリプト"""
 
 import argparse
+import os
 import re
 import shutil
 import sys
@@ -114,8 +115,13 @@ def validate(entries):
                 errors.append(f"id={eid}: source.status は 'applied' または 'granted' でなければなりません: '{status}'")
 
     if errors:
+        in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
         for err in errors:
-            print(f"ERROR: {err}", file=sys.stderr)
+            if in_ci:
+                # GitHub Actions のアノテーションとして表示される
+                print(f"::error file=data/publications.yaml::{err}")
+            else:
+                print(f"ERROR: {err}", file=sys.stderr)
         sys.exit(1)
 
 
