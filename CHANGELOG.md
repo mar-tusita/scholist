@@ -5,20 +5,18 @@
 
 ## [Unreleased]
 
-### 修正
-
-- `README.md`：`sync-from-scholist.yml` サンプルから無効な `workflows: write` と `.github/workflows/build.yml` を削除
-  - `workflows` は `permissions` の有効なキーではなく YAML パースエラーを引き起こす
-  - `GITHUB_TOKEN` はワークフローファイルを書き込めないため `build.yml` は sync 対象外とし、手動コピーする旨を注記
-
 ### 追加
 
+- 一覧ページ（`templates/index.html.j2`）：統計サマリーをヘッダー直下に表示
+  - 総件数・年範囲（最古 – 最新）を表示
+  - 種別ごとの件数をカラーチップで表示（件数が0の種別は非表示）
+  - JavaScript のみで完結（`ALL_ENTRIES` から集計）
+- `static/style.css`：`.summary`・`.summary-chip` スタイルを追加
 - `build.py`：GitHub Actions `::error::` アノテーション対応
   - `GITHUB_ACTIONS=true` 環境下では `::error file=data/publications.yaml::` 形式で出力
   - ローカル実行時は従来通り `ERROR:` を stderr に出力
   - Actions の「Annotations」欄にエラー内容が直接表示されるようになる
 - `tests/test_build.py`：`TestErrorOutput` クラスを追加（3件）
-
 - `build.py`：追加フィールドバリデーション（34件のテストを追加）
   - `id` 文字種：英数字・ハイフン・アンダースコアのみ許容
   - `authors`：必須・空リスト禁止
@@ -28,7 +26,6 @@
   - `paper_type`（journal）：`full` / `short` のみ許容
   - `source.status`（patent）：`applied` / `granted` のみ許容
 - `tests/test_build.py`：`TestValidateId`・`TestValidateAuthors`・`TestValidateScope`・`TestValidateRegisteredAt`・`TestValidateFiles`・`TestValidatePaperType`・`TestValidatePatentStatus` を追加（計34件）
-
 - `build.py`：`date` フォーマットの厳密バリデーションを追加
   - `YYYY-MM-DD` / `YYYY-MM` の形式チェック（正規表現）
   - `datetime.strptime` による値の妥当性チェック（月・日の範囲外を検出）
