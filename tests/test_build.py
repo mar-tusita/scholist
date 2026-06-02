@@ -1,3 +1,4 @@
+import datetime
 import pytest
 from build import validate, sort_entries, highlight_authors, read_version
 
@@ -50,6 +51,46 @@ class TestValidate:
 
 
 # ── sort_entries ──────────────────────────────────────────────────────────
+
+class TestValidateDate:
+    def _e(self, date):
+        return [{"id": "a", "type": "misc", "title": "T", "date": date}]
+
+    def test_full_date(self):
+        validate(self._e("2024-03-15"))
+
+    def test_year_month(self):
+        validate(self._e("2023-09"))
+
+    def test_null(self):
+        validate(self._e(None))
+
+    def test_no_date_field(self):
+        validate([{"id": "a", "type": "misc", "title": "T"}])
+
+    def test_datetime_date_object(self):
+        validate(self._e(datetime.date(2024, 3, 15)))
+
+    def test_invalid_separator(self):
+        with pytest.raises(SystemExit):
+            validate(self._e("2024/03/15"))
+
+    def test_invalid_month(self):
+        with pytest.raises(SystemExit):
+            validate(self._e("2024-13-01"))
+
+    def test_invalid_day(self):
+        with pytest.raises(SystemExit):
+            validate(self._e("2024-02-30"))
+
+    def test_year_only(self):
+        with pytest.raises(SystemExit):
+            validate(self._e("2024"))
+
+    def test_wrong_length(self):
+        with pytest.raises(SystemExit):
+            validate(self._e("24-03-15"))
+
 
 class TestSortEntries:
     def test_date_descending(self):

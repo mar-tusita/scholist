@@ -5,6 +5,14 @@
 
 ## [Unreleased]
 
+### 追加
+
+- `build.py`：`date` フォーマットの厳密バリデーションを追加
+  - `YYYY-MM-DD` / `YYYY-MM` の形式チェック（正規表現）
+  - `datetime.strptime` による値の妥当性チェック（月・日の範囲外を検出）
+  - PyYAML が `datetime.date` 型に変換した値も正しく処理
+- `tests/test_build.py`：`TestValidateDate` クラスを追加（10件）
+
 ### 変更
 
 - `.github/workflows/build.yml`：`workflow_dispatch` トリガーを追加（手動実行を可能に）

@@ -5,6 +5,7 @@ import argparse
 import re
 import shutil
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -12,6 +13,22 @@ from jinja2 import Environment, FileSystemLoader
 
 
 VALID_TYPES = {"conference", "journal", "talk", "patent", "award", "book", "misc", "other"}
+
+_DATE_RE = re.compile(r"^\d{4}-\d{2}(-\d{2})?$")
+
+
+def _valid_date(value):
+    if value is None:
+        return True
+    s = str(value)
+    if not _DATE_RE.match(s):
+        return False
+    fmt = "%Y-%m-%d" if len(s) == 10 else "%Y-%m"
+    try:
+        datetime.strptime(s, fmt)
+        return True
+    except ValueError:
+        return False
 
 
 def read_version(base_dir):
@@ -44,6 +61,11 @@ def validate(entries):
             errors.append(f"id={eid}: title または title_en が必要です")
         if e.get("type") not in VALID_TYPES:
             errors.append(f"id={eid}: 不明な type '{e.get('type')}'")
+        if not _valid_date(e.get("date")):
+            errors.append(
+                f"id={eid}: date の形式が不正です: '{e.get('date')}'"
+                "（YYYY-MM-DD または YYYY-MM）"
+            )
     if errors:
         for err in errors:
             print(f"ERROR: {err}", file=sys.stderr)
