@@ -48,7 +48,7 @@ entries:
 ### 種別（`type`）
 
 | 値 | 意味 |
-|---|---|
+| --- | --- |
 | `conference` | 国内・国際会議 |
 | `journal` | 国内・国際論文誌 |
 | `talk` | 講演 |
@@ -96,7 +96,7 @@ python build.py
 
 `public/` ディレクトリに HTML が生成されます。
 
-```
+```text
 public/
 ├── index.html            # 一覧ページ
 ├── entries/
@@ -116,7 +116,8 @@ python build.py --output /var/www/html
 
 ### GitHub Pages
 
-`.github/workflows/build.yml` が含まれています。`data/` または `files/` への push 時に自動でビルドし、`gh-pages` ブランチにデプロイします。
+`.github/workflows/build.yml` が含まれています。`data/` または `files/` への push 時に
+自動でビルドし、`gh-pages` ブランチにデプロイします。
 
 リポジトリの Settings → Pages → Branch を `gh-pages` に設定してください。
 
@@ -150,7 +151,7 @@ server {
 自分のリポジトリの中身は2種類に分かれます。
 
 | 種別 | ファイル |
-|---|---|
+| --- | --- |
 | **ツールファイル**（更新を取り込む） | `build.py`, `templates/`, `static/`, `requirements.txt`, `pyproject.toml`, `.github/workflows/build.yml` |
 | **自分のデータ**（絶対に上書きしない） | `data/`, `files/`, `README.md`, `CHANGELOG.md` |
 
@@ -183,6 +184,11 @@ git push
 ```
 
 特定のバージョンタグに合わせたい場合は `upstream/main` の代わりに `upstream/v0.2.0` のように指定します。
+
+> **注意：** sync 後は GitHub Pages の再ビルドを手動で起動する必要があります。
+> `git push` による sync のコミットはツールファイルを更新しますが、
+> GitHub Actions はボット以外のコミットでないとビルドワークフローを自動起動しません。
+> push 後にリポジトリの **Actions → "Build and Deploy" → Run workflow** を実行してください。
 
 ### GitHub Actions で自動化する（任意）
 

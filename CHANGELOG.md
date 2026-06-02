@@ -8,6 +8,12 @@
 ### 変更
 
 - `.github/workflows/build.yml`：`workflow_dispatch` トリガーを追加（手動実行を可能に）
+- `.markdownlint.json`：MD013（行長制限）を無効化
+
+### ドキュメント
+
+- `README.md`：sync 後に手動ビルドが必要な旨の注意書きを追加
+- `README.md`：markdownlint 警告を修正（テーブル区切り・コードブロック言語指定）
 
 ## [0.1.1] - 2026-06-02
 
