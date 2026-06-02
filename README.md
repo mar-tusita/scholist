@@ -84,9 +84,16 @@ highlight_authors:
 highlight_style: underline   # bold または underline
 
 site_title: "研究業績一覧"
+
+# サイトの公開 URL（og:url / 将来の sitemap.xml 用）末尾スラッシュなし
+# 例: https://username.github.io/publications
+# 空文字または未設定の場合、og:url は出力しない
+base_url: ""
 ```
 
 `highlight_authors` に列挙した名前は一覧・詳細ページで強調表示されます。表記ゆれを複数列挙できます。
+
+`base_url` を設定すると、詳細ページの OGP タグに `og:url` が追加され、SNS での URL プレビューが正確になります。GitHub Pages で運用する場合は `https://username.github.io/repository-name` を設定してください。
 
 ## ビルド
 

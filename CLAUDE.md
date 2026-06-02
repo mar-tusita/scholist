@@ -16,7 +16,7 @@
 
 ## ディレクトリ構成
 
-```
+```text
 publications/
 ├── CLAUDE.md                        # 本ファイル
 ├── data/
@@ -58,6 +58,11 @@ highlight_style: underline   # bold または underline
 
 # サイト設定
 site_title: "研究業績一覧"
+
+# サイトの公開 URL（og:url / sitemap 用）末尾スラッシュなし
+# 例: https://username.github.io/publications
+# 空文字または未設定の場合、og:url と sitemap.xml は出力しない
+base_url: ""
 ```
 
 ### `data/publications.yaml`
@@ -67,7 +72,7 @@ site_title: "研究業績一覧"
 #### 共通フィールド（全種別）
 
 | フィールド | 型 | 必須 | 説明 |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `id` | string | ✅ | 一意ID（手動命名、自由形式） |
 | `type` | enum | ✅ | 種別（下記8種） |
 | `title` | string | △ | 日本語タイトル（`title_en` と少なくとも一方必須） |
@@ -92,7 +97,7 @@ files:
 
 #### 種別（`type`）の定義
 
-```
+```text
 conference  国内会議・国際会議
 journal     国内論文誌・国際論文誌
 talk        講演
@@ -108,7 +113,7 @@ other       その他
 **`conference`（国内会議・国際会議）**
 
 | フィールド | 型 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | `scope` | enum | `domestic`（国内）/ `international`（国際） |
 | `invited` | bool | 招待講演か |
 | `reviewed` | bool | 査読有りか |
@@ -127,7 +132,7 @@ source:
 **`journal`（国内論文誌・国際論文誌）**
 
 | フィールド | 型 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | `scope` | enum | `domestic` / `international` |
 | `reviewed` | bool | 査読有りか |
 | `paper_type` | enum | `full`（フルペーパー）/ `short`（ショートペーパー） |
@@ -146,7 +151,7 @@ source:
 **`talk`（講演）**
 
 | フィールド | 型 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | `invited` | bool | 招待講演か |
 | `venue` | string | 講演場所・イベント名 |
 | `location` | string | 開催地 |
@@ -283,7 +288,7 @@ entries:
 BibTeXのフィールドマッピング（主要なもの）：
 
 | YAMLフィールド | BibTeXフィールド |
-|---|---|
+| --- | --- |
 | `title` / `title_en` | `title` |
 | `authors` | `author`（` and ` で結合） |
 | `date` の年部分 | `year` |

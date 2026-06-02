@@ -8,11 +8,6 @@
 
 ## 機能追加
 
-- **`base_url` 対応** ― 優先度: 中 / 難度: 中
-  GitHub Pages のサブディレクトリ（`https://user.github.io/scholist/`）への対応。
-  `config.yaml` に `base_url` を追加し、テンプレートのリンクをルート相対パスに切り替えられるようにする。
-  現状は相対パスで動いているので緊急度は低いが、sitemap.xml・OGP の前提になる。
-
 - **sitemap.xml 生成** ― 優先度: 低 / 難度: 小
   `build.py` に sitemap.xml の出力ステップを追加する。
   `config.yaml` の `base_url` が前提。

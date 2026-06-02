@@ -19,6 +19,7 @@
   <meta property="og:title" content="{{ og_title }}">
   <meta property="og:description" content="{{ og_authors }}{% if ns.og_venue %} — {{ ns.og_venue }}{% endif %}{% if og_year %} ({{ og_year }}){% endif %}">
   <meta property="og:site_name" content="{{ config.site_title }}">
+  {% if config.base_url %}<meta property="og:url" content="{{ config.base_url }}/entries/{{ entry.id }}/">{% endif %}
   <meta name="twitter:card" content="summary">
 </head>
 <body>

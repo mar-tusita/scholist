@@ -9,6 +9,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="{{ config.site_title }}">
   <meta property="og:site_name" content="{{ config.site_title }}">
+  {% if config.base_url %}<meta property="og:url" content="{{ config.base_url }}/">{% endif %}
   <meta name="twitter:card" content="summary">
 </head>
 <body>

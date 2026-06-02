@@ -26,6 +26,9 @@
   - `files` 各要素の `path`/`url`・`paper_type`・`source.status`
 - `tests/test_build.py`：バリデーション追加分テスト 44件追加（計72件）
 - `build.py`：`date` フォーマットの厳密バリデーションを追加
+- `data/config.yaml`：`base_url` フィールドを追加（og:url・将来の sitemap.xml 用）
+  - 設定時は詳細ページに `og:url` を追加、未設定（空）なら出力しない
+  - `CLAUDE.md`・`README.md` のスキーマ説明に追記
 - `templates/entry.html.j2`：OGP / Twitter Card メタタグを追加
   - `og:type`（article）・`og:title`・`og:description`・`og:site_name`・`twitter:card`
   - description は「著者 — 会議/誌名 (年)」形式で自動生成（種別により venue を選択）
