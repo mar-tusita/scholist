@@ -21,6 +21,13 @@
 
 ## 品質・堅牢性
 
+- **sync 後のビルド自動起動** ― 優先度: 高 / 難度: 小
+  sync ワークフロー（`sync-from-scholist.yml`）はボットコミットで push するため、
+  パスフィルター付きの push トリガーが起動せず、毎回手動でビルドを起動する必要がある。
+  sync ワークフローの末尾に Build and Deploy を呼び出すステップを追加することで解消できる。
+  `actions: write` 権限と `gh workflow run build.yml` または `workflow_dispatch` API で実現可能。
+  `sync-from-scholist.yml` の本体（`publications` 側）と README のサンプル両方を更新する。
+
 - **ウォッチモード** ― 優先度: 低 / 難度: 中
   `data/` や `templates/` の変更を監視して自動再ビルドするオプション（`--watch`）を追加する。
   `watchdog` 等の追加ライブラリが必要。ローカル開発時の利便性向上。
