@@ -26,6 +26,10 @@
   - `files` 各要素の `path`/`url`・`paper_type`・`source.status`
 - `tests/test_build.py`：バリデーション追加分テスト 44件追加（計72件）
 - `build.py`：`date` フォーマットの厳密バリデーションを追加
+- `templates/entry.html.j2`：OGP / Twitter Card メタタグを追加
+  - `og:type`（article）・`og:title`・`og:description`・`og:site_name`・`twitter:card`
+  - description は「著者 — 会議/誌名 (年)」形式で自動生成（種別により venue を選択）
+- `templates/index.html.j2`：一覧ページに基本 OGP タグを追加（`og:type: website`）
 
 ### 変更
 

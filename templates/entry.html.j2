@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ entry.title or entry.title_en }} — {{ config.site_title }}</title>
   <link rel="stylesheet" href="../../static/style.css">
+  <!-- OGP / Twitter Card -->
+  {% set ns = namespace(og_venue='') %}
+  {% if entry.type == 'journal' and entry.source and entry.source.journal_name %}{% set ns.og_venue = entry.source.journal_name %}
+  {% elif entry.type == 'award' and entry.source and entry.source.award_name %}{% set ns.og_venue = entry.source.award_name %}
+  {% elif entry.venue is defined and entry.venue %}{% set ns.og_venue = entry.venue %}
+  {% elif entry.organization %}{% set ns.og_venue = entry.organization %}
+  {% endif %}
+  {% set og_title = entry.title or entry.title_en %}
+  {% set og_authors = (entry.authors or []) | join(', ') %}
+  {% set og_year = (entry.date | string)[:4] if entry.date else '' %}
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ og_title }}">
+  <meta property="og:description" content="{{ og_authors }}{% if ns.og_venue %} — {{ ns.og_venue }}{% endif %}{% if og_year %} ({{ og_year }}){% endif %}">
+  <meta property="og:site_name" content="{{ config.site_title }}">
+  <meta name="twitter:card" content="summary">
 </head>
 <body>
   <header>
