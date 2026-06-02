@@ -13,9 +13,37 @@
 
 ## セットアップ
 
+### 方法 A：テンプレート zip をダウンロードする（推奨）
+
+[Releases](https://github.com/mar-tusita/scholist/releases/latest) から
+`scholist-vX.Y.Z-template.zip` をダウンロードして展開します。
+テスト・開発用ファイルを含まない最小構成になっています。
+
 ```bash
-git clone https://github.com/mar-tusita/scholist.git
-cd scholist
+unzip scholist-vX.Y.Z-template.zip -d my-publications
+cd my-publications
+pip install -r requirements.txt
+```
+
+その後、GitHub にリポジトリを作成して push してください。
+
+```bash
+git init
+git add -A
+git commit -m "Initial commit"
+git remote add origin https://github.com/your-username/your-repo.git
+git push -u origin main
+```
+
+### 方法 B：GitHub テンプレートから始める
+
+[リポジトリページ](https://github.com/mar-tusita/scholist) の
+「Use this template」ボタンから自分のリポジトリを作成します。
+テスト・開発用ファイルも含まれますが、不要であれば削除できます。
+
+### 依存パッケージのインストール
+
+```bash
 pip install -r requirements.txt
 ```
 
