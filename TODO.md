@@ -23,11 +23,21 @@
 
 - **`thesis`・`report` 種別の追加** ― 優先度: 中 / 難度: 小
   Hayagriva 調査により、学術 CV で頻出の種別が欠けていることが判明。
-  - `thesis`：博士論文・修士論文。`source` に `degree`（学位種別）・`institution`（機関名）を追加。
-    BibTeX では `@phdthesis` / `@mastersthesis` にマッピング。
-  - `report`：技術レポート・調査報告書。`source` に `institution`・`number`（レポート番号）を追加。
-    BibTeX では `@techreport` にマッピング。
-  合わせて CLAUDE.md のスキーマ定義、`validate()` の `VALID_TYPES`、テンプレートの種別フィルタ・バッジも更新する。
+
+  **`thesis`（学位論文）**
+  - `source` フィールド：`institution`（大学名）、`degree`（学位種別）
+  - `degree` は enum：`bachelor`（学士）/ `master`（修士）/ `doctoral`（博士）
+  - BibTeX マッピング：`doctoral` → `@phdthesis`、`master` → `@mastersthesis`、`bachelor` → `@misc`
+  - `reviewed` フィールドは不要（論文審査は査読とは別概念）
+
+  **`report`（技術レポート）**
+  - `journal` の「査読なし版」ではなく、発行体・識別子の構造が根本的に異なる独立した型
+  - `source` フィールド：`institution`（発行機関）、`number`（レポート番号）
+  - BibTeX マッピング：`@techreport`
+  - 例：IETF RFC、大学技術報告書、NIST 文書など
+
+  共通作業：CLAUDE.md スキーマ定義、`validate()` の `VALID_TYPES`、
+  テンプレートの種別フィルタ select・バッジ CSS、テスト追加。
 
 - **`abstract` フィールドの追加** ― 優先度: 中 / 難度: 小
   論文アブストラクトを格納するフィールド。
