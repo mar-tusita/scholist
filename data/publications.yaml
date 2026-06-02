@@ -60,6 +60,7 @@ entries:
     scope: domestic
     reviewed: true
     paper_type: full
+    abstract: "これはアブストラクトのサンプルです。abstract フィールドを設定すると詳細ページに表示され、BibTeX エクスポートにも含まれます。また OGP の og:description にも優先的に使用されます。"
     source:
       journal_name: "情報処理学会論文誌"
       volume: 64

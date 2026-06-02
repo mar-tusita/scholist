@@ -17,7 +17,11 @@
   {% set og_year = (entry.date | string)[:4] if entry.date else '' %}
   <meta property="og:type" content="article">
   <meta property="og:title" content="{{ og_title }}">
+  {% if entry.abstract %}
+  <meta property="og:description" content="{{ entry.abstract | truncate(200) }}">
+  {% else %}
   <meta property="og:description" content="{{ og_authors }}{% if ns.og_venue %} — {{ ns.og_venue }}{% endif %}{% if og_year %} ({{ og_year }}){% endif %}">
+  {% endif %}
   <meta property="og:site_name" content="{{ config.site_title }}">
   {% if config.base_url %}<meta property="og:url" content="{{ config.base_url }}/entries/{{ entry.id }}/">{% endif %}
   <meta name="twitter:card" content="summary">
@@ -177,6 +181,13 @@
       <tr>
         <th>URL / DOI</th>
         <td><a href="{{ entry.url }}">{{ entry.url }}</a></td>
+      </tr>
+      {% endif %}
+
+      {% if entry.abstract %}
+      <tr>
+        <th>アブストラクト</th>
+        <td class="abstract">{{ entry.abstract }}</td>
       </tr>
       {% endif %}
 

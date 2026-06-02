@@ -7,13 +7,22 @@
 
 ### 追加
 
+- `abstract` フィールドのサポート（全種別・省略可）
+  - 詳細ページ（`entry.html.j2`）の URL / DOI 行の直後に表示
+  - OGP `og:description` を abstract 優先に変更（未設定時は従来の著者名・会議名から生成）
+  - BibTeX エクスポートの `abstract` フィールドに出力
+  - インクリメンタル検索の対象に追加（`data-searchtext` に含める）
+  - `data/publications.yaml` のサンプル journal エントリに例を追加
 - `.github/workflows/release-asset.yml`：タグ push 時に開発ファイルを除いた配布用 zip を生成し Release にアタッチ
+  - `workflow_dispatch` でタグを指定して手動実行も可能
+
+### 変更
+
+- `.markdownlint.json`：MD031（コードブロック前後の空行）を無効化
 
 ### ドキュメント
 
 - `README.md`：セットアップ方法を「方法 A（template zip）」「方法 B（GitHub テンプレート）」の2択に整理
-  - 除外: `tests/`・`requirements-dev.txt`・`.github/workflows/test.yml`・`CLAUDE.md`・`.markdownlint.json`・`TODO.md`
-  - `workflow_dispatch` でタグを指定して手動実行も可能
 
 ## [0.2.0] - 2026-06-02
 

@@ -84,6 +84,7 @@ base_url: ""
 | `presenter` | string | | 登壇者（会議・講演の場合） |
 | `files` | list | | 添付ファイルリスト（下記参照） |
 | `url` | string | | DOI または外部URL |
+| `abstract` | string | | アブストラクト（詳細ページに表示、BibTeX にも出力） |
 | `note` | string | | 備考 |
 
 `files` の各要素：
@@ -275,7 +276,7 @@ entries:
 **BibTeX**：種別ごとに以下のエントリタイプにマッピング
 
 | 種別 | BibTeXエントリタイプ |
-|------|-------------------|
+| --- | --- |
 | `conference` | `@inproceedings` |
 | `journal` | `@article` |
 | `talk` | `@misc` |
@@ -306,7 +307,7 @@ BibTeXのフィールドマッピング（主要なもの）：
 
 ## `build.py` の仕様
 
-```
+```text
 使い方: python build.py [--output public/]
 
 処理手順:

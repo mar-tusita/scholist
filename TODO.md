@@ -39,14 +39,6 @@
   共通作業：CLAUDE.md スキーマ定義、`validate()` の `VALID_TYPES`、
   テンプレートの種別フィルタ select・バッジ CSS、テスト追加。
 
-- **`abstract` フィールドの追加** ― 優先度: 中 / 難度: 小
-  論文アブストラクトを格納するフィールド。
-  - `data/publications.yaml` の共通フィールドに追加（省略可）
-  - 詳細ページ（`entry.html.j2`）に表示
-  - OGP の `og:description` の補完候補として使用（現在は著者名・会議名から生成）
-  - BibTeX エクスポートの `abstract` フィールドに出力
-  - インクリメンタル検索の対象に追加
-
 - **Hayagriva 形式のエクスポート対応** ― 優先度: 低 / 難度: 中
   [Hayagriva](https://github.com/typst/hayagriva) は Typst（現代的な組版システム）用の YAML 文献形式。
   Typst で論文を書くユーザーが scholist のデータを使い回せるよう、
