@@ -185,18 +185,18 @@ git push
 
 特定のバージョンタグに合わせたい場合は `upstream/main` の代わりに `upstream/v0.2.0` のように指定します。
 
-> **注意 1：** sync 後は GitHub Pages の再ビルドを手動で起動する必要があります。
-> `git push` による sync のコミットはツールファイルを更新しますが、
+> **注意：** sync 後は GitHub Pages の再ビルドを手動で起動する必要があります。
+> `git push` によるコミットはツールファイルを更新しますが、
 > GitHub Actions はボット以外のコミットでないとビルドワークフローを自動起動しません。
 > push 後にリポジトリの **Actions → "Build and Deploy" → Run workflow** を実行してください。
->
-> **注意 2：** `.github/workflows/build.yml` は sync 対象に含まれません。
-> `GITHUB_TOKEN` ではワークフローファイルを書き込めないためです。
-> `build.yml` に変更があった場合は scholist から手動でコピーしてください。
 
 ### GitHub Actions で自動化する（任意）
 
 手動でコマンドを打つ代わりに、GitHub の画面からボタン一つで同期することもできます。自分のリポジトリに以下のファイルを追加してください。
+
+> **注意：** ワークフローは `.github/workflows/build.yml` を sync 対象に含みません。
+> `GITHUB_TOKEN` は GitHub のセキュリティ制限によりワークフローファイルを書き込めないためです。
+> `build.yml` に変更があった場合は、上記の手動 sync 手順でコピーしてください（手動実行なら書き込めます）。
 
 **`.github/workflows/sync-from-scholist.yml`**
 
