@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>サンプル：受賞の記述例 — 研究業績一覧</title>
+  <title>サンプル：日付なしエントリ（末尾ソートのテスト用） — 研究業績一覧</title>
   <link rel="stylesheet" href="../../static/style.css">
 </head>
 <body>
@@ -13,13 +13,13 @@
 
   <article class="entry-detail">
     <h2>
-      サンプル：受賞の記述例
+      サンプル：日付なしエントリ（末尾ソートのテスト用）
       
       
     </h2>
 
     <div class="badges">
-      <span class="badge badge-award">award</span>
+      <span class="badge badge-misc">misc</span>
       
       
       
@@ -36,31 +36,13 @@
       </tr>
 
       
-      <tr>
-        <th>日付</th>
-        <td>2021-03-05</td>
-      </tr>
-      
 
       
 
-      
-      <tr>
-        <th>組織・学会</th>
-        <td>情報処理学会</td>
-      </tr>
       
 
       
         
-          
-          <tr><th>賞名</th><td>優秀論文賞</td></tr>
-          
-          
-          <tr><th>授与機関</th><td>情報処理学会</td></tr>
-          
-        
-
       
 
       
@@ -68,7 +50,7 @@
       
       <tr>
         <th>備考</th>
-        <td>これはサンプルエントリです。</td>
+        <td>date が null のエントリは一覧の末尾に表示される</td>
       </tr>
       
     </table>
@@ -88,7 +70,7 @@
   </footer>
 
   <script>
-    const ENTRY = {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2021-03-05", "id": "yamada-2021-award-example", "note": "\u3053\u308c\u306f\u30b5\u30f3\u30d7\u30eb\u30a8\u30f3\u30c8\u30ea\u3067\u3059\u3002", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "registered_at": "2021-03-10", "source": {"award_name": "\u512a\u79c0\u8ad6\u6587\u8cde", "org_giving_award": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u53d7\u8cde\u306e\u8a18\u8ff0\u4f8b", "type": "award"};
+    const ENTRY = {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": null, "id": "sample-no-date", "note": "date \u304c null \u306e\u30a8\u30f3\u30c8\u30ea\u306f\u4e00\u89a7\u306e\u672b\u5c3e\u306b\u8868\u793a\u3055\u308c\u308b", "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u65e5\u4ed8\u306a\u3057\u30a8\u30f3\u30c8\u30ea\uff08\u672b\u5c3e\u30bd\u30fc\u30c8\u306e\u30c6\u30b9\u30c8\u7528\uff09", "type": "misc"};
   </script>
   <script src="../../static/export.js"></script>
   <script>
