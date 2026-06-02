@@ -28,6 +28,7 @@ entries:
   - id: "sample-2024-b-conf-intl"
     type: conference
     title_en: "Sample: International Conference (title_en only)"  # title_en のみ
+    language: en
     authors:
       - "T. Yamada"
       - "H. Suzuki"

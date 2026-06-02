@@ -21,12 +21,6 @@
 
 ## 機能追加
 
-- **Hayagriva 形式のエクスポート対応** ― 優先度: 低 / 難度: 中
-  [Hayagriva](https://github.com/typst/hayagriva) は Typst（現代的な組版システム）用の YAML 文献形式。
-  Typst で論文を書くユーザーが scholist のデータを使い回せるよう、
-  YAML / JSON / BibTeX に並ぶエクスポート形式として追加する。
-  スキーマのマッピング（型名・著者形式・日付形式など）の調査が必要。
-
 - **RSS / Atom フィード生成** ― 優先度: 低 / 難度: 中
   `registered_at` フィールドを利用した新着フィード（`feed.xml`）を生成する。
   XML 生成ロジックと `registered_at` の扱いがやや複雑。

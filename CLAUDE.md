@@ -85,6 +85,7 @@ base_url: ""
 | `files` | list | | 添付ファイルリスト（下記参照） |
 | `url` | string | | DOI または外部URL |
 | `abstract` | string | | アブストラクト（詳細ページに表示、BibTeX に出力、OGP の og:description に優先使用） |
+| `language` | string | | 言語コード（ISO 639-1: `ja`、`en` 等）。Hayagriva エクスポート時のタイトル選択に使用 |
 | `note` | string | | 備考 |
 
 `files` の各要素：
@@ -336,6 +337,21 @@ BibTeXのフィールドマッピング（主要なもの）：
 | `source.publisher` | `publisher` |
 | `organization` | `organization` |
 | `url` | `url` |
+
+**Hayagriva**：種別ごとに Hayagriva YAML 形式（[typst/hayagriva](https://github.com/typst/hayagriva)）に変換
+
+| scholist 種別 | Hayagriva 型 | 備考 |
+| --- | --- | --- |
+| `conference` | `article` + `proceedings` parent | `source.proceedings` を parent title に |
+| `journal` | `article` + `periodical` parent | 巻・号は parent に |
+| `book` | `book` / `chapter` | `source.chapter` or `source.pages` があれば `chapter` |
+| `thesis` | `thesis` | `source.degree` → `genre`、`source.institution` → `organization` |
+| `report` | `report` | `source.number` → `serial-number.serial` |
+| `patent` | `patent` | `source.patent_number` → `serial-number` |
+| `talk` / `award` / `misc` / `other` | `misc` | |
+
+- `title` / `title_en` のどちらを使うかは `language` フィールドで制御（`en` → `title_en`、それ以外 → `title`）
+- `url` が `https://doi.org/...` の場合は `serial-number.doi` に変換
 
 ---
 

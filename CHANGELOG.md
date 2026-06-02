@@ -7,6 +7,14 @@
 
 ### 追加
 
+- Hayagriva 形式のエクスポート対応（`export.js`）
+  - 全件・1件エクスポートボタンに「Hayagriva」を追加
+  - 種別ごとに Hayagriva 型と `parent:` 構造に変換
+  - `language` フィールドによるタイトル選択（`en` → `title_en`、それ以外 → `title`）
+  - DOI URL は `serial-number.doi` に自動変換
+- `language` フィールドを共通フィールドに追加（省略可、ISO 639-1 コード）
+  - Hayagriva エクスポートのタイトル選択と `language` フィールドに使用
+
 - `thesis`・`report` 種別を追加（合計10種別に）
   - `thesis`：`source.institution`（機関名）・`source.degree`（`bachelor`/`master`/`doctoral`）
     BibTeX: `doctoral`→`@phdthesis`、`master`→`@mastersthesis`、`bachelor`→`@misc`
