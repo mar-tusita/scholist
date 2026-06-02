@@ -42,6 +42,10 @@
 
 ### 変更
 
+- `README.md`：sync ワークフローサンプルに `actions: write` 権限と Build and Deploy 自動起動ステップを追加
+  - sync 後の手動ビルドが不要になる
+  - 手動 sync（`git checkout`）の場合は引き続き手動起動が必要である旨を注記
+
 - `static/export.js`：YAML エクスポートを簡易シリアライザから js-yaml（CDN 経由）に切り替え
   - 長い文字列・ネストの深いオブジェクト・特殊文字などエッジケースを正確に処理
   - `templates/index.html.j2`・`templates/entry.html.j2` に CDN スクリプトタグを追加
