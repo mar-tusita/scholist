@@ -249,3 +249,17 @@ header a {
 .files-section a {
   color: #1a3a5c;
 }
+
+/* フッター */
+footer {
+  margin-top: 48px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+footer a {
+  color: #9ca3af;
+}
