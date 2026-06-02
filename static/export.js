@@ -41,6 +41,7 @@ function entryToBibtex(entry) {
   if (src.publisher) fields.push(['publisher', '{' + src.publisher + '}']);
   if (src.isbn) fields.push(['isbn', '{' + src.isbn + '}']);
 
+  if (entry.abstract) fields.push(['abstract', '{' + entry.abstract + '}']);
   if (entry.organization) fields.push(['organization', '{' + entry.organization + '}']);
   if (entry.url) fields.push(['url', '{' + entry.url + '}']);
   if (entry.note) fields.push(['note', '{' + entry.note + '}']);
