@@ -29,6 +29,9 @@
 
 ### ドキュメント
 
+- `README.md`：「主な機能」に統計サマリー・フィルタ URL 保持・OGP・sitemap.xml を追記
+- `CLAUDE.md`：`build.py` バリデーション項目を現状に合わせて更新（10種別・全バリデーション項目・sitemap 生成ステップ）
+- `CLAUDE.md`：`abstract` フィールドの説明に OGP 優先使用を明記
 - `README.md`：種別表に `thesis`・`report` を追加
 - `CLAUDE.md`：`thesis`・`report` の種別定義・固有フィールドスキーマ・BibTeX マッピングを追加
 - `README.md`：セットアップ方法を「方法 A（template zip）」「方法 B（GitHub テンプレート）」の2択に整理

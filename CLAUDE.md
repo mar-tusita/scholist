@@ -84,7 +84,7 @@ base_url: ""
 | `presenter` | string | | 登壇者（会議・講演の場合） |
 | `files` | list | | 添付ファイルリスト（下記参照） |
 | `url` | string | | DOI または外部URL |
-| `abstract` | string | | アブストラクト（詳細ページに表示、BibTeX にも出力） |
+| `abstract` | string | | アブストラクト（詳細ページに表示、BibTeX に出力、OGP の og:description に優先使用） |
 | `note` | string | | 備考 |
 
 `files` の各要素：
@@ -348,15 +348,21 @@ BibTeXのフィールドマッピング（主要なもの）：
 1. data/config.yaml を読み込む
 2. data/publications.yaml を読み込む
 3. バリデーション：
-   - id の重複チェック
+   - id の重複チェック・使用可能文字チェック（英数字・ハイフン・アンダースコア）
    - title / title_en の少なくとも一方が存在するか
-   - type が定義済み8種のいずれかか
+   - authors が1名以上存在するか
+   - type が定義済み10種のいずれかか
+   - date・registered_at のフォーマット（YYYY-MM-DD または YYYY-MM）と値の妥当性
+   - scope・paper_type・source.status・source.degree の列挙値チェック
+   - files の各要素に path または url が存在するか
+   - エラーは stderr に出力。GitHub Actions 環境では ::error:: アノテーション形式で出力
 4. ソート（date降順、同日はYAML記述順、null は末尾）
 5. Jinja2でテンプレートをレンダリング
    - public/index.html（一覧ページ）
    - public/entries/<id>/index.html（詳細ページ、全エントリ分）
-6. static/ を public/static/ にコピー
-7. files/ を public/files/ にコピー
+6. base_url が設定されている場合、public/sitemap.xml を生成
+7. static/ を public/static/ にコピー
+8. files/ を public/files/ にコピー
 
 依存パッケージ（requirements.txt に記載）:
   PyYAML
