@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>研究業績一覧</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <header>
+    <h1>研究業績一覧</h1>
+  </header>
+
+  <div class="controls">
+    <div class="filters">
+      <label>種別:
+        <select id="filter-type">
+          <option value="">すべて</option>
+          <option value="conference">会議</option>
+          <option value="journal">論文誌</option>
+          <option value="talk">講演</option>
+          <option value="patent">特許</option>
+          <option value="award">受賞</option>
+          <option value="book">書籍</option>
+          <option value="misc">解説等</option>
+          <option value="other">その他</option>
+        </select>
+      </label>
+
+      <label>年:
+        <select id="filter-year">
+          <option value="">すべて</option>
+          
+          
+            
+              
+              
+                
+              
+            
+          
+            
+              
+              
+                
+              
+            
+          
+            
+              
+              
+                
+              
+            
+          
+            
+              
+              
+                
+              
+            
+          
+            
+              
+              
+                
+              
+            
+          
+          
+            <option value="2024">2024</option>
+          
+            <option value="2023">2023</option>
+          
+            <option value="2022">2022</option>
+          
+            <option value="2021">2021</option>
+          
+            <option value="2020">2020</option>
+          
+        </select>
+      </label>
+
+      <label>国内/国際:
+        <select id="filter-scope">
+          <option value="">すべて</option>
+          <option value="domestic">国内</option>
+          <option value="international">国際</option>
+        </select>
+      </label>
+
+      <label>査読:
+        <select id="filter-reviewed">
+          <option value="">すべて</option>
+          <option value="true">査読あり</option>
+          <option value="false">査読なし</option>
+        </select>
+      </label>
+
+      <label>招待:
+        <select id="filter-invited">
+          <option value="">すべて</option>
+          <option value="true">招待あり</option>
+          <option value="false">招待なし</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="search-box">
+      <input type="search" id="search-input" placeholder="タイトル・著者・会議名で検索...">
+    </div>
+
+    <div class="export-all">
+      <button onclick="exportAll('yaml')">全件 YAML</button>
+      <button onclick="exportAll('json')">全件 JSON</button>
+      <button onclick="exportAll('bibtex')">全件 BibTeX</button>
+    </div>
+  </div>
+
+  <div id="count-display" class="count-display"></div>
+
+  <table id="entries-table">
+    <thead>
+      <tr>
+        <th>年</th>
+        <th>種別</th>
+        <th>タイトル</th>
+        <th>著者</th>
+        <th>掲載先・会議</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr class="entry-row"
+          data-type="conference"
+          data-year="2024"
+          data-scope="domestic"
+          data-reviewed="false"
+          data-invited="false"
+          data-searchtext="y2038問題の自動検出手法の提案 a proposal for automatic detection of the y2038 problem 松下 誠 山田 太郎 情報処理学会 第86回全国大会 情報処理学会">
+        <td class="col-year">2024</td>
+        <td class="col-type">
+          <span class="badge badge-conference">conference</span>
+          
+          
+        </td>
+        <td class="col-title">
+          <a href="entries/matsushita-2024-ipsj-y2038/">Y2038問題の自動検出手法の提案</a>
+          
+            <span class="title-en">A Proposal for Automatic Detection of the Y2038 Problem</span>
+          
+        </td>
+        <td class="col-authors">
+          <span class="author-highlight">松下 誠</span>, 
+          山田 太郎
+          
+        </td>
+        <td class="col-venue">
+          情報処理学会 第86回全国大会
+          
+        </td>
+      </tr>
+      
+      <tr class="entry-row"
+          data-type="journal"
+          data-year="2023"
+          data-scope="domestic"
+          data-reviewed="true"
+          data-invited="false"
+          data-searchtext="組込みシステムにおける時刻処理の安全性検証 safety verification of time processing in embedded systems 松下 誠 鈴木 花子 田中 次郎  情報処理学会">
+        <td class="col-year">2023</td>
+        <td class="col-type">
+          <span class="badge badge-journal">journal</span>
+          
+          <span class="badge badge-reviewed">査読</span>
+        </td>
+        <td class="col-title">
+          <a href="entries/matsushita-2023-journal-example/">組込みシステムにおける時刻処理の安全性検証</a>
+          
+            <span class="title-en">Safety Verification of Time Processing in Embedded Systems</span>
+          
+        </td>
+        <td class="col-authors">
+          <span class="author-highlight">松下 誠</span>, 
+          鈴木 花子, 
+          田中 次郎
+          
+        </td>
+        <td class="col-venue">
+          情報処理学会論文誌
+          
+        </td>
+      </tr>
+      
+      <tr class="entry-row"
+          data-type="talk"
+          data-year="2022"
+          data-scope=""
+          data-reviewed="false"
+          data-invited="true"
+          data-searchtext="組込みlinuxにおけるy2038問題への対応  松下 誠 組込みlinux勉強会 ">
+        <td class="col-year">2022</td>
+        <td class="col-type">
+          <span class="badge badge-talk">talk</span>
+          <span class="badge badge-invited">招待</span>
+          
+        </td>
+        <td class="col-title">
+          <a href="entries/matsushita-2022-talk-embedded/">組込みLinuxにおけるY2038問題への対応</a>
+          
+        </td>
+        <td class="col-authors">
+          <span class="author-highlight">松下 誠</span>
+          
+        </td>
+        <td class="col-venue">
+          組込みLinux勉強会
+          
+        </td>
+      </tr>
+      
+      <tr class="entry-row"
+          data-type="award"
+          data-year="2021"
+          data-scope=""
+          data-reviewed="false"
+          data-invited="false"
+          data-searchtext="優秀論文賞  松下 誠 山田 太郎  情報処理学会">
+        <td class="col-year">2021</td>
+        <td class="col-type">
+          <span class="badge badge-award">award</span>
+          
+          
+        </td>
+        <td class="col-title">
+          <a href="entries/matsushita-2021-award/">優秀論文賞</a>
+          
+        </td>
+        <td class="col-authors">
+          <span class="author-highlight">松下 誠</span>, 
+          山田 太郎
+          
+        </td>
+        <td class="col-venue">
+          優秀論文賞
+          
+        </td>
+      </tr>
+      
+      <tr class="entry-row"
+          data-type="conference"
+          data-year="2020"
+          data-scope="international"
+          data-reviewed="true"
+          data-invited="false"
+          data-searchtext=" automated detection of year-2038 vulnerabilities in c code m. matsushita t. yamada international conference on software engineering (icse) ieee">
+        <td class="col-year">2020</td>
+        <td class="col-type">
+          <span class="badge badge-conference">conference</span>
+          
+          <span class="badge badge-reviewed">査読</span>
+        </td>
+        <td class="col-title">
+          <a href="entries/matsushita-2020-intl-conf/">Automated Detection of Year-2038 Vulnerabilities in C Code</a>
+          
+        </td>
+        <td class="col-authors">
+          <span class="author-highlight">M. Matsushita</span>, 
+          T. Yamada
+          
+        </td>
+        <td class="col-venue">
+          International Conference on Software Engineering (ICSE)
+          
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+
+  <script>
+    // 全エントリデータ（エクスポート用）
+    const ALL_ENTRIES = [{"_authors_hl": [{"highlight": true, "name": "\u677e\u4e0b \u8aa0", "style": "underline"}, {"highlight": false, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u677e\u4e0b \u8aa0", "\u5c71\u7530 \u592a\u90ce"], "date": "2024-03-15", "files": [{"label": "\u767a\u8868\u30b9\u30e9\u30a4\u30c9", "path": "files/matsushita-2024-ipsj-y2038-slides.pdf"}], "id": "matsushita-2024-ipsj-y2038", "invited": false, "location": "\u6771\u4eac", "note": "", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "presenter": "\u677e\u4e0b \u8aa0", "registered_at": "2024-03-20", "reviewed": false, "scope": "domestic", "source": {"pages": "1-123 -- 1-124", "proceedings": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a\u7b2c86\u56de\u5168\u56fd\u5927\u4f1a\u8b1b\u6f14\u8ad6\u6587\u96c6"}, "title": "Y2038\u554f\u984c\u306e\u81ea\u52d5\u691c\u51fa\u624b\u6cd5\u306e\u63d0\u6848", "title_en": "A Proposal for Automatic Detection of the Y2038 Problem", "type": "conference", "url": "https://doi.org/xxxx", "venue": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a \u7b2c86\u56de\u5168\u56fd\u5927\u4f1a", "venue_abbr": "IPSJ"}, {"_authors_hl": [{"highlight": true, "name": "\u677e\u4e0b \u8aa0", "style": "underline"}, {"highlight": false, "name": "\u9234\u6728 \u82b1\u5b50", "style": "underline"}, {"highlight": false, "name": "\u7530\u4e2d \u6b21\u90ce", "style": "underline"}], "authors": ["\u677e\u4e0b \u8aa0", "\u9234\u6728 \u82b1\u5b50", "\u7530\u4e2d \u6b21\u90ce"], "date": "2023-09", "id": "matsushita-2023-journal-example", "note": "", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "paper_type": "full", "registered_at": "2023-10-01", "reviewed": true, "scope": "domestic", "source": {"doi": "10.1234/ipsj.64.1500", "journal_name": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a\u8ad6\u6587\u8a8c", "number": 9, "pages": "1500-1512", "volume": 64}, "title": "\u7d44\u8fbc\u307f\u30b7\u30b9\u30c6\u30e0\u306b\u304a\u3051\u308b\u6642\u523b\u51e6\u7406\u306e\u5b89\u5168\u6027\u691c\u8a3c", "title_en": "Safety Verification of Time Processing in Embedded Systems", "type": "journal", "url": "https://doi.org/10.1234/ipsj.64.1500"}, {"_authors_hl": [{"highlight": true, "name": "\u677e\u4e0b \u8aa0", "style": "underline"}], "authors": ["\u677e\u4e0b \u8aa0"], "date": "2022-11-20", "id": "matsushita-2022-talk-embedded", "invited": true, "location": "\u5927\u962a", "note": "", "presenter": "\u677e\u4e0b \u8aa0", "registered_at": "2022-11-25", "source": {"description": "\u7d44\u8fbc\u307fLinux\u52c9\u5f37\u4f1a \u7b2c12\u56de"}, "title": "\u7d44\u8fbc\u307fLinux\u306b\u304a\u3051\u308bY2038\u554f\u984c\u3078\u306e\u5bfe\u5fdc", "type": "talk", "venue": "\u7d44\u8fbc\u307fLinux\u52c9\u5f37\u4f1a"}, {"_authors_hl": [{"highlight": true, "name": "\u677e\u4e0b \u8aa0", "style": "underline"}, {"highlight": false, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u677e\u4e0b \u8aa0", "\u5c71\u7530 \u592a\u90ce"], "date": "2021-03-05", "id": "matsushita-2021-award", "note": "\u300c\u7d44\u8fbc\u307f\u30b7\u30b9\u30c6\u30e0\u306e\u6642\u523b\u51e6\u7406\u306b\u95a2\u3059\u308b\u7814\u7a76\u300d\u306b\u5bfe\u3057\u3066\u6388\u4e0e", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "registered_at": "2021-03-10", "source": {"award_name": "\u512a\u79c0\u8ad6\u6587\u8cde", "org_giving_award": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a"}, "title": "\u512a\u79c0\u8ad6\u6587\u8cde", "type": "award"}, {"_authors_hl": [{"highlight": true, "name": "M. Matsushita", "style": "underline"}, {"highlight": false, "name": "T. Yamada", "style": "underline"}], "authors": ["M. Matsushita", "T. Yamada"], "date": "2020-07-14", "id": "matsushita-2020-intl-conf", "invited": false, "location": "Seoul, Korea", "note": "", "organization": "IEEE", "presenter": "M. Matsushita", "registered_at": "2020-08-01", "reviewed": true, "scope": "international", "source": {"pages": "234-245", "proceedings": "Proceedings of ICSE 2020"}, "title_en": "Automated Detection of Year-2038 Vulnerabilities in C Code", "type": "conference", "url": "https://doi.org/10.xxxx/icse.2020.234", "venue": "International Conference on Software Engineering (ICSE)", "venue_abbr": "ICSE"}];
+  </script>
+  <script src="static/export.js"></script>
+  <script>
+    const rows = Array.from(document.querySelectorAll('.entry-row'));
+    const countDisplay = document.getElementById('count-display');
+
+    function updateCount(visible) {
+      countDisplay.textContent = `${visible} 件表示`;
+    }
+
+    function applyFilters() {
+      const type = document.getElementById('filter-type').value;
+      const year = document.getElementById('filter-year').value;
+      const scope = document.getElementById('filter-scope').value;
+      const reviewed = document.getElementById('filter-reviewed').value;
+      const invited = document.getElementById('filter-invited').value;
+      const query = document.getElementById('search-input').value.toLowerCase();
+
+      let visible = 0;
+      rows.forEach(row => {
+        const match =
+          (!type || row.dataset.type === type) &&
+          (!year || row.dataset.year === year) &&
+          (!scope || row.dataset.scope === scope) &&
+          (!reviewed || row.dataset.reviewed === reviewed) &&
+          (!invited || row.dataset.invited === invited) &&
+          (!query || row.dataset.searchtext.includes(query));
+        row.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      updateCount(visible);
+    }
+
+    ['filter-type', 'filter-year', 'filter-scope', 'filter-reviewed', 'filter-invited'].forEach(id => {
+      document.getElementById(id).addEventListener('change', applyFilters);
+    });
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+
+    updateCount(rows.length);
+  </script>
+</body>
+</html>
