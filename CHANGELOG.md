@@ -29,6 +29,8 @@
 
 ### ドキュメント
 
+- `README.md`：種別表に `thesis`・`report` を追加
+- `CLAUDE.md`：`thesis`・`report` の種別定義・固有フィールドスキーマ・BibTeX マッピングを追加
 - `README.md`：セットアップ方法を「方法 A（template zip）」「方法 B（GitHub テンプレート）」の2択に整理
 
 ## [0.2.0] - 2026-06-02

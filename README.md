@@ -83,6 +83,8 @@ entries:
 | `patent` | 特許 |
 | `award` | 受賞 |
 | `book` | 書籍 |
+| `thesis` | 学位論文（学士・修士・博士） |
+| `report` | 技術レポート |
 | `misc` | 解説等 |
 | `other` | その他 |
 

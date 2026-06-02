@@ -105,6 +105,8 @@ talk        講演
 patent      特許
 award       受賞
 book        書籍
+thesis      学位論文（学士・修士・博士）
+report      技術レポート
 misc        解説等
 other       その他
 ```
@@ -189,6 +191,36 @@ source:
   chapter: "第3章"
   pages: "45-89"
 ```
+
+**`thesis`（学位論文）**
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `source` | object | 出典情報（下記） |
+
+`source` の構造:
+```yaml
+source:
+  institution: "○○大学大学院"
+  degree: doctoral   # bachelor（学士）/ master（修士）/ doctoral（博士）
+```
+
+BibTeX マッピング：`doctoral` → `@phdthesis`、`master` → `@mastersthesis`、`bachelor` → `@misc`
+
+**`report`（技術レポート）**
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `source` | object | 出典情報（下記） |
+
+`source` の構造:
+```yaml
+source:
+  institution: "○○大学情報学研究科"
+  number: "TR-2024-001"
+```
+
+BibTeX マッピング：`@techreport`
 
 **`misc`（解説等）・`other`（その他）**
 
@@ -283,6 +315,8 @@ entries:
 | `patent` | `@misc` |
 | `award` | `@misc` |
 | `book` | `@book` |
+| `thesis` | `@phdthesis` / `@mastersthesis` / `@misc`（`degree` による） |
+| `report` | `@techreport` |
 | `misc` | `@misc` |
 | `other` | `@misc` |
 
