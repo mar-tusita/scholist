@@ -17,7 +17,7 @@
 
 [Releases](https://github.com/mar-tusita/scholist/releases/latest) から
 `scholist-vX.Y.Z-template.zip` をダウンロードして展開します。
-テスト・開発用ファイルを含まない最小構成になっています。
+テスト・開発用ファイルを含まない最小構成で、**sync ワークフロー（`sync-from-scholist.yml`）も同梱**されています。
 
 ```bash
 unzip scholist-vX.Y.Z-template.zip -d my-publications
@@ -89,6 +89,13 @@ entries:
 | `other` | その他 |
 
 種別ごとの詳細フィールドは [CLAUDE.md](CLAUDE.md) のデータスキーマ節を参照してください。
+
+全種別で使える主な任意フィールド：
+
+| フィールド | 説明 |
+| --- | --- |
+| `abstract` | アブストラクト。詳細ページに表示、BibTeX/Hayagriva エクスポートにも含まれる |
+| `language` | 言語コード（`ja`、`en` 等）。`title` と `title_en` 両方ある場合に Hayagriva エクスポートで使用 |
 
 ### 添付ファイルの配置
 
@@ -230,7 +237,11 @@ git push
 
 ### GitHub Actions で自動化する（任意）
 
-手動でコマンドを打つ代わりに、GitHub の画面からボタン一つで同期することもできます。自分のリポジトリに以下のファイルを追加してください。
+手動でコマンドを打つ代わりに、GitHub の画面からボタン一つで同期することもできます。
+
+> **方法 A（zip ダウンロード）で始めた場合はこのファイルが既に含まれているため、追加は不要です。**
+
+方法 B（GitHub テンプレート）で始めた場合は、自分のリポジトリに以下のファイルを追加してください。
 
 > **注意：** ワークフローは `.github/workflows/build.yml` を sync 対象に含みません。
 > `GITHUB_TOKEN` は GitHub のセキュリティ制限によりワークフローファイルを書き込めないためです。

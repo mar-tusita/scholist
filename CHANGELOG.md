@@ -42,6 +42,9 @@
 
 ### ドキュメント
 
+- `README.md`：方法 A の説明に sync ワークフローが同梱される旨を追記
+- `README.md`：「GitHub Actions で自動化する」節に方法 A ユーザーは追加不要である旨を追記
+- `README.md`：`abstract`・`language` フィールドを任意フィールド表として追加
 - `README.md`：「主な機能」に統計サマリー・フィルタ URL 保持・OGP・sitemap.xml を追記
 - `CLAUDE.md`：`build.py` バリデーション項目を現状に合わせて更新（10種別・全バリデーション項目・sitemap 生成ステップ）
 - `CLAUDE.md`：`abstract` フィールドの説明に OGP 優先使用を明記
