@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-02
+
 ### 追加
 
 - `extras/sync-from-scholist.yml`：template zip に同梱する sync ワークフローのマスターファイルを追加
