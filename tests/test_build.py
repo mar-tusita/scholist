@@ -36,7 +36,8 @@ class TestValidate:
         assert exc.value.code == 1
 
     def test_all_valid_types(self):
-        valid_types = ["conference", "journal", "talk", "patent", "award", "book", "misc", "other"]
+        valid_types = ["conference", "journal", "talk", "patent", "award", "book",
+                       "misc", "other", "thesis", "report"]
         entries = [{"id": t, "type": t, "title": "T", "authors": ["山田 太郎"]} for t in valid_types]
         validate(entries)
 
@@ -196,6 +197,34 @@ class TestValidatePatentStatus:
 
     def test_ignored_for_non_patent(self):
         validate(_entry(type="misc"))
+
+
+class TestValidateDegree:
+    def _thesis(self, degree=None):
+        src = {"institution": "○○大学"}
+        if degree is not None:
+            src["degree"] = degree
+        return [{"id": "a", "type": "thesis", "title": "T",
+                 "authors": ["山田 太郎"], "source": src}]
+
+    def test_doctoral(self):
+        validate(self._thesis("doctoral"))
+
+    def test_master(self):
+        validate(self._thesis("master"))
+
+    def test_bachelor(self):
+        validate(self._thesis("bachelor"))
+
+    def test_none_ok(self):
+        validate(self._thesis())
+
+    def test_invalid(self):
+        with pytest.raises(SystemExit):
+            validate(self._thesis("phd"))
+
+    def test_ignored_for_non_thesis(self):
+        validate(_entry(type="report"))
 
 
 # ── エラー出力形式 ────────────────────────────────────────────────────────

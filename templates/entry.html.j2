@@ -171,6 +171,27 @@
           {% endif %}
         {% endif %}
 
+      {% elif entry.type == 'thesis' %}
+        {% if entry.source %}
+          {% if entry.source.institution %}
+          <tr><th>機関</th><td>{{ entry.source.institution }}</td></tr>
+          {% endif %}
+          {% if entry.source.degree %}
+          {% set _deg = {'bachelor': '学士論文', 'master': '修士論文', 'doctoral': '博士論文'} %}
+          <tr><th>学位</th><td>{{ _deg.get(entry.source.degree, entry.source.degree) }}</td></tr>
+          {% endif %}
+        {% endif %}
+
+      {% elif entry.type == 'report' %}
+        {% if entry.source %}
+          {% if entry.source.institution %}
+          <tr><th>発行機関</th><td>{{ entry.source.institution }}</td></tr>
+          {% endif %}
+          {% if entry.source.number %}
+          <tr><th>レポート番号</th><td>{{ entry.source.number }}</td></tr>
+          {% endif %}
+        {% endif %}
+
       {% else %}
         {% if entry.source and entry.source.description %}
         <tr><th>出典</th><td>{{ entry.source.description }}</td></tr>

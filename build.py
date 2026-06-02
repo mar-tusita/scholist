@@ -13,10 +13,11 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 
-VALID_TYPES = {"conference", "journal", "talk", "patent", "award", "book", "misc", "other"}
+VALID_TYPES = {"conference", "journal", "talk", "patent", "award", "book", "misc", "other", "thesis", "report"}
 VALID_SCOPES = {"domestic", "international"}
 VALID_PAPER_TYPES = {"full", "short"}
 VALID_PATENT_STATUSES = {"applied", "granted"}
+VALID_DEGREES = {"bachelor", "master", "doctoral"}
 
 _DATE_RE = re.compile(r"^\d{4}-\d{2}(-\d{2})?$")
 _ID_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
@@ -113,6 +114,12 @@ def validate(entries):
             status = (e.get("source") or {}).get("status")
             if status is not None and status not in VALID_PATENT_STATUSES:
                 errors.append(f"id={eid}: source.status は 'applied' または 'granted' でなければなりません: '{status}'")
+
+        # source.degree: thesis のみ検証
+        if e.get("type") == "thesis":
+            degree = (e.get("source") or {}).get("degree")
+            if degree is not None and degree not in VALID_DEGREES:
+                errors.append(f"id={eid}: source.degree は 'bachelor', 'master', 'doctoral' のいずれかでなければなりません: '{degree}'")
 
     if errors:
         in_ci = os.environ.get("GITHUB_ACTIONS") == "true"

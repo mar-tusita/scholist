@@ -7,6 +7,13 @@
 
 ### 追加
 
+- `thesis`・`report` 種別を追加（合計10種別に）
+  - `thesis`：`source.institution`（機関名）・`source.degree`（`bachelor`/`master`/`doctoral`）
+    BibTeX: `doctoral`→`@phdthesis`、`master`→`@mastersthesis`、`bachelor`→`@misc`
+  - `report`：`source.institution`（発行機関）・`source.number`（レポート番号）、BibTeX: `@techreport`
+  - `validate()` に `source.degree` の列挙値チェックを追加
+  - テンプレートの種別フィルタ・バッジ・サマリーチップ・会場表示に対応
+  - `tests/test_build.py`：`TestValidateDegree` クラスを追加（6件、計87件）
 - `abstract` フィールドのサポート（全種別・省略可）
   - 詳細ページ（`entry.html.j2`）の URL / DOI 行の直後に表示
   - OGP `og:description` を abstract 優先に変更（未設定時は従来の著者名・会議名から生成）

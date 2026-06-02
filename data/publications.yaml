@@ -99,6 +99,34 @@ entries:
       org_giving_award: "情報処理学会"
     note: "「サンプル論文」に対して授与"
 
+  # ── thesis ───────────────────────────────────────────────────────
+  - id: "sample-2021-thesis"
+    type: thesis
+    title: "サンプル：博士論文の記述例"
+    authors:
+      - "山田 太郎"
+    date: "2021-03"
+    registered_at: "2021-04-01"
+    source:
+      institution: "○○大学大学院"
+      degree: doctoral
+
+  # ── report ───────────────────────────────────────────────────────
+  - id: "sample-2020-report"
+    type: report
+    title: "サンプル：技術レポートの記述例"
+    title_en: "Sample: Technical Report Entry"
+    authors:
+      - "山田 太郎"
+      - "鈴木 花子"
+    date: "2020-09"
+    registered_at: "2020-10-01"
+    organization: "○○研究所"
+    source:
+      institution: "○○大学情報学研究科"
+      number: "TR-2020-001"
+    note: "これはサンプルエントリです。"
+
   # ── patent ───────────────────────────────────────────────────────
   - id: "sample-2021-patent"
     type: patent

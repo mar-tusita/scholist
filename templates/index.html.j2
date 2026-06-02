@@ -31,6 +31,8 @@
           <option value="award">受賞</option>
           <option value="book">書籍</option>
           <option value="misc">解説等</option>
+          <option value="thesis">学位論文</option>
+          <option value="report">技術レポート</option>
           <option value="other">その他</option>
         </select>
       </label>
@@ -142,6 +144,8 @@
           {% elif e.type == 'talk' %}{{ e.venue or '' }}
           {% elif e.type == 'award' %}{{ e.source.award_name if e.source else '' }}
           {% elif e.type == 'book' %}{{ e.source.publisher if e.source else '' }}
+          {% elif e.type == 'thesis' %}{{ e.source.institution if e.source else '' }}
+          {% elif e.type == 'report' %}{{ e.source.institution if e.source else '' }}
           {% else %}{{ e.source.description if e.source else '' }}
           {% endif %}
         </td>
@@ -158,9 +162,10 @@
       const TYPE_LABELS = {
         conference: '会議', journal: '論文誌', talk: '講演',
         patent: '特許', award: '受賞', book: '書籍',
+        thesis: '学位論文', report: '技術レポート',
         misc: '解説等', other: 'その他',
       };
-      const TYPE_ORDER = ['conference', 'journal', 'talk', 'patent', 'award', 'book', 'misc', 'other'];
+      const TYPE_ORDER = ['conference', 'journal', 'talk', 'patent', 'award', 'book', 'thesis', 'report', 'misc', 'other'];
 
       const counts = {};
       let minYear = Infinity, maxYear = -Infinity;
