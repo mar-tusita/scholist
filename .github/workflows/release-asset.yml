@@ -1,0 +1,54 @@
+name: Create Release Asset
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'リリースタグ（例: v0.2.0）'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release-asset:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "TAG=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+          else
+            echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          fi
+
+      - name: Create template zip
+        run: |
+          OUTFILE="scholist-${TAG}-template.zip"
+          zip -r "${OUTFILE}" \
+            build.py \
+            templates/ \
+            static/ \
+            data/ \
+            requirements.txt \
+            pyproject.toml \
+            README.md \
+            CHANGELOG.md \
+            LICENSE \
+            .gitignore \
+            .github/workflows/build.yml
+          echo "OUTFILE=${OUTFILE}" >> $GITHUB_ENV
+
+      - name: Upload to release
+        run: gh release upload "${TAG}" "${OUTFILE}" --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

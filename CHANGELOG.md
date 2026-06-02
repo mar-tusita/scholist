@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### 追加
+
+- `.github/workflows/release-asset.yml`：タグ push 時に開発ファイルを除いた配布用 zip を生成し Release にアタッチ
+  - 除外: `tests/`・`requirements-dev.txt`・`.github/workflows/test.yml`・`CLAUDE.md`・`.markdownlint.json`・`TODO.md`
+  - `workflow_dispatch` でタグを指定して手動実行も可能
+
 ## [0.2.0] - 2026-06-02
 
 ### 追加
