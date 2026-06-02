@@ -21,6 +21,22 @@
 
 ## 機能追加
 
+- **`thesis`・`report` 種別の追加** ― 優先度: 中 / 難度: 小
+  Hayagriva 調査により、学術 CV で頻出の種別が欠けていることが判明。
+  - `thesis`：博士論文・修士論文。`source` に `degree`（学位種別）・`institution`（機関名）を追加。
+    BibTeX では `@phdthesis` / `@mastersthesis` にマッピング。
+  - `report`：技術レポート・調査報告書。`source` に `institution`・`number`（レポート番号）を追加。
+    BibTeX では `@techreport` にマッピング。
+  合わせて CLAUDE.md のスキーマ定義、`validate()` の `VALID_TYPES`、テンプレートの種別フィルタ・バッジも更新する。
+
+- **`abstract` フィールドの追加** ― 優先度: 中 / 難度: 小
+  論文アブストラクトを格納するフィールド。
+  - `data/publications.yaml` の共通フィールドに追加（省略可）
+  - 詳細ページ（`entry.html.j2`）に表示
+  - OGP の `og:description` の補完候補として使用（現在は著者名・会議名から生成）
+  - BibTeX エクスポートの `abstract` フィールドに出力
+  - インクリメンタル検索の対象に追加
+
 - **Hayagriva 形式のエクスポート対応** ― 優先度: 低 / 難度: 中
   [Hayagriva](https://github.com/typst/hayagriva) は Typst（現代的な組版システム）用の YAML 文献形式。
   Typst で論文を書くユーザーが scholist のデータを使い回せるよう、
