@@ -9,6 +9,7 @@ on:
       - 'static/**'
       - 'build.py'
       - 'requirements.txt'
+  workflow_dispatch:
 
 permissions:
   contents: write

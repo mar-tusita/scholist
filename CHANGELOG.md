@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### 変更
+
+- `.github/workflows/build.yml`：`workflow_dispatch` トリガーを追加（手動実行を可能に）
+
 ## [0.1.1] - 2026-06-02
 
 ### 追加
