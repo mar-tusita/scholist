@@ -28,6 +28,47 @@ header a {
   text-decoration: none;
 }
 
+/* 統計サマリー */
+.summary {
+  padding: 8px 24px;
+  background: #f0f4f8;
+  border-bottom: 1px solid #dde3ea;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 36px;
+}
+
+.summary-meta {
+  font-size: 0.85rem;
+  color: #444;
+  white-space: nowrap;
+}
+
+.summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.summary-chip {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+.summary-chip-conference { background: #2563eb; }
+.summary-chip-journal    { background: #059669; }
+.summary-chip-talk       { background: #d97706; }
+.summary-chip-patent     { background: #7c3aed; }
+.summary-chip-award      { background: #dc2626; }
+.summary-chip-book       { background: #4f46e5; }
+.summary-chip-misc       { background: #4b5563; }
+.summary-chip-other      { background: #4b5563; }
+
 .controls {
   padding: 16px 24px;
   background: #fff;
