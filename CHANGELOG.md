@@ -7,6 +7,11 @@
 
 ### 追加
 
+- `extras/sync-from-scholist.yml`：template zip に同梱する sync ワークフローのマスターファイルを追加
+- `.github/workflows/release-asset.yml`：zip に `sync-from-scholist.yml` を自動同梱するよう更新
+  - `extras/sync-from-scholist.yml` を `.github/workflows/sync-from-scholist.yml` として含める
+  - zip 内のファイル構成を tmpdir 方式で管理
+
 - Hayagriva 形式のエクスポート対応（`export.js`）
   - 全件・1件エクスポートボタンに「Hayagriva」を追加
   - 種別ごとに Hayagriva 型と `parent:` 構造に変換

@@ -34,18 +34,24 @@ jobs:
       - name: Create template zip
         run: |
           OUTFILE="scholist-${TAG}-template.zip"
-          zip -r "${OUTFILE}" \
-            build.py \
-            templates/ \
-            static/ \
-            data/ \
-            requirements.txt \
-            pyproject.toml \
-            README.md \
-            CHANGELOG.md \
-            LICENSE \
-            .gitignore \
-            .github/workflows/build.yml
+          WORKDIR="${PWD}"
+          TMPDIR=$(mktemp -d)
+
+          # ツールファイルをコピー
+          cp -r build.py templates/ static/ data/ \
+                requirements.txt pyproject.toml \
+                README.md CHANGELOG.md LICENSE .gitignore "${TMPDIR}/"
+
+          # GitHub Actions ワークフローをコピー
+          mkdir -p "${TMPDIR}/.github/workflows"
+          cp .github/workflows/build.yml "${TMPDIR}/.github/workflows/"
+          cp extras/sync-from-scholist.yml "${TMPDIR}/.github/workflows/"
+
+          # zip を生成
+          cd "${TMPDIR}"
+          zip -r "${WORKDIR}/${OUTFILE}" .
+          cd "${WORKDIR}"
+
           echo "OUTFILE=${OUTFILE}" >> $GITHUB_ENV
 
       - name: Upload to release
