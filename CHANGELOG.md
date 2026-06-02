@@ -26,6 +26,12 @@
   - `files` 各要素の `path`/`url`・`paper_type`・`source.status`
 - `tests/test_build.py`：バリデーション追加分テスト 44件追加（計72件）
 - `build.py`：`date` フォーマットの厳密バリデーションを追加
+- `build.py`：`generate_sitemap()` 関数を追加し、`public/sitemap.xml` を生成
+  - `config.base_url` が設定されている場合のみ出力（空・未設定時はスキップ）
+  - 一覧ページと全詳細ページの URL を列挙
+  - `registered_at` → `date` の優先順で `<lastmod>` を設定
+  - `YYYY-MM` 形式の日付は `YYYY-MM-01` に変換
+- `tests/test_build.py`：`TestGenerateSitemap` クラスを追加（9件）
 - `data/config.yaml`：`base_url` フィールドを追加（og:url・将来の sitemap.xml 用）
   - 設定時は詳細ページに `og:url` を追加、未設定（空）なら出力しない
   - `CLAUDE.md`・`README.md` のスキーマ説明に追記

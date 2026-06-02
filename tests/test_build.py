@@ -1,6 +1,6 @@
 import datetime
 import pytest
-from build import validate, sort_entries, highlight_authors, read_version
+from build import validate, sort_entries, highlight_authors, read_version, generate_sitemap
 
 
 # ── validate ──────────────────────────────────────────────────────────────
@@ -399,3 +399,64 @@ class TestReadVersion:
             encoding="utf-8",
         )
         assert read_version(tmp_path) == "0.2.0-beta.1"
+
+
+# ── generate_sitemap ──────────────────────────────────────────────────────
+
+class TestGenerateSitemap:
+    _entries = [
+        {"id": "a", "type": "misc", "title": "A", "authors": ["X"],
+         "registered_at": "2024-03-20", "date": "2024-03-15"},
+        {"id": "b", "type": "misc", "title": "B", "authors": ["X"],
+         "date": "2023-09"},
+        {"id": "c", "type": "misc", "title": "C", "authors": ["X"],
+         "date": None},
+    ]
+
+    def _cfg(self, base_url="https://example.com"):
+        return {"base_url": base_url, "site_title": "Test"}
+
+    def test_generates_file(self, tmp_path):
+        generate_sitemap(self._cfg(), self._entries, tmp_path)
+        assert (tmp_path / "sitemap.xml").exists()
+
+    def test_skips_if_base_url_empty(self, tmp_path):
+        generate_sitemap(self._cfg(""), self._entries, tmp_path)
+        assert not (tmp_path / "sitemap.xml").exists()
+
+    def test_skips_if_base_url_missing(self, tmp_path):
+        generate_sitemap({"site_title": "T"}, self._entries, tmp_path)
+        assert not (tmp_path / "sitemap.xml").exists()
+
+    def test_contains_index_and_entries(self, tmp_path):
+        generate_sitemap(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "sitemap.xml").read_text()
+        assert "<loc>https://example.com/</loc>" in xml
+        assert "<loc>https://example.com/entries/a/</loc>" in xml
+        assert "<loc>https://example.com/entries/b/</loc>" in xml
+
+    def test_lastmod_prefers_registered_at(self, tmp_path):
+        generate_sitemap(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "sitemap.xml").read_text()
+        assert "<lastmod>2024-03-20</lastmod>" in xml
+
+    def test_lastmod_year_month_appends_day(self, tmp_path):
+        generate_sitemap(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "sitemap.xml").read_text()
+        assert "<lastmod>2023-09-01</lastmod>" in xml
+
+    def test_no_lastmod_when_no_date(self, tmp_path):
+        generate_sitemap(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "sitemap.xml").read_text()
+        assert xml.count("<lastmod>") == 2
+
+    def test_trailing_slash_stripped(self, tmp_path):
+        generate_sitemap(self._cfg("https://example.com/"), self._entries, tmp_path)
+        xml = (tmp_path / "sitemap.xml").read_text()
+        assert "//entries" not in xml
+        assert "<loc>https://example.com/</loc>" in xml
+
+    def test_valid_xml_header(self, tmp_path):
+        generate_sitemap(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "sitemap.xml").read_text()
+        assert xml.startswith('<?xml version="1.0" encoding="UTF-8"?>')

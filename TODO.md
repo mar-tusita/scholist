@@ -8,10 +8,6 @@
 
 ## 機能追加
 
-- **sitemap.xml 生成** ― 優先度: 低 / 難度: 小
-  `build.py` に sitemap.xml の出力ステップを追加する。
-  `config.yaml` の `base_url` が前提。
-
 - **RSS / Atom フィード生成** ― 優先度: 低 / 難度: 中
   `registered_at` フィールドを利用した新着フィード（`feed.xml`）を生成する。
   XML 生成ロジックと `registered_at` の扱いがやや複雑。

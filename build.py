@@ -181,6 +181,46 @@ def render_site(config, entries, output_dir, template_dir, version):
         print(f"生成: {entry_path}")
 
 
+def _sitemap_date(entry):
+    """registered_at → date の順で YYYY-MM-DD を返す。なければ None。"""
+    for field in ("registered_at", "date"):
+        val = entry.get(field)
+        if val is None:
+            continue
+        s = str(val)
+        if re.match(r"^\d{4}-\d{2}-\d{2}$", s):
+            return s
+        if re.match(r"^\d{4}-\d{2}$", s):
+            return s + "-01"
+    return None
+
+
+def generate_sitemap(config, entries, output_dir):
+    base_url = config.get("base_url", "").rstrip("/")
+    if not base_url:
+        return
+
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        "  <url>",
+        f"    <loc>{base_url}/</loc>",
+        "  </url>",
+    ]
+    for entry in entries:
+        lines.append("  <url>")
+        lines.append(f"    <loc>{base_url}/entries/{entry['id']}/</loc>")
+        lastmod = _sitemap_date(entry)
+        if lastmod:
+            lines.append(f"    <lastmod>{lastmod}</lastmod>")
+        lines.append("  </url>")
+    lines.append("</urlset>")
+
+    sitemap_path = output_dir / "sitemap.xml"
+    sitemap_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"生成: {sitemap_path}")
+
+
 def copy_dir(src, dst):
     if src.exists():
         if dst.exists():
@@ -211,6 +251,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     render_site(config, entries, output_dir, template_dir, version)
+    generate_sitemap(config, entries, output_dir)
 
     copy_dir(static_dir, output_dir / "static")
     copy_dir(files_dir, output_dir / "files")
