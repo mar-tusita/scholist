@@ -6,6 +6,19 @@
 
 ---
 
+## 配布・セットアップ
+
+- **template zip に sync-from-scholist.yml を同梱** ― 優先度: 中 / 難度: 小
+  現状、zip をダウンロードして始めたユーザーは sync ワークフローを README を見ながら手動で作成する必要がある。
+  `release-asset.yml` で zip を作成する際に、README のサンプルと同内容の
+  `.github/workflows/sync-from-scholist.yml` を動的生成して含めることで解消できる。
+
+- **README 方法 B の削除ファイルリストを追記** ― 優先度: 低 / 難度: 小
+  「Use this template」から始めた場合に削除できるファイルの一覧（`tests/`・`requirements-dev.txt`・
+  `.github/workflows/test.yml`・`CLAUDE.md` 等）を README 方法 B の説明に追記する。
+
+---
+
 ## 機能追加
 
 - **RSS / Atom フィード生成** ― 優先度: 低 / 難度: 中
