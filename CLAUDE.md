@@ -29,8 +29,10 @@ publications/
 │   └── entry.html.j2                # 詳細ページテンプレート
 ├── static/
 │   ├── style.css
-│   └── export.js                    # YAML/JSON/BibTeX書き出し処理
+│   └── export.js                    # YAML/JSON/BibTeX/Hayagriva書き出し処理
 ├── build.py                         # 静的サイト生成スクリプト
+├── extras/
+│   └── sync-from-scholist.yml       # template zip に同梱する sync ワークフローのマスター
 ├── tools/                           # 補助ツール
 │   ├── import.py                    # BibTeX/Hayagriva インポート CLI
 │   └── importers/
@@ -45,7 +47,9 @@ publications/
 │   └── files/                       # files/ をそのままコピー
 └── .github/
     └── workflows/
-        └── build.yml                # push時に自動生成・デプロイ
+        ├── build.yml                # push時に自動生成・デプロイ
+        ├── test.yml                 # push/PR時にpytest実行
+        └── release-asset.yml        # タグ push時にリリース asset 生成
 ```
 
 ---
@@ -89,7 +93,7 @@ base_url: ""
 | フィールド | 型 | 必須 | 説明 |
 | --- | --- | --- | --- |
 | `id` | string | ✅ | 一意ID（手動命名、自由形式） |
-| `type` | enum | ✅ | 種別（下記8種） |
+| `type` | enum | ✅ | 種別（下記10種） |
 | `title` | string | △ | 日本語タイトル（`title_en` と少なくとも一方必須） |
 | `title_en` | string | △ | 英語タイトル（`title` と少なくとも一方必須） |
 | `authors` | list[string] | ✅ | 著者リスト（順序を保持） |
@@ -370,6 +374,7 @@ BibTeXのフィールドマッピング（主要なもの）：
 | `source.doi` | `doi` |
 | `source.proceedings` | `booktitle` |
 | `source.publisher` | `publisher` |
+| `abstract` | `abstract` |
 | `organization` | `organization` |
 | `url` | `url` |
 
@@ -386,6 +391,7 @@ BibTeXのフィールドマッピング（主要なもの）：
 | `talk` / `award` / `misc` / `other` | `misc` | |
 
 - `title` / `title_en` のどちらを使うかは `language` フィールドで制御（`en` → `title_en`、それ以外 → `title`）
+- `abstract` がある場合は Hayagriva の `abstract` フィールドに出力
 - `url` が `https://doi.org/...` の場合は `serial-number.doi` に変換
 
 ---
@@ -396,9 +402,10 @@ BibTeXのフィールドマッピング（主要なもの）：
 使い方: python build.py [--output public/]
 
 処理手順:
-1. data/config.yaml を読み込む
-2. data/publications.yaml を読み込む
-3. バリデーション：
+1. pyproject.toml からバージョン番号を読み込む（Python 3.11+ は tomllib、それ以前は正規表現）
+2. data/config.yaml を読み込む
+3. data/publications.yaml を読み込む
+4. バリデーション：
    - id の重複チェック・使用可能文字チェック（英数字・ハイフン・アンダースコア）
    - title / title_en の少なくとも一方が存在するか
    - authors が1名以上存在するか
@@ -407,15 +414,15 @@ BibTeXのフィールドマッピング（主要なもの）：
    - scope・paper_type・source.status・source.degree の列挙値チェック
    - files の各要素に path または url が存在するか
    - エラーは stderr に出力。GitHub Actions 環境では ::error:: アノテーション形式で出力
-4. ソート（date降順、同日はYAML記述順、null は末尾）
-5. 各エントリに `_searchtext`（全文検索用文字列）と `_authors_hl`（ハイライト情報）を付与
-6. Jinja2でテンプレートをレンダリング
+5. ソート（date降順、同日はYAML記述順、null は末尾）
+6. 各エントリに `_searchtext`（全文検索用文字列）と `_authors_hl`（ハイライト情報）を付与
+7. Jinja2でテンプレートをレンダリング（バージョン番号を `scholist_version` としてテンプレートに渡す）
    - public/index.html（一覧ページ）
    - public/entries/<id>/index.html（詳細ページ、全エントリ分）
-7. base_url が設定されている場合、public/sitemap.xml を生成
-8. base_url が設定されている場合、public/feed.xml（Atom フィード）を生成
-9. static/ を public/static/ にコピー
-10. files/ を public/files/ にコピー
+8. base_url が設定されている場合、public/sitemap.xml を生成
+9. base_url が設定されている場合、public/feed.xml（Atom フィード）を生成
+10. static/ を public/static/ にコピー
+11. files/ を public/files/ にコピー
 
 依存パッケージ（requirements.txt に記載）:
   PyYAML
@@ -473,14 +480,28 @@ BibTeXのフィールドマッピング（主要なもの）：
 
 ---
 
-## GitHub Actions（`.github/workflows/build.yml`）
+## GitHub Actions
 
-- トリガー：`data/` または `files/` への push
+### `build.yml`（自動ビルド・デプロイ）
+
+- トリガー：`data/`・`files/`・`templates/`・`static/`・`build.py`・`requirements.txt` への push、および `workflow_dispatch`
 - 処理：
   1. Python 環境セットアップ
   2. `pip install -r requirements.txt`
   3. `python build.py`
-  4. `public/` を GitHub Pages にデプロイ（`peaceiris/actions-gh-pages` 等を使用）
+  4. `public/` を GitHub Pages にデプロイ（`peaceiris/actions-gh-pages` 使用、`gh-pages` ブランチ）
+
+### `test.yml`（自動テスト）
+
+- トリガー：`main` ブランチへの push / PR
+- 処理：`pip install -r requirements-dev.txt` → `pytest -v`
+
+### `release-asset.yml`（リリース asset 生成）
+
+- トリガー：`v*` タグ push、および `workflow_dispatch`（タグ指定）
+- 処理：開発ファイルを除いた `scholist-vX.Y.Z-template.zip` を生成し GitHub Release にアタッチ
+- 除外対象：`tests/`・`requirements-dev.txt`・`.github/workflows/test.yml`・`CLAUDE.md`・`.markdownlint.json`・`TODO.md`
+- `extras/sync-from-scholist.yml` を `.github/workflows/sync-from-scholist.yml` として zip に同梱
 
 ---
 

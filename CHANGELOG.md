@@ -22,6 +22,13 @@
 ### ドキュメント
 
 - `README.md`・`CLAUDE.md`：フィルタの URL クエリパラメータ一覧表を追加（`type`・`year`・`scope`・`reviewed`・`invited`・`q`）
+- `CLAUDE.md`：全件精査による記載漏れ修正
+  - 共通フィールド表の「8種」→「10種」
+  - ディレクトリ構成に `extras/`・`test.yml`・`release-asset.yml` を追記
+  - `export.js` のコメントに Hayagriva を追加
+  - BibTeX・Hayagriva フィールドマッピング表に `abstract` を追記
+  - `build.py` 仕様にバージョン読み込みステップ・フッター出力を追記（処理手順の番号も修正）
+  - GitHub Actions 節を3ワークフロー分に拡充
 - `README.md`：「既存データのインポート」節を追加（使い方・オプション・注意点）
 - `README.md`：「主な機能」にインポート機能を追記
 - `CLAUDE.md`：`tools/` をディレクトリ構成に追加、`tools/import.py` の仕様節を追加（型マッピング表含む）
