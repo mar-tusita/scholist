@@ -1,0 +1,2 @@
+-r requirements.txt
+bibtexparser>=1.3,<2.0

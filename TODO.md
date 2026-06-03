@@ -8,39 +8,10 @@
 
 ## インポートツール
 
-- **`publications.yaml` インポートツール（プラグイン方式）** ― 優先度: 中 / 難度: 中
-  既存の文献データを scholist 形式（`publications.yaml`）に変換するツール。
-  他ツールから移行するユーザーの参入障壁を下げることが目的。
-
-  **アーキテクチャ：**
-  ```text
-  tools/
-    import.py          # メイン CLI（共通インターフェース）
-    importers/
-      bibtex.py        # BibTeX → scholist
-      hayagriva.py     # Hayagriva → scholist
-  ```
-
-  使い方：
-  ```bash
-  python tools/import.py --format bibtex refs.bib >> data/publications.yaml
-  python tools/import.py --format hayagriva refs.yml >> data/publications.yaml
-  ```
-
-  **初期サポート形式：**
-  - `bibtex`：`bibtexparser` ライブラリを使用（`requirements-tools.txt` に分離）
-  - `hayagriva`：PyYAML のみで対応（既存依存）
-
-  **変換方針：**
-  - ID：BibTeX の cite key / Hayagriva のキーをそのまま使用
-  - 著者名：変換せずそのまま出力し、警告を表示
-  - 型マッピングが曖昧な場合（`@misc` 等）は `misc` に落とし `note` にヒントを残す
-  - scholist 固有フィールド（`scope`, `invited`, `reviewed` 等）は空欄で出力
-
-  **将来の拡張候補：**
+- **インポートツールの拡張フォーマット対応** ― 優先度: 低 / 難度: 中
+  現在 `bibtex` / `hayagriva` に対応済み。`importers/` に新モジュールを追加するだけで拡張できる。
   - `ris`：RIS 形式（Zotero・Mendeley 等からのエクスポート）
   - `csl-json`：CSL-JSON 形式（Pandoc・Zotero の汎用形式）
-  - プラグイン構造により追加が容易
 
 ---
 

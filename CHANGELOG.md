@@ -5,6 +5,20 @@
 
 ## [Unreleased]
 
+### 追加
+
+- `tools/import.py`：BibTeX / Hayagriva → `publications.yaml` 変換 CLI ツール
+  - `--format bibtex|hayagriva`・`--output`・`--append` オプション
+  - 変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録
+  - 著者名フォーマット・月なし日付等の問題点は警告として stderr に出力
+- `tools/importers/__init__.py`：`BaseImporter` 基底クラス
+- `tools/importers/bibtex.py`：BibTeX インポーター（`bibtexparser` v1.x 使用）
+  - `@article`（journal / conference）・`@inproceedings`・`@book`・`@incollection`・`@phdthesis`・`@mastersthesis`・`@techreport` 対応
+- `tools/importers/hayagriva.py`：Hayagriva インポーター（PyYAML のみで対応）
+  - `parent` 構造から `journal` / `conference` を判定
+- `requirements-tools.txt`：ツール用追加依存（`bibtexparser>=1.3,<2.0`）
+- `tests/test_import.py`：インポーターのユニットテスト（33件）
+
 ### 変更
 
 - `build.py`：`build_searchtext()` を追加し、検索対象をエントリの全文字列値に拡大
