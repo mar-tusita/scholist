@@ -31,6 +31,12 @@ publications/
 │   ├── style.css
 │   └── export.js                    # YAML/JSON/BibTeX書き出し処理
 ├── build.py                         # 静的サイト生成スクリプト
+├── tools/                           # 補助ツール
+│   ├── import.py                    # BibTeX/Hayagriva インポート CLI
+│   └── importers/
+│       ├── __init__.py              # BaseImporter 基底クラス
+│       ├── bibtex.py                # BibTeX 変換
+│       └── hayagriva.py             # Hayagriva 変換
 ├── public/                          # 生成物（nginxまたはGitHub Pagesで配信）
 │   ├── index.html
 │   ├── entries/
@@ -393,6 +399,55 @@ BibTeXのフィールドマッピング（主要なもの）：
   PyYAML
   Jinja2
 ```
+
+---
+
+## `tools/import.py` の仕様
+
+```text
+使い方: python tools/import.py --format <形式> <入力ファイル> [オプション]
+
+オプション:
+  --format, -f  bibtex | hayagriva（必須）
+  --output, -o  出力先ファイル（省略時: 標準出力）
+  --append, -a  既存の publications.yaml に追記（ID 重複はスキップ）
+
+処理の特徴:
+- 変換できなかったフィールドは note に [import: field=value] 形式で記録
+- 著者名フォーマット（BibTeX: 「姓, 名」形式）は変換せずそのまま出力し警告
+- 月なし日付（year のみ）は YYYY-01 に設定し警告
+- stderr に WARNING として問題点を出力
+```
+
+### 型マッピング（BibTeX → scholist）
+
+| BibTeX 型 | scholist 型 | 判定条件 |
+| --- | --- | --- |
+| `@article` | `journal` | `journal` フィールドあり |
+| `@article` | `conference` | `booktitle` フィールドあり |
+| `@article` | `misc` | どちらもない |
+| `@inproceedings` / `@proceedings` | `conference` | |
+| `@book` | `book` | |
+| `@incollection` | `book` | chapter 相当 |
+| `@phdthesis` | `thesis`（degree: doctoral） | |
+| `@mastersthesis` | `thesis`（degree: master） | |
+| `@techreport` | `report` | |
+| その他 | `misc` | |
+
+### 型マッピング（Hayagriva → scholist）
+
+| Hayagriva 型 + parent | scholist 型 |
+| --- | --- |
+| `article` + `periodical` parent | `journal` |
+| `article` + `proceedings` / `conference` parent | `conference` |
+| `thesis` | `thesis`（`genre` フィールドから degree を推定） |
+| `report` | `report` |
+| `patent` | `patent` |
+| `book` / `chapter` | `book` |
+| その他 | `misc` |
+
+依存パッケージ（requirements-tools.txt に記載）:
+  bibtexparser >= 1.3, < 2.0（BibTeX インポート時のみ必要）
 
 ---
 
