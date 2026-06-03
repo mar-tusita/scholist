@@ -391,6 +391,16 @@ Open `public/index.html` in a browser to verify behavior.
 | `requirements.txt` | Production dependencies (PyYAML, Jinja2) |
 | `requirements-dev.txt` | Development dependencies (pytest) |
 
+## Acknowledgements
+
+This tool was built with the help of the following projects and services.
+
+- **[Jinja2](https://jinja.palletsprojects.com/)・[PyYAML](https://pyyaml.org/)** ― HTML generation and data loading in Python
+- **[js-yaml](https://github.com/nodeca/js-yaml)** ― Client-side YAML export
+- **[peaceiris/actions-gh-pages](https://github.com/peaceiris/actions-gh-pages)** ― Automated deployment to GitHub Pages
+- **[GitHub Actions](https://github.com/features/actions)** ― CI/CD infrastructure
+- **[Claude Code](https://claude.ai/code) (Anthropic)** was used throughout the development of this tool. Building it was an experimental attempt to explore how far machines can write code and how humans can leverage them — from code generation to documentation.
+
 ## License
 
 See [LICENSE](LICENSE).

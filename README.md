@@ -421,6 +421,16 @@ python build.py
 
 > **リリースノートを手書きする場合：** 手順 4 の前に `gh release create vX.Y.Z --title "..." --notes "..."` を実行しておくと、ワークフローは Release 作成をスキップして zip のアップロードだけ行います。
 
+## 謝辞
+
+このツールの開発にあたり、以下のプロジェクト・サービスを利用しました。
+
+- **[Jinja2](https://jinja.palletsprojects.com/)・[PyYAML](https://pyyaml.org/)** ― Python による HTML 生成とデータ読み込み
+- **[js-yaml](https://github.com/nodeca/js-yaml)** ― クライアントサイドの YAML エクスポート
+- **[peaceiris/actions-gh-pages](https://github.com/peaceiris/actions-gh-pages)** ― GitHub Pages への自動デプロイ
+- **[GitHub Actions](https://github.com/features/actions)** ― CI/CD 基盤
+- **[Claude Code](https://claude.ai/code) (Anthropic)** 本ツールの開発全般にわたって利用しました。 ツール作成にあたり、「どこまで機械がプログラムを書けるのか、人間が機械をどのように活用できるのか」を模索する実験的な試みとして、コード生成からドキュメント作成まで幅広く活用しています。
+
 ## ライセンス
 
 [LICENSE](LICENSE) を参照してください。
