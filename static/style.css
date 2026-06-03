@@ -104,9 +104,10 @@ header a {
 .pagination-controls {
   padding: 16px 24px;
   display: flex;
+  justify-content: center;
   gap: 10px;
   background: #fff;
-  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
 }
 
 .pagination-controls button {

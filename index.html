@@ -175,10 +175,6 @@
   </div>
 
   <div id="count-display" class="count-display"></div>
-  <div id="pagination-controls" class="pagination-controls" style="display:none">
-    <button id="btn-show-more" onclick="showMore()" data-i18n="btn.show.more">さらに表示</button>
-    <button id="btn-show-all"  onclick="showAll()"  data-i18n="btn.show.all">全件表示</button>
-  </div>
 
   <table id="entries-table">
     <thead>
@@ -531,6 +527,11 @@
       
     </tbody>
   </table>
+
+  <div id="pagination-controls" class="pagination-controls" style="display:none">
+    <button id="btn-show-more" onclick="showMore()" data-i18n="btn.show.more">さらに表示</button>
+    <button id="btn-show-all"  onclick="showAll()"  data-i18n="btn.show.all">全件表示</button>
+  </div>
 
   <script>
     const SCHOLIST_DEFAULT_LANG = "auto";
