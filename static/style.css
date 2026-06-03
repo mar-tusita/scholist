@@ -362,3 +362,51 @@ footer {
 footer a {
   color: #9ca3af;
 }
+
+/* ── 印刷用スタイル ────────────────────────────────────── */
+@media print {
+  /* ヘッダー：背景を消して文字のみ残す */
+  header {
+    background: none;
+    color: #000;
+    border-bottom: 1px solid #ccc;
+    padding: 6px 0;
+  }
+  header a { color: #000; }
+
+  /* 印刷時に不要な UI を非表示 */
+  .lang-toggle,
+  .export-section,
+  .controls,
+  .count-display,
+  .pagination-controls,
+  footer { display: none; }
+
+  /* 本文のフォント・色 */
+  body {
+    font-size: 11pt;
+    color: #000;
+    background: #fff;
+  }
+
+  /* バッジの色付き背景を除去して枠線だけにする */
+  .badge {
+    background: none !important;
+    color: #000 !important;
+    border: 1px solid #555;
+  }
+
+  /* 詳細テーブル：行が途中でページをまたがないようにする */
+  .detail-table tr { page-break-inside: avoid; }
+
+  /* http(s) リンクの URL をテキストとして印刷に追記 */
+  .detail-table a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* リンクの色を黒に統一 */
+  a { color: #000; }
+}
