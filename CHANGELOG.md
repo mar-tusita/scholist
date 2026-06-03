@@ -24,6 +24,10 @@
 - `README.md`：「既存データのインポート」節を追加（使い方・オプション・注意点）
 - `README.md`：「主な機能」にインポート機能を追記
 - `CLAUDE.md`：`tools/` をディレクトリ構成に追加、`tools/import.py` の仕様節を追加（型マッピング表含む）
+- `CLAUDE.md`：機能仕様・build.py 仕様の記載漏れを全件修正
+  - 一覧ページ：統計サマリー・ページネーション・URL フィルタ保持・全文検索（`build_searchtext`）・Hayagriva エクスポート・言語切り替え
+  - 詳細ページ：アブストラクト表示・OGP・前後ナビゲーション・Hayagriva エクスポート・印刷用 CSS
+  - build.py：`_searchtext` 付与ステップ・Atom feed 生成ステップを追記
 
 ### 変更
 

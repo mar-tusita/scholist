@@ -291,25 +291,34 @@ entries:
 
 ### 一覧ページ（`public/index.html`）
 
+- 統計サマリー：ヘッダー直下に総件数・年範囲・種別ごとの件数チップを表示
 - 1行1エントリで表示
 - デフォルト表示順：上記ソート規則に従う
+- ページネーション：`entries_per_page` 件ずつ表示し「さらに表示」「全件表示」ボタンで追加
 - フィルタ機能（JavaScript）：
   - 種別（type）
   - 年（date の年部分）
   - 国内/国際（scope）
   - 査読有無（reviewed）
   - 招待有無（invited）
-- インクリメンタル検索（JavaScript）：タイトル・著者名・会議名・誌名を対象
-- 全件エクスポートボタン：YAML / JSON / BibTeX
+  - フィルタ条件は URL クエリパラメータ（`?type=journal&year=2023` 等）に保持（共有・リロード対応）
+- インクリメンタル検索（JavaScript）：`build_searchtext()` で生成した全文字列を対象
+  - title・title_en・abstract・authors・venue・organization・source 内の全文字列フィールド等
+  - id・type・date・scope 等の構造フィールドは除外
+- 全件エクスポートボタン：YAML / JSON / BibTeX / Hayagriva
 - 各行には詳細ページへのリンクを含む
+- ページ上部に JA / EN 言語切り替えボタン（`default_language` 設定に連動）
 
 ### 詳細ページ（`public/entries/<id>/index.html`）
 
-- 全フィールドを整形して表示
+- 全フィールドを整形して表示（アブストラクトも表示）
 - 添付ファイルへのリンク（`files/` 内のパスは相対パスで解決）
 - 外部URL（DOI等）へのリンク
 - 著者ハイライト：`config.yaml` の `highlight_authors` リストと照合し、一致する著者名に `highlight_style` を適用
-- 「このエントリをエクスポート」ボタン：YAML / JSON / BibTeX（1件）
+- 「このエントリをエクスポート」ボタン：YAML / JSON / BibTeX / Hayagriva（1件）
+- 前後ナビゲーション：一覧と同じソート順で「← 前の業績」「次の業績 →」リンクを表示
+- OGP / Twitter Card メタタグ：`og:title`・`og:description`（abstract 優先）・`og:url`（`base_url` 設定時）
+- 印刷用 CSS（`@media print`）
 
 ### 著者ハイライト
 
@@ -388,12 +397,14 @@ BibTeXのフィールドマッピング（主要なもの）：
    - files の各要素に path または url が存在するか
    - エラーは stderr に出力。GitHub Actions 環境では ::error:: アノテーション形式で出力
 4. ソート（date降順、同日はYAML記述順、null は末尾）
-5. Jinja2でテンプレートをレンダリング
+5. 各エントリに `_searchtext`（全文検索用文字列）と `_authors_hl`（ハイライト情報）を付与
+6. Jinja2でテンプレートをレンダリング
    - public/index.html（一覧ページ）
    - public/entries/<id>/index.html（詳細ページ、全エントリ分）
-6. base_url が設定されている場合、public/sitemap.xml を生成
-7. static/ を public/static/ にコピー
-8. files/ を public/files/ にコピー
+7. base_url が設定されている場合、public/sitemap.xml を生成
+8. base_url が設定されている場合、public/feed.xml（Atom フィード）を生成
+9. static/ を public/static/ にコピー
+10. files/ を public/files/ にコピー
 
 依存パッケージ（requirements.txt に記載）:
   PyYAML
