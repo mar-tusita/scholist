@@ -252,6 +252,14 @@
     </section>
     {% endif %}
 
+    <section class="export-section">
+      <h3 data-i18n="export.one.title">このエントリをエクスポート</h3>
+      <button onclick="exportOne('yaml')">YAML</button>
+      <button onclick="exportOne('json')">JSON</button>
+      <button onclick="exportOne('bibtex')">BibTeX</button>
+      <button onclick="exportOne('hayagriva')">Hayagriva</button>
+    </section>
+
     <nav class="entry-nav">
       {% if prev_entry %}
       <a class="entry-nav-prev" href="../{{ prev_entry.id }}/" data-i18n="nav.prev">← 前の業績</a>
@@ -264,14 +272,6 @@
       <span class="entry-nav-next entry-nav-disabled"></span>
       {% endif %}
     </nav>
-
-    <section class="export-section">
-      <h3 data-i18n="export.one.title">このエントリをエクスポート</h3>
-      <button onclick="exportOne('yaml')">YAML</button>
-      <button onclick="exportOne('json')">JSON</button>
-      <button onclick="exportOne('bibtex')">BibTeX</button>
-      <button onclick="exportOne('hayagriva')">Hayagriva</button>
-    </section>
   </article>
 
   <footer>
