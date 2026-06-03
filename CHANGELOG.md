@@ -21,7 +21,7 @@
 
 ### ドキュメント
 
-- `README.md`：フィルタの URL クエリパラメータ一覧表を追加（`type`・`year`・`scope`・`reviewed`・`invited`・`q`）
+- `README.md`・`CLAUDE.md`：フィルタの URL クエリパラメータ一覧表を追加（`type`・`year`・`scope`・`reviewed`・`invited`・`q`）
 - `README.md`：「既存データのインポート」節を追加（使い方・オプション・注意点）
 - `README.md`：「主な機能」にインポート機能を追記
 - `CLAUDE.md`：`tools/` をディレクトリ構成に追加、`tools/import.py` の仕様節を追加（型マッピング表含む）

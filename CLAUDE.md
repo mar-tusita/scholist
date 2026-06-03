@@ -301,7 +301,18 @@ entries:
   - 国内/国際（scope）
   - 査読有無（reviewed）
   - 招待有無（invited）
-  - フィルタ条件は URL クエリパラメータ（`?type=journal&year=2023` 等）に保持（共有・リロード対応）
+  - フィルタ条件は URL クエリパラメータに保持（共有・リロード対応）
+  - パラメータ一覧：
+
+    | パラメータ | 値の例 | 対応フィールド |
+    | --- | --- | --- |
+    | `type` | `journal` | 種別（10種） |
+    | `year` | `2024` | date の年部分（4桁） |
+    | `scope` | `domestic` | `domestic` / `international` |
+    | `reviewed` | `true` | `true` / `false` |
+    | `invited` | `true` | `true` / `false` |
+    | `q` | `yamada` | 全文検索語（`build_searchtext` の出力に対して照合） |
+
 - インクリメンタル検索（JavaScript）：`build_searchtext()` で生成した全文字列を対象
   - title・title_en・abstract・authors・venue・organization・source 内の全文字列フィールド等
   - id・type・date・scope 等の構造フィールドは除外
