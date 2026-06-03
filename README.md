@@ -49,7 +49,17 @@ requirements-dev.txt
 .markdownlint.json
 CLAUDE.md
 TODO.md
+extras/
 ```
+
+> **`extras/` について：** ツール更新の自動同期ワークフロー（`sync-from-scholist.yml`）が入っています。
+> 使う場合はコピーしてから削除してください。
+>
+> ```bash
+> cp extras/sync-from-scholist.yml .github/workflows/
+> ```
+>
+> 使わない場合はそのまま削除できます。
 
 ### 依存パッケージのインストール
 

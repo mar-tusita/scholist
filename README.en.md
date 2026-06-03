@@ -47,7 +47,17 @@ requirements-dev.txt
 .markdownlint.json
 CLAUDE.md
 TODO.md
+extras/
 ```
+
+> **About `extras/`:** This directory contains `sync-from-scholist.yml`, the workflow for syncing tool updates.
+> If you want to use it, copy it before deleting:
+>
+> ```bash
+> cp extras/sync-from-scholist.yml .github/workflows/
+> ```
+>
+> If you don't need it, just delete `extras/` as-is.
 
 ### Install dependencies
 
