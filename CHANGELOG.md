@@ -14,6 +14,8 @@
 - `templates/index.html.j2`・`templates/entry.html.j2`：JA/EN トグルボタンをヘッダーに追加、全 UI 要素に `data-i18n` 属性付与
 - `static/style.css`：`.lang-toggle`・`.lang-btn`・`.lang-btn-active` スタイルを追加
 - `README.en.md`：README の英訳版を追加
+- `README.md`：言語切り替え機能の記述を追加（導入説明・主な機能一覧）
+- `.github/workflows/release-asset.yml`：配布 zip に `README.en.md` を追加
 
 ## [0.3.0] - 2026-06-02
 
