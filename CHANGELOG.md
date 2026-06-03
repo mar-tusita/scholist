@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### 変更
+
+- `.github/workflows/release-asset.yml`：CHANGELOG.md から該当バージョンのセクションを抽出して Release Notes として使用（`--generate-notes` を廃止）
+
 ## [0.5.1] - 2026-06-03
 
 ### 変更
