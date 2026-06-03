@@ -8,10 +8,6 @@
 
 ## 配布・セットアップ
 
-- **README 方法 B の削除ファイルリストを追記** ― 優先度: 低 / 難度: 小
-  「Use this template」から始めた場合に削除できるファイルの一覧（`tests/`・`requirements-dev.txt`・
-  `.github/workflows/test.yml`・`CLAUDE.md` 等）を README 方法 B の説明に追記する。
-
 ---
 
 ## 機能追加

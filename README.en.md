@@ -38,7 +38,16 @@ git push -u origin main
 ### Method B: Use GitHub template
 
 Click the "Use this template" button on the [repository page](https://github.com/mar-tusita/scholist).
-This includes development files; you may delete them if not needed.
+This includes development files. If you only need to manage publications, you can delete the following:
+
+```text
+tests/
+requirements-dev.txt
+.github/workflows/test.yml
+.markdownlint.json
+CLAUDE.md
+TODO.md
+```
 
 ### Install dependencies
 

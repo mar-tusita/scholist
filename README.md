@@ -40,7 +40,16 @@ git push -u origin main
 
 [リポジトリページ](https://github.com/mar-tusita/scholist) の
 「Use this template」ボタンから自分のリポジトリを作成します。
-テスト・開発用ファイルも含まれますが、不要であれば削除できます。
+テスト・開発用ファイルも含まれます。業績の記録にしか使わない場合は以下を削除できます。
+
+```text
+tests/
+requirements-dev.txt
+.github/workflows/test.yml
+.markdownlint.json
+CLAUDE.md
+TODO.md
+```
 
 ### 依存パッケージのインストール
 
