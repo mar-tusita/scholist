@@ -6,16 +6,6 @@
 
 ---
 
-## CI / リリース
-
-- **release-asset.yml：Release 作成と zip アップロードを一体化** ― 優先度: 中 / 難度: 小
-  現状、タグ push で `release-asset.yml` が自動起動するが、Release がまだ存在しないため
-  `gh release upload` が "release not found" で失敗する。毎回手動で workflow_dispatch を再実行している。
-  ワークフロー内で `gh release create --notes-file <file> "${TAG}"` を先に実行し、その後 zip をアップロードする
-  形に変更することで、タグ push 一発でリリースが完結するようにする。
-
----
-
 ## 品質・堅牢性
 
 - **ウォッチモード** ― 優先度: 低 / 難度: 中

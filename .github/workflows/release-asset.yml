@@ -54,7 +54,14 @@ jobs:
 
           echo "OUTFILE=${OUTFILE}" >> $GITHUB_ENV
 
-      - name: Upload to release
-        run: gh release upload "${TAG}" "${OUTFILE}" --clobber
+      - name: Create or update release with asset
+        run: |
+          if gh release view "${TAG}" > /dev/null 2>&1; then
+            gh release upload "${TAG}" "${OUTFILE}" --clobber
+          else
+            gh release create "${TAG}" "${OUTFILE}" \
+              --title "scholist ${TAG}" \
+              --generate-notes
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

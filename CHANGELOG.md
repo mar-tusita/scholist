@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### 変更
+
+- `.github/workflows/release-asset.yml`：タグ push 一発でリリースが完結するよう修正
+  - Release が未作成の場合は `gh release create` で作成して zip をアップロード
+  - Release が既に存在する場合は `gh release upload` で zip だけ追加
+  - これまでの「タグ push → 失敗 → 手動で Release 作成 → 手動で workflow_dispatch 再実行」の手順が不要になる
+
 ## [0.5.0] - 2026-06-02
 
 ### ドキュメント
