@@ -229,5 +229,13 @@ function applyLanguage(lang) {
 }
 
 function initLang() {
-  applyLanguage(localStorage.getItem(_LANG_KEY) || 'ja');
+  const stored = localStorage.getItem(_LANG_KEY);
+  if (stored) { applyLanguage(stored); return; }
+
+  // SCHOLIST_DEFAULT_LANG はテンプレートが <script> で定義する
+  const def = (typeof SCHOLIST_DEFAULT_LANG !== 'undefined') ? SCHOLIST_DEFAULT_LANG : 'auto';
+  if (def === 'ja') { applyLanguage('ja'); return; }
+  if (def === 'en') { applyLanguage('en'); return; }
+  // auto: ブラウザ言語で判定（ja 以外は英語）
+  applyLanguage(navigator.language.startsWith('ja') ? 'ja' : 'en');
 }
