@@ -16,6 +16,9 @@ header {
   background: #1a3a5c;
   color: #fff;
   padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 header h1 {
@@ -26,6 +29,32 @@ header h1 {
 header a {
   color: #fff;
   text-decoration: none;
+}
+
+.lang-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.lang-btn {
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: #fff;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.lang-btn.lang-btn-active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+  font-weight: 600;
 }
 
 /* 統計サマリー */

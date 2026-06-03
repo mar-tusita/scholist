@@ -29,6 +29,10 @@
 <body>
   <header>
     <h1><a href="../../">{{ config.site_title }}</a></h1>
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="ja" onclick="applyLanguage('ja')">JA</button>
+      <button class="lang-btn" data-lang="en" onclick="applyLanguage('en')">EN</button>
+    </div>
   </header>
 
   <article class="entry-detail">
@@ -39,16 +43,16 @@
     </h2>
 
     <div class="badges">
-      <span class="badge badge-{{ entry.type }}">{{ entry.type }}</span>
-      {% if entry.invited %}<span class="badge badge-invited">招待講演</span>{% endif %}
-      {% if entry.reviewed %}<span class="badge badge-reviewed">査読あり</span>{% endif %}
-      {% if entry.scope == 'international' %}<span class="badge badge-intl">国際</span>{% endif %}
-      {% if entry.scope == 'domestic' %}<span class="badge badge-dom">国内</span>{% endif %}
+      <span class="badge badge-{{ entry.type }}" data-i18n-type="{{ entry.type }}">{{ entry.type }}</span>
+      {% if entry.invited %}<span class="badge badge-invited" data-i18n="badge.invited.detail">招待講演</span>{% endif %}
+      {% if entry.reviewed %}<span class="badge badge-reviewed" data-i18n="badge.reviewed.detail">査読あり</span>{% endif %}
+      {% if entry.scope == 'international' %}<span class="badge badge-intl" data-i18n="badge.international">国際</span>{% endif %}
+      {% if entry.scope == 'domestic' %}<span class="badge badge-dom" data-i18n="badge.domestic">国内</span>{% endif %}
     </div>
 
     <table class="detail-table">
       <tr>
-        <th>著者</th>
+        <th data-i18n="detail.authors">著者</th>
         <td>
           {% for a in entry._authors_hl %}
             {%- if a.highlight -%}
@@ -67,154 +71,163 @@
 
       {% if entry.date %}
       <tr>
-        <th>日付</th>
+        <th data-i18n="detail.date">日付</th>
         <td>{{ entry.date }}</td>
       </tr>
       {% endif %}
 
       {% if entry.presenter %}
       <tr>
-        <th>登壇者</th>
+        <th data-i18n="detail.presenter">登壇者</th>
         <td>{{ entry.presenter }}</td>
       </tr>
       {% endif %}
 
       {% if entry.organization %}
       <tr>
-        <th>組織・学会</th>
+        <th data-i18n="detail.organization">組織・学会</th>
         <td>{{ entry.organization }}</td>
       </tr>
       {% endif %}
 
       {% if entry.type == 'conference' %}
         {% if entry.venue %}
-        <tr><th>会議名</th><td>{{ entry.venue }}{% if entry.venue_abbr %} ({{ entry.venue_abbr }}){% endif %}</td></tr>
+        <tr>
+          <th data-i18n="detail.venue.conference">会議名</th>
+          <td>{{ entry.venue }}{% if entry.venue_abbr %} ({{ entry.venue_abbr }}){% endif %}</td>
+        </tr>
         {% endif %}
         {% if entry.location %}
-        <tr><th>開催地</th><td>{{ entry.location }}</td></tr>
+        <tr><th data-i18n="detail.location">開催地</th><td>{{ entry.location }}</td></tr>
         {% endif %}
         {% if entry.source %}
           {% if entry.source.proceedings %}
-          <tr><th>論文集</th><td>{{ entry.source.proceedings }}</td></tr>
+          <tr><th data-i18n="detail.proceedings">論文集</th><td>{{ entry.source.proceedings }}</td></tr>
           {% endif %}
           {% if entry.source.pages %}
-          <tr><th>ページ</th><td>{{ entry.source.pages }}</td></tr>
+          <tr><th data-i18n="detail.pages">ページ</th><td>{{ entry.source.pages }}</td></tr>
           {% endif %}
         {% endif %}
 
       {% elif entry.type == 'journal' %}
         {% if entry.source %}
           {% if entry.source.journal_name %}
-          <tr><th>誌名</th><td>{{ entry.source.journal_name }}</td></tr>
+          <tr><th data-i18n="detail.journal">誌名</th><td>{{ entry.source.journal_name }}</td></tr>
           {% endif %}
           {% if entry.source.volume is defined %}
-          <tr><th>巻・号</th><td>Vol.{{ entry.source.volume }}{% if entry.source.number is defined %}, No.{{ entry.source.number }}{% endif %}</td></tr>
+          <tr><th data-i18n="detail.vol_no">巻・号</th><td>Vol.{{ entry.source.volume }}{% if entry.source.number is defined %}, No.{{ entry.source.number }}{% endif %}</td></tr>
           {% endif %}
           {% if entry.source.pages %}
-          <tr><th>ページ</th><td>{{ entry.source.pages }}</td></tr>
+          <tr><th data-i18n="detail.pages">ページ</th><td>{{ entry.source.pages }}</td></tr>
           {% endif %}
           {% if entry.source.doi %}
-          <tr><th>DOI</th><td><a href="https://doi.org/{{ entry.source.doi }}">{{ entry.source.doi }}</a></td></tr>
+          <tr><th data-i18n="detail.doi">DOI</th><td><a href="https://doi.org/{{ entry.source.doi }}">{{ entry.source.doi }}</a></td></tr>
           {% endif %}
         {% endif %}
 
       {% elif entry.type == 'talk' %}
         {% if entry.venue %}
-        <tr><th>会場・イベント</th><td>{{ entry.venue }}</td></tr>
+        <tr><th data-i18n="detail.venue.talk">会場・イベント</th><td>{{ entry.venue }}</td></tr>
         {% endif %}
         {% if entry.location %}
-        <tr><th>開催地</th><td>{{ entry.location }}</td></tr>
+        <tr><th data-i18n="detail.location">開催地</th><td>{{ entry.location }}</td></tr>
         {% endif %}
         {% if entry.source and entry.source.description %}
-        <tr><th>備考</th><td>{{ entry.source.description }}</td></tr>
+        <tr><th data-i18n="detail.note">備考</th><td>{{ entry.source.description }}</td></tr>
         {% endif %}
 
       {% elif entry.type == 'patent' %}
         {% if entry.source %}
           {% if entry.source.patent_number %}
-          <tr><th>特許番号</th><td>{{ entry.source.patent_number }}</td></tr>
+          <tr><th data-i18n="detail.patent_number">特許番号</th><td>{{ entry.source.patent_number }}</td></tr>
           {% endif %}
           {% if entry.source.country %}
-          <tr><th>国</th><td>{{ entry.source.country }}</td></tr>
+          <tr><th data-i18n="detail.country">国</th><td>{{ entry.source.country }}</td></tr>
           {% endif %}
           {% if entry.source.status %}
-          <tr><th>状態</th><td>{{ '登録' if entry.source.status == 'granted' else '出願' }}</td></tr>
+          <tr>
+            <th data-i18n="detail.status">状態</th>
+            <td data-i18n="{{ 'patent.granted' if entry.source.status == 'granted' else 'patent.applied' }}">{{ '登録' if entry.source.status == 'granted' else '出願' }}</td>
+          </tr>
           {% endif %}
         {% endif %}
 
       {% elif entry.type == 'award' %}
         {% if entry.source %}
           {% if entry.source.award_name %}
-          <tr><th>賞名</th><td>{{ entry.source.award_name }}</td></tr>
+          <tr><th data-i18n="detail.award_name">賞名</th><td>{{ entry.source.award_name }}</td></tr>
           {% endif %}
           {% if entry.source.org_giving_award %}
-          <tr><th>授与機関</th><td>{{ entry.source.org_giving_award }}</td></tr>
+          <tr><th data-i18n="detail.org_giving_award">授与機関</th><td>{{ entry.source.org_giving_award }}</td></tr>
           {% endif %}
         {% endif %}
 
       {% elif entry.type == 'book' %}
         {% if entry.source %}
           {% if entry.source.publisher %}
-          <tr><th>出版社</th><td>{{ entry.source.publisher }}</td></tr>
+          <tr><th data-i18n="detail.publisher">出版社</th><td>{{ entry.source.publisher }}</td></tr>
           {% endif %}
           {% if entry.source.isbn %}
-          <tr><th>ISBN</th><td>{{ entry.source.isbn }}</td></tr>
+          <tr><th data-i18n="detail.isbn">ISBN</th><td>{{ entry.source.isbn }}</td></tr>
           {% endif %}
           {% if entry.source.editors %}
-          <tr><th>編者</th><td>{{ entry.source.editors | join(', ') }}</td></tr>
+          <tr><th data-i18n="detail.editors">編者</th><td>{{ entry.source.editors | join(', ') }}</td></tr>
           {% endif %}
           {% if entry.source.chapter %}
-          <tr><th>章</th><td>{{ entry.source.chapter }}</td></tr>
+          <tr><th data-i18n="detail.chapter">章</th><td>{{ entry.source.chapter }}</td></tr>
           {% endif %}
           {% if entry.source.pages %}
-          <tr><th>ページ</th><td>{{ entry.source.pages }}</td></tr>
+          <tr><th data-i18n="detail.pages">ページ</th><td>{{ entry.source.pages }}</td></tr>
           {% endif %}
         {% endif %}
 
       {% elif entry.type == 'thesis' %}
         {% if entry.source %}
           {% if entry.source.institution %}
-          <tr><th>機関</th><td>{{ entry.source.institution }}</td></tr>
+          <tr><th data-i18n="detail.institution">機関</th><td>{{ entry.source.institution }}</td></tr>
           {% endif %}
           {% if entry.source.degree %}
           {% set _deg = {'bachelor': '学士論文', 'master': '修士論文', 'doctoral': '博士論文'} %}
-          <tr><th>学位</th><td>{{ _deg.get(entry.source.degree, entry.source.degree) }}</td></tr>
+          <tr>
+            <th data-i18n="detail.degree">学位</th>
+            <td data-i18n="degree.{{ entry.source.degree }}">{{ _deg.get(entry.source.degree, entry.source.degree) }}</td>
+          </tr>
           {% endif %}
         {% endif %}
 
       {% elif entry.type == 'report' %}
         {% if entry.source %}
           {% if entry.source.institution %}
-          <tr><th>発行機関</th><td>{{ entry.source.institution }}</td></tr>
+          <tr><th data-i18n="detail.publisher_institution">発行機関</th><td>{{ entry.source.institution }}</td></tr>
           {% endif %}
           {% if entry.source.number %}
-          <tr><th>レポート番号</th><td>{{ entry.source.number }}</td></tr>
+          <tr><th data-i18n="detail.report_number">レポート番号</th><td>{{ entry.source.number }}</td></tr>
           {% endif %}
         {% endif %}
 
       {% else %}
         {% if entry.source and entry.source.description %}
-        <tr><th>出典</th><td>{{ entry.source.description }}</td></tr>
+        <tr><th data-i18n="detail.source">出典</th><td>{{ entry.source.description }}</td></tr>
         {% endif %}
       {% endif %}
 
       {% if entry.url %}
       <tr>
-        <th>URL / DOI</th>
+        <th data-i18n="detail.url">URL / DOI</th>
         <td><a href="{{ entry.url }}">{{ entry.url }}</a></td>
       </tr>
       {% endif %}
 
       {% if entry.abstract %}
       <tr>
-        <th>アブストラクト</th>
+        <th data-i18n="detail.abstract">アブストラクト</th>
         <td class="abstract">{{ entry.abstract }}</td>
       </tr>
       {% endif %}
 
       {% if entry.note %}
       <tr>
-        <th>備考</th>
+        <th data-i18n="detail.note">備考</th>
         <td>{{ entry.note }}</td>
       </tr>
       {% endif %}
@@ -222,7 +235,7 @@
 
     {% if entry.files %}
     <section class="files-section">
-      <h3>添付ファイル</h3>
+      <h3 data-i18n="section.files">添付ファイル</h3>
       <ul>
         {% for f in entry.files %}
         <li>
@@ -240,7 +253,7 @@
     {% endif %}
 
     <section class="export-section">
-      <h3>このエントリをエクスポート</h3>
+      <h3 data-i18n="export.one.title">このエントリをエクスポート</h3>
       <button onclick="exportOne('yaml')">YAML</button>
       <button onclick="exportOne('json')">JSON</button>
       <button onclick="exportOne('bibtex')">BibTeX</button>
@@ -252,6 +265,7 @@
     <p>Generated by <a href="https://github.com/mar-tusita/scholist">scholist</a> {{ scholist_version }}</p>
   </footer>
 
+  <script src="../../static/i18n.js"></script>
   <script>
     const ENTRY = {{ entry | tojson }};
   </script>
@@ -261,6 +275,7 @@
     function exportOne(format) {
       exportEntries([ENTRY], format);
     }
+    initLang();
   </script>
 </body>
 </html>

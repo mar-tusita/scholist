@@ -5,6 +5,16 @@
 
 ## [Unreleased]
 
+### 追加
+
+- `static/i18n.js`：UI 多言語対応（日本語 / 英語）
+  - ヘッダーの JA / EN ボタンで言語を切り替え（`localStorage` で永続化）
+  - 翻訳辞書：種別・バッジ・フィルター・テーブルヘッダー・詳細ラベル・エクスポートボタン等
+  - `applyLanguage(lang)`・`initLang()` 関数
+- `templates/index.html.j2`・`templates/entry.html.j2`：JA/EN トグルボタンをヘッダーに追加、全 UI 要素に `data-i18n` 属性付与
+- `static/style.css`：`.lang-toggle`・`.lang-btn`・`.lang-btn-active` スタイルを追加
+- `README.en.md`：README の英訳版を追加
+
 ## [0.3.0] - 2026-06-02
 
 ### 修正
