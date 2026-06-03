@@ -55,6 +55,9 @@ const MESSAGES = {
     // ページネーション
     'btn.show.more': 'さらに表示',
     'btn.show.all':  '全件表示',
+    // 前後ナビゲーション
+    'nav.prev': '← 前の業績',
+    'nav.next': '次の業績 →',
     // 詳細ラベル
     'detail.authors':          '著者',
     'detail.date':             '日付',
@@ -149,6 +152,9 @@ const MESSAGES = {
     // Pagination
     'btn.show.more': 'Show more',
     'btn.show.all':  'Show all',
+    // Entry navigation
+    'nav.prev': '← Previous',
+    'nav.next': 'Next →',
     // Detail labels
     'detail.authors':          'Authors',
     'detail.date':             'Date',

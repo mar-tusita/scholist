@@ -349,6 +349,35 @@ header a {
   color: #1a3a5c;
 }
 
+/* 前後ナビゲーション */
+.entry-nav {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0;
+  padding: 12px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.entry-nav a {
+  color: #1a3a5c;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.entry-nav a:hover {
+  text-decoration: underline;
+}
+
+.entry-nav-disabled {
+  display: inline-block;
+  min-width: 1px;
+}
+
+@media print {
+  .entry-nav { display: none; }
+}
+
 /* フッター */
 footer {
   margin-top: 48px;
