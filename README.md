@@ -400,6 +400,27 @@ python build.py
 | `requirements.txt` | 本番依存（PyYAML, Jinja2） |
 | `requirements-dev.txt` | 開発依存（pytest） |
 
+### リリース手順
+
+1. `pyproject.toml` のバージョンを更新する
+2. `CHANGELOG.md` の `[Unreleased]` を `[vX.Y.Z] - YYYY-MM-DD` に確定する
+3. コミット・push する
+
+   ```bash
+   git add pyproject.toml CHANGELOG.md
+   git commit -m "chore: release X.Y.Z"
+   git push origin main
+   ```
+
+4. タグを作成・push する（これだけで Release 作成と template zip の配布まで自動完結）
+
+   ```bash
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
+   ```
+
+> **リリースノートを手書きする場合：** 手順 4 の前に `gh release create vX.Y.Z --title "..." --notes "..."` を実行しておくと、ワークフローは Release 作成をスキップして zip のアップロードだけ行います。
+
 ## ライセンス
 
 [LICENSE](LICENSE) を参照してください。

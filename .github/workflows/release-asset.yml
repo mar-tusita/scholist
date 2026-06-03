@@ -1,3 +1,14 @@
+# リリース手順：
+#   1. pyproject.toml のバージョンを更新
+#   2. CHANGELOG.md の [Unreleased] を [vX.Y.Z] に確定
+#   3. git commit && git push origin main
+#   4. git tag vX.Y.Z && git push origin vX.Y.Z
+#      → このワークフローが自動起動し、Release 作成 + template zip アップロードまで完結
+#
+# 手動でリリースノートを書く場合：
+#   手順 4 の前に gh release create vX.Y.Z --title "..." --notes "..." を実行しておくと、
+#   ワークフローは Release 作成をスキップして zip のアップロードだけ行う。
+
 name: Create Release Asset
 
 on:
