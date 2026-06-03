@@ -5,6 +5,16 @@
 
 ## [Unreleased]
 
+### 変更
+
+- `build.py`：`build_searchtext()` を追加し、検索対象をエントリの全文字列値に拡大
+  - `source` 内の誌名・論文集名・機関名・賞名・説明文・出版社など全て対象
+  - `note` / `presenter` / `location` / `venue` 等も対象に
+  - `id`・`type`・`date`・`scope` 等の構造フィールドは除外
+  - 内部フィールド（`_` プレフィックス）は除外
+- `templates/index.html.j2`：`data-searchtext` を `{{ e._searchtext }}` の1行に簡略化
+- `tests/test_build.py`：`TestBuildSearchtext` クラスを追加（13件、計112件）
+
 ## [0.5.2] - 2026-06-03
 
 ### 変更

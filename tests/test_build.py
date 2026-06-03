@@ -2,7 +2,8 @@ import datetime
 import xml.etree.ElementTree as ET
 import pytest
 from build import (validate, sort_entries, highlight_authors, read_version,
-                   generate_sitemap, generate_feed, _entry_description)
+                   generate_sitemap, generate_feed, _entry_description,
+                   build_searchtext)
 
 
 # ── validate ──────────────────────────────────────────────────────────────
@@ -583,3 +584,73 @@ class TestGenerateFeed:
         desc = _entry_description(entry)
         assert "T" in desc
         assert desc.endswith(".")
+
+
+# ── build_searchtext ──────────────────────────────────────────────────────
+
+class TestBuildSearchtext:
+    def _e(self, **kwargs):
+        base = {'id': 'a', 'type': 'journal', 'title': 'タイトル',
+                'title_en': 'Title', 'authors': ['山田 太郎'],
+                'abstract': 'アブストラクト', 'note': '備考',
+                'venue': '会場', 'organization': '情報処理学会',
+                'source': {'journal_name': '論文誌', 'pages': '1-12'}}
+        base.update(kwargs)
+        return base
+
+    def test_includes_title(self):
+        t = build_searchtext(self._e())
+        assert 'タイトル' in t
+
+    def test_includes_title_en(self):
+        t = build_searchtext(self._e())
+        assert 'title' in t
+
+    def test_includes_abstract(self):
+        t = build_searchtext(self._e())
+        assert 'アブストラクト' in t
+
+    def test_includes_authors(self):
+        t = build_searchtext(self._e())
+        assert '山田 太郎' in t
+
+    def test_includes_note(self):
+        t = build_searchtext(self._e())
+        assert '備考' in t
+
+    def test_includes_source_journal_name(self):
+        t = build_searchtext(self._e())
+        assert '論文誌' in t
+
+    def test_includes_organization(self):
+        t = build_searchtext(self._e())
+        assert '情報処理学会' in t
+
+    def test_excludes_id(self):
+        t = build_searchtext(self._e())
+        assert ' a ' not in f' {t} '
+
+    def test_excludes_type(self):
+        t = build_searchtext(self._e())
+        assert 'journal' not in t
+
+    def test_excludes_date(self):
+        t = build_searchtext(self._e(date='2024-03-15'))
+        assert '2024-03-15' not in t
+
+    def test_lowercase(self):
+        t = build_searchtext(self._e())
+        assert t == t.lower()
+
+    def test_nested_source_traversed(self):
+        e = self._e()
+        e['source']['institution'] = '○○大学'
+        t = build_searchtext(e)
+        assert '○○大学' in t
+
+    def test_internal_fields_excluded(self):
+        e = self._e()
+        e['_authors_hl'] = [{'name': '山田', 'highlight': True, 'style': 'bold'}]
+        t = build_searchtext(e)
+        assert 'highlight' not in t
+        assert 'bold' not in t

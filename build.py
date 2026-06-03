@@ -147,6 +147,33 @@ def sort_entries(entries):
     return [e for _, e in indexed]
 
 
+_SEARCHTEXT_EXCLUDE = {
+    'id', 'type', 'date', 'registered_at',
+    'scope', 'paper_type', 'invited', 'reviewed',
+    'language', 'highlight_style', 'status', 'country',
+}
+
+
+def build_searchtext(entry):
+    """エントリの全文字列値をフラット化して検索用テキストを生成する。"""
+    parts = []
+
+    def collect(obj, key=None):
+        if key in _SEARCHTEXT_EXCLUDE:
+            return
+        if isinstance(obj, str):
+            parts.append(obj)
+        elif isinstance(obj, list):
+            for item in obj:
+                collect(item)
+        elif isinstance(obj, dict):
+            for k, v in obj.items():
+                collect(v, key=k)
+
+    collect({k: v for k, v in entry.items() if not k.startswith('_')})
+    return ' '.join(parts).lower()
+
+
 def highlight_authors(authors, highlight_list, style):
     result = []
     for author in authors:
@@ -170,6 +197,7 @@ def render_site(config, entries, output_dir, template_dir, version):
 
     for entry in entries:
         entry["_authors_hl"] = highlight_authors(entry.get("authors", []), hl_authors, hl_style)
+        entry["_searchtext"] = build_searchtext(entry)
 
     # 一覧ページ
     tmpl_index = env.get_template("index.html.j2")

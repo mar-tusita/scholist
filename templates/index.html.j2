@@ -119,7 +119,7 @@
           data-scope="{{ e.scope if e.scope is defined else '' }}"
           data-reviewed="{{ 'true' if e.reviewed else 'false' }}"
           data-invited="{{ 'true' if e.invited else 'false' }}"
-          data-searchtext="{{ ([e.title or '', e.title_en or '', e.abstract or ''] + (e.authors or []) + [e.venue or '', e.organization or '']) | join(' ') | lower }}">
+          data-searchtext="{{ e._searchtext }}">
         <td class="col-year">{{ e.date[:4] if e.date else '—' }}</td>
         <td class="col-type">
           <span class="badge badge-{{ e.type }}" data-i18n-type="{{ e.type }}">{{ e.type }}</span>
