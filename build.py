@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import sys
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 
@@ -235,6 +236,125 @@ def generate_sitemap(config, entries, output_dir):
     print(f"生成: {sitemap_path}")
 
 
+_ATOM_NS = "http://www.w3.org/2005/Atom"
+ET.register_namespace("", _ATOM_NS)
+
+
+def _atom(tag):
+    return f"{{{_ATOM_NS}}}{tag}"
+
+
+def _entry_description(entry):
+    """bibliography 形式の説明文を生成する（Atom feed の content 用）"""
+    parts = []
+    authors = entry.get("authors") or []
+    if authors:
+        parts.append(", ".join(authors))
+    title = entry.get("title") or entry.get("title_en") or ""
+    if title:
+        parts.append(title)
+
+    src = entry.get("source") or {}
+    etype = entry.get("type", "")
+    venue_info = []
+
+    if etype == "conference":
+        if src.get("proceedings"):
+            venue_info.append(src["proceedings"])
+        elif entry.get("venue"):
+            venue_info.append(entry["venue"])
+        if src.get("pages"):
+            venue_info.append(f"pp. {src['pages']}")
+    elif etype == "journal":
+        if src.get("journal_name"):
+            venue_info.append(src["journal_name"])
+        if src.get("volume") is not None:
+            vol = f"Vol. {src['volume']}"
+            if src.get("number") is not None:
+                vol += f", No. {src['number']}"
+            venue_info.append(vol)
+        if src.get("pages"):
+            venue_info.append(f"pp. {src['pages']}")
+    elif etype == "talk":
+        if entry.get("venue"):
+            venue_info.append(entry["venue"])
+    elif etype == "award":
+        if src.get("award_name"):
+            venue_info.append(src["award_name"])
+        if src.get("org_giving_award"):
+            venue_info.append(src["org_giving_award"])
+    elif etype == "patent":
+        if src.get("patent_number"):
+            venue_info.append(src["patent_number"])
+    elif etype == "book":
+        if src.get("publisher"):
+            venue_info.append(src["publisher"])
+        if src.get("pages"):
+            venue_info.append(f"pp. {src['pages']}")
+    elif etype == "thesis":
+        if src.get("institution"):
+            venue_info.append(src["institution"])
+        deg_map = {
+            "doctoral": "Doctoral dissertation",
+            "master": "Master's thesis",
+            "bachelor": "Bachelor's thesis",
+        }
+        if src.get("degree") in deg_map:
+            venue_info.append(deg_map[src["degree"]])
+    elif etype == "report":
+        if src.get("institution"):
+            venue_info.append(src["institution"])
+        if src.get("number"):
+            venue_info.append(src["number"])
+    else:
+        if src.get("description"):
+            venue_info.append(src["description"])
+
+    if venue_info:
+        parts.append(", ".join(venue_info))
+
+    d = entry.get("date")
+    if d:
+        parts.append(str(d)[:4])
+
+    return ". ".join(parts) + "." if parts else ""
+
+
+def generate_feed(config, entries, output_dir):
+    base_url = config.get("base_url", "").rstrip("/")
+    if not base_url:
+        return
+
+    dated = [(e, _sitemap_date(e)) for e in entries if _sitemap_date(e)]
+    most_recent = max((d for _, d in dated), default=None) if dated else "1970-01-01"
+
+    root = ET.Element(_atom("feed"))
+    ET.SubElement(root, _atom("title")).text = config.get("site_title", "Publications")
+    ET.SubElement(root, _atom("id")).text = base_url + "/"
+    ET.SubElement(root, _atom("link"), rel="alternate", href=base_url + "/")
+    ET.SubElement(root, _atom("link"), rel="self", href=base_url + "/feed.xml")
+    ET.SubElement(root, _atom("updated")).text = f"{most_recent}T00:00:00Z"
+
+    for entry, date_str in dated:
+        e_el = ET.SubElement(root, _atom("entry"))
+        title = entry.get("title") or entry.get("title_en") or ""
+        ET.SubElement(e_el, _atom("id")).text = f"{base_url}/entries/{entry['id']}/"
+        ET.SubElement(e_el, _atom("title")).text = title
+        ET.SubElement(e_el, _atom("link"), href=f"{base_url}/entries/{entry['id']}/")
+        ET.SubElement(e_el, _atom("published")).text = f"{date_str}T00:00:00Z"
+        ET.SubElement(e_el, _atom("updated")).text = f"{date_str}T00:00:00Z"
+        for author in (entry.get("authors") or []):
+            a_el = ET.SubElement(e_el, _atom("author"))
+            ET.SubElement(a_el, _atom("name")).text = author
+        ET.SubElement(e_el, _atom("content"), type="text").text = _entry_description(entry)
+
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="  ")
+    feed_path = output_dir / "feed.xml"
+    tree.write(feed_path, encoding="UTF-8", xml_declaration=True)
+    print(f"生成: {feed_path}")
+
+
 def copy_dir(src, dst):
     if src.exists():
         if dst.exists():
@@ -266,6 +386,7 @@ def main():
 
     render_site(config, entries, output_dir, template_dir, version)
     generate_sitemap(config, entries, output_dir)
+    generate_feed(config, entries, output_dir)
 
     copy_dir(static_dir, output_dir / "static")
     copy_dir(files_dir, output_dir / "files")

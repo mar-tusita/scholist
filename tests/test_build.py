@@ -1,6 +1,8 @@
 import datetime
+import xml.etree.ElementTree as ET
 import pytest
-from build import validate, sort_entries, highlight_authors, read_version, generate_sitemap
+from build import (validate, sort_entries, highlight_authors, read_version,
+                   generate_sitemap, generate_feed, _entry_description)
 
 
 # ── validate ──────────────────────────────────────────────────────────────
@@ -489,3 +491,95 @@ class TestGenerateSitemap:
         generate_sitemap(self._cfg(), self._entries, tmp_path)
         xml = (tmp_path / "sitemap.xml").read_text()
         assert xml.startswith('<?xml version="1.0" encoding="UTF-8"?>')
+
+
+# ── generate_feed ─────────────────────────────────────────────────────────
+
+class TestGenerateFeed:
+    _entries = [
+        {"id": "a", "type": "journal", "title": "タイトルA", "authors": ["山田 太郎"],
+         "registered_at": "2024-03-20", "date": "2024-03-15",
+         "source": {"journal_name": "情報処理学会論文誌", "volume": 64, "number": 9, "pages": "1-12"}},
+        {"id": "b", "type": "conference", "title_en": "Title B", "authors": ["T. Yamada"],
+         "date": "2023-09",
+         "source": {"proceedings": "Proc. of SIC 2023", "pages": "100-111"}},
+        {"id": "c", "type": "misc", "title": "タイトルC", "authors": ["山田 太郎"],
+         "date": None},
+    ]
+
+    def _cfg(self, base_url="https://example.com"):
+        return {"base_url": base_url, "site_title": "テスト業績一覧"}
+
+    def test_generates_file(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        assert (tmp_path / "feed.xml").exists()
+
+    def test_skips_if_no_base_url(self, tmp_path):
+        generate_feed(self._cfg(""), self._entries, tmp_path)
+        assert not (tmp_path / "feed.xml").exists()
+
+    def test_excludes_entries_without_date(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        tree = ET.parse(tmp_path / "feed.xml")
+        ns = {"a": "http://www.w3.org/2005/Atom"}
+        ids = [e.find("a:id", ns).text for e in tree.findall("a:entry", ns)]
+        assert any("/a/" in i for i in ids)
+        assert any("/b/" in i for i in ids)
+        assert not any("/c/" in i for i in ids)
+
+    def test_uses_registered_at_over_date(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "feed.xml").read_text(encoding="utf-8")
+        assert "2024-03-20T00:00:00Z" in xml
+
+    def test_year_month_date_gets_day(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "feed.xml").read_text(encoding="utf-8")
+        assert "2023-09-01T00:00:00Z" in xml
+
+    def test_atom_namespace(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "feed.xml").read_text(encoding="utf-8")
+        assert "http://www.w3.org/2005/Atom" in xml
+
+    def test_valid_xml(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        ET.parse(tmp_path / "feed.xml")  # raises if invalid
+
+    def test_description_contains_author_and_title(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "feed.xml").read_text(encoding="utf-8")
+        assert "山田 太郎" in xml
+        assert "タイトルA" in xml
+
+    def test_description_contains_journal_info(self, tmp_path):
+        generate_feed(self._cfg(), self._entries, tmp_path)
+        xml = (tmp_path / "feed.xml").read_text(encoding="utf-8")
+        assert "情報処理学会論文誌" in xml
+        assert "Vol. 64" in xml
+
+    def test_entry_description_journal(self):
+        entry = {"type": "journal", "title": "T", "authors": ["A"],
+                 "date": "2024-01",
+                 "source": {"journal_name": "JN", "volume": 1, "number": 2, "pages": "1-10"}}
+        desc = _entry_description(entry)
+        assert "A" in desc
+        assert "T" in desc
+        assert "JN" in desc
+        assert "Vol. 1, No. 2" in desc
+        assert "pp. 1-10" in desc
+        assert "2024" in desc
+
+    def test_entry_description_conference(self):
+        entry = {"type": "conference", "title": "T", "authors": ["A"],
+                 "date": "2023-03",
+                 "source": {"proceedings": "Proc", "pages": "1-5"}}
+        desc = _entry_description(entry)
+        assert "Proc" in desc
+        assert "pp. 1-5" in desc
+
+    def test_entry_description_no_date(self):
+        entry = {"type": "misc", "title": "T", "authors": ["A"]}
+        desc = _entry_description(entry)
+        assert "T" in desc
+        assert desc.endswith(".")

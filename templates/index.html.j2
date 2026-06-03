@@ -11,6 +11,7 @@
   <meta property="og:site_name" content="{{ config.site_title }}">
   {% if config.base_url %}<meta property="og:url" content="{{ config.base_url }}/">{% endif %}
   <meta name="twitter:card" content="summary">
+  {% if config.base_url %}<link rel="alternate" type="application/atom+xml" title="{{ config.site_title }}" href="{{ config.base_url }}/feed.xml">{% endif %}
 </head>
 <body>
   <header>

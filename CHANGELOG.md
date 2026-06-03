@@ -7,6 +7,13 @@
 
 ### 追加
 
+- `build.py`：Atom フィード（`public/feed.xml`）の生成
+  - `base_url` が設定されている場合のみ出力（未設定時はスキップ）
+  - 日付優先順：`registered_at` → `date`、どちらもないエントリは除外
+  - `<content>` は bibliography 形式（著者. タイトル. 誌名, 巻・号, pp., 年.）
+  - ElementTree で生成（XML エスケープを標準ライブラリに委譲）
+- `tests/test_build.py`：`TestGenerateFeed` クラスを追加（13件）
+- `templates/index.html.j2`・`templates/entry.html.j2`：`base_url` 設定時に `<link rel="alternate" type="application/atom+xml">` を `<head>` に追加（ブラウザ自動検出対応）
 - 詳細ページ（`entry.html.j2`）：前後ナビゲーション「← 前の業績」「次の業績 →」を記事下部に追加
   - 一覧と同じソート順（左が新しい・右が古い）、端のページは該当方向を非表示
   - `build.py`：詳細ページ生成時に `prev_entry`・`next_entry` をテンプレートに渡すよう変更
