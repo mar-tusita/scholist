@@ -99,6 +99,10 @@
   </div>
 
   <div id="count-display" class="count-display"></div>
+  <div id="pagination-controls" class="pagination-controls" style="display:none">
+    <button id="btn-show-more" onclick="showMore()" data-i18n="btn.show.more">さらに表示</button>
+    <button id="btn-show-all"  onclick="showAll()"  data-i18n="btn.show.all">全件表示</button>
+  </div>
 
   <table id="entries-table">
     <thead>
@@ -161,7 +165,10 @@
     </tbody>
   </table>
 
-  <script>const SCHOLIST_DEFAULT_LANG = "{{ config.default_language or 'auto' }}";</script>
+  <script>
+    const SCHOLIST_DEFAULT_LANG = "{{ config.default_language or 'auto' }}";
+    const SCHOLIST_PER_PAGE = {{ config.entries_per_page or 0 }};
+  </script>
   <script src="static/i18n.js"></script>
   <script>
     const ALL_ENTRIES = {{ entries | tojson }};
@@ -199,23 +206,64 @@
   <script>
     const rows = Array.from(document.querySelectorAll('.entry-row'));
     const countDisplay = document.getElementById('count-display');
-    let _lastVisibleCount = 0;
+    const paginationControls = document.getElementById('pagination-controls');
+    let _lastShown = 0, _lastTotal = 0, _lastVisibleCount = 0;
+    let _visibleLimit = SCHOLIST_PER_PAGE > 0 ? SCHOLIST_PER_PAGE : Infinity;
 
-    function updateCount(visible) {
-      _lastVisibleCount = visible;
-      countDisplay.textContent = t('count', visible);
+    function updateCount(shown, total) {
+      _lastShown = shown; _lastTotal = total; _lastVisibleCount = shown;
+      countDisplay.textContent = t('count', shown, total);
+    }
+
+    function _getFilteredRows() {
+      const type     = document.getElementById('filter-type').value;
+      const year     = document.getElementById('filter-year').value;
+      const scope    = document.getElementById('filter-scope').value;
+      const reviewed = document.getElementById('filter-reviewed').value;
+      const invited  = document.getElementById('filter-invited').value;
+      const query    = document.getElementById('search-input').value.toLowerCase();
+      return rows.filter(row =>
+        (!type     || row.dataset.type     === type)     &&
+        (!year     || row.dataset.year     === year)     &&
+        (!scope    || row.dataset.scope    === scope)    &&
+        (!reviewed || row.dataset.reviewed === reviewed) &&
+        (!invited  || row.dataset.invited  === invited)  &&
+        (!query    || row.dataset.searchtext.includes(query))
+      );
+    }
+
+    function _render() {
+      const filtered = _getFilteredRows();
+      const limit = _visibleLimit === Infinity ? filtered.length : Math.min(_visibleLimit, filtered.length);
+      const filteredSet = new Set(filtered.slice(0, limit));
+      rows.forEach(row => { row.style.display = filteredSet.has(row) ? '' : 'none'; });
+      updateCount(limit, filtered.length);
+      const hasMore = limit < filtered.length;
+      paginationControls.style.display = hasMore ? '' : 'none';
+    }
+
+    function applyFilters() {
+      _visibleLimit = SCHOLIST_PER_PAGE > 0 ? SCHOLIST_PER_PAGE : Infinity;
+      _render();
+      saveFiltersToUrl();
+    }
+
+    function showMore() {
+      if (SCHOLIST_PER_PAGE > 0) _visibleLimit += SCHOLIST_PER_PAGE;
+      else _visibleLimit = Infinity;
+      _render();
+    }
+
+    function showAll() {
+      _visibleLimit = Infinity;
+      _render();
     }
 
     function saveFiltersToUrl() {
       const params = new URLSearchParams();
-      const addIfSet = (id, key) => {
-        const val = document.getElementById(id).value;
-        if (val) params.set(key, val);
-      };
-      addIfSet('filter-type', 'type');
-      addIfSet('filter-year', 'year');
-      addIfSet('filter-scope', 'scope');
-      addIfSet('filter-reviewed', 'reviewed');
+      const addIfSet = (id, key) => { const v = document.getElementById(id).value; if (v) params.set(key, v); };
+      addIfSet('filter-type', 'type'); addIfSet('filter-year', 'year');
+      addIfSet('filter-scope', 'scope'); addIfSet('filter-reviewed', 'reviewed');
       addIfSet('filter-invited', 'invited');
       const q = document.getElementById('search-input').value;
       if (q) params.set('q', q);
@@ -225,41 +273,12 @@
 
     function loadFiltersFromUrl() {
       const params = new URLSearchParams(location.search);
-      const setVal = (id, key) => {
-        const val = params.get(key);
-        if (val !== null) document.getElementById(id).value = val;
-      };
-      setVal('filter-type', 'type');
-      setVal('filter-year', 'year');
-      setVal('filter-scope', 'scope');
-      setVal('filter-reviewed', 'reviewed');
+      const setVal = (id, key) => { const v = params.get(key); if (v !== null) document.getElementById(id).value = v; };
+      setVal('filter-type', 'type'); setVal('filter-year', 'year');
+      setVal('filter-scope', 'scope'); setVal('filter-reviewed', 'reviewed');
       setVal('filter-invited', 'invited');
       const q = params.get('q');
       if (q !== null) document.getElementById('search-input').value = q;
-    }
-
-    function applyFilters() {
-      const type = document.getElementById('filter-type').value;
-      const year = document.getElementById('filter-year').value;
-      const scope = document.getElementById('filter-scope').value;
-      const reviewed = document.getElementById('filter-reviewed').value;
-      const invited = document.getElementById('filter-invited').value;
-      const query = document.getElementById('search-input').value.toLowerCase();
-
-      let visible = 0;
-      rows.forEach(row => {
-        const match =
-          (!type || row.dataset.type === type) &&
-          (!year || row.dataset.year === year) &&
-          (!scope || row.dataset.scope === scope) &&
-          (!reviewed || row.dataset.reviewed === reviewed) &&
-          (!invited || row.dataset.invited === invited) &&
-          (!query || row.dataset.searchtext.includes(query));
-        row.style.display = match ? '' : 'none';
-        if (match) visible++;
-      });
-      updateCount(visible);
-      saveFiltersToUrl();
     }
 
     ['filter-type', 'filter-year', 'filter-scope', 'filter-reviewed', 'filter-invited'].forEach(id => {

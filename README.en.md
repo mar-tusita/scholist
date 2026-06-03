@@ -144,6 +144,10 @@ site_title: "Publications"
 # ja:   always start in Japanese  / en: always start in English
 default_language: auto
 
+# Number of entries shown initially (same number added by "Show more")
+# 0 or unset means show all entries at once
+entries_per_page: 30
+
 # Public URL of the site (for og:url / sitemap.xml), no trailing slash
 # Example: https://username.github.io/publications
 # Leave empty to omit og:url output

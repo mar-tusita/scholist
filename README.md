@@ -147,6 +147,10 @@ site_title: "研究業績一覧"
 # ja:   常に日本語で開始  / en: 常に英語で開始
 default_language: auto
 
+# 一覧ページの初期表示件数（「さらに表示」で同数ずつ追加）
+# 0 または未設定の場合は全件表示
+entries_per_page: 30
+
 # サイトの公開 URL（og:url / 将来の sitemap.xml 用）末尾スラッシュなし
 # 例: https://username.github.io/publications
 # 空文字または未設定の場合、og:url は出力しない
