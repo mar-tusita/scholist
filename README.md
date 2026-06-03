@@ -381,6 +381,19 @@ jobs:
 
 - **統計サマリー**：一覧ページ上部に総件数・年範囲・種別ごとの件数チップを表示
 - **フィルタ**：種別・年・国内/国際・査読有無・招待有無で絞り込み（条件は URL に保持・共有可能）
+  フィルタ条件は以下のクエリパラメータで直接指定できます：
+
+  | パラメータ | 値の例 | 説明 |
+  | --- | --- | --- |
+  | `type` | `journal` | 種別（`conference` / `journal` / `talk` / `patent` / `award` / `book` / `thesis` / `report` / `misc` / `other`） |
+  | `year` | `2024` | 年（4桁） |
+  | `scope` | `domestic` | 国内/国際（`domestic` / `international`） |
+  | `reviewed` | `true` | 査読（`true` / `false`） |
+  | `invited` | `true` | 招待（`true` / `false`） |
+  | `q` | `yamada` | 検索語（タイトル・著者・abstract 等の全文） |
+
+  例：`https://example.github.io/publications/?type=journal&year=2023`
+
 - **インクリメンタル検索**：タイトル・著者・会議名・誌名・アブストラクトを横断検索
 - **ページネーション**：`entries_per_page` 件ずつ表示し「さらに表示」「全件表示」で読み込む
 - **前後ナビゲーション**：詳細ページ下部に「← 前の業績」「次の業績 →」リンクを表示
