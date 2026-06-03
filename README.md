@@ -165,6 +165,38 @@ base_url: ""
 - `public/sitemap.xml` の自動生成
 - `public/feed.xml`（Atom フィード）の自動生成
 
+## 既存データのインポート
+
+BibTeX や Hayagriva 形式で管理していた文献データを `publications.yaml` に変換できます。
+
+### セットアップ
+
+```bash
+pip install -r requirements-tools.txt
+```
+
+`bibtexparser` が追加でインストールされます（BibTeX のみ必要、Hayagriva は不要）。
+
+### 使い方
+
+```bash
+# BibTeX から変換して標準出力に出力
+python tools/import.py --format bibtex refs.bib
+
+# ファイルに書き出す
+python tools/import.py --format bibtex refs.bib --output data/publications.yaml
+
+# 既存の publications.yaml に追記（ID 重複をチェックしてスキップ）
+python tools/import.py --format bibtex refs.bib --append data/publications.yaml
+
+# Hayagriva から変換
+python tools/import.py --format hayagriva refs.yml --append data/publications.yaml
+```
+
+変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録されます。
+著者名フォーマット（BibTeX: 「姓, 名」形式）や月なし日付など、確認が必要な点は
+stderr に警告として出力されます。
+
 ## ビルド
 
 ```bash
@@ -353,6 +385,7 @@ jobs:
 - **ページネーション**：`entries_per_page` 件ずつ表示し「さらに表示」「全件表示」で読み込む
 - **前後ナビゲーション**：詳細ページ下部に「← 前の業績」「次の業績 →」リンクを表示
 - **エクスポート**：全件または1件を YAML / JSON / BibTeX / Hayagriva でダウンロード
+- **インポート**：BibTeX・Hayagriva 形式から `publications.yaml` に変換（`tools/import.py`）
 - **著者ハイライト**：設定した著者名を太字またはアンダーライン表示
 - **言語切り替え**：ページ上の JA / EN ボタンで日本語と英語を切り替え（`localStorage` で保持）
 - **OGP 対応**：詳細ページを SNS で共有するとタイトル・著者・会議名のプレビューを表示

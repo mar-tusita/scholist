@@ -19,6 +19,11 @@
 - `requirements-tools.txt`：ツール用追加依存（`bibtexparser>=1.3,<2.0`）
 - `tests/test_import.py`：インポーターのユニットテスト（33件）
 
+### ドキュメント
+
+- `README.md`：「既存データのインポート」節を追加（使い方・オプション・注意点）
+- `README.md`：「主な機能」にインポート機能を追記
+
 ### 変更
 
 - `build.py`：`build_searchtext()` を追加し、検索対象をエントリの全文字列値に拡大
