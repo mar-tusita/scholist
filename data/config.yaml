@@ -6,6 +6,12 @@ highlight_style: underline   # bold または underline
 
 site_title: "研究業績一覧"
 
+# 初回訪問者（localStorage 未設定）に表示する言語
+# auto: ブラウザ言語を検出（ja → 日本語、それ以外 → 英語）
+# ja:   常に日本語で開始
+# en:   常に英語で開始
+default_language: auto
+
 # サイトの公開 URL（og:url / sitemap 用）末尾スラッシュなし
 # 例: https://username.github.io/publications
 # 空文字または未設定の場合、og:url と sitemap.xml は出力しない

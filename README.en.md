@@ -120,6 +120,11 @@ highlight_style: underline   # bold or underline
 
 site_title: "Publications"
 
+# Language shown to first-time visitors (no localStorage preference stored yet)
+# auto: detect browser language (ja → Japanese, others → English)
+# ja:   always start in Japanese  / en: always start in English
+default_language: auto
+
 # Public URL of the site (for og:url / sitemap.xml), no trailing slash
 # Example: https://username.github.io/publications
 # Leave empty to omit og:url output

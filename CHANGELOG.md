@@ -16,6 +16,11 @@
 - `README.en.md`：README の英訳版を追加
 - `README.md`：言語切り替え機能の記述を追加（導入説明・主な機能一覧）
 - `.github/workflows/release-asset.yml`：配布 zip に `README.en.md` を追加
+- `data/config.yaml`：`default_language` フィールドを追加（`auto` / `ja` / `en`）
+  - `auto`（デフォルト）：ブラウザ言語を検出し `ja` なら日本語、それ以外は英語
+  - `ja` / `en`：初回訪問者の言語を固定（`localStorage` 既存設定は常に優先）
+- `static/i18n.js`：`initLang()` を `SCHOLIST_DEFAULT_LANG` 参照に更新
+- `templates/index.html.j2`・`templates/entry.html.j2`：`SCHOLIST_DEFAULT_LANG` 変数を埋め込み
 
 ## [0.3.0] - 2026-06-02
 
