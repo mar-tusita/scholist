@@ -179,10 +179,17 @@ def render_site(config, entries, output_dir, template_dir, version):
 
     # 詳細ページ
     tmpl_entry = env.get_template("entry.html.j2")
-    for entry in entries:
+    for i, entry in enumerate(entries):
+        prev_entry = entries[i - 1] if i > 0 else None
+        next_entry = entries[i + 1] if i < len(entries) - 1 else None
         entry_dir = output_dir / "entries" / entry["id"]
         entry_dir.mkdir(parents=True, exist_ok=True)
-        entry_html = tmpl_entry.render(entry=entry, config=config)
+        entry_html = tmpl_entry.render(
+            entry=entry,
+            prev_entry=prev_entry,
+            next_entry=next_entry,
+            config=config,
+        )
         entry_path = entry_dir / "index.html"
         entry_path.write_text(entry_html, encoding="utf-8")
         print(f"生成: {entry_path}")

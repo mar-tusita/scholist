@@ -252,6 +252,19 @@
     </section>
     {% endif %}
 
+    <nav class="entry-nav">
+      {% if prev_entry %}
+      <a class="entry-nav-prev" href="../{{ prev_entry.id }}/" data-i18n="nav.prev">← 前の業績</a>
+      {% else %}
+      <span class="entry-nav-prev entry-nav-disabled"></span>
+      {% endif %}
+      {% if next_entry %}
+      <a class="entry-nav-next" href="../{{ next_entry.id }}/" data-i18n="nav.next">次の業績 →</a>
+      {% else %}
+      <span class="entry-nav-next entry-nav-disabled"></span>
+      {% endif %}
+    </nav>
+
     <section class="export-section">
       <h3 data-i18n="export.one.title">このエントリをエクスポート</h3>
       <button onclick="exportOne('yaml')">YAML</button>
