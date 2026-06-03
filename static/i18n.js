@@ -48,10 +48,13 @@ const MESSAGES = {
     'export.all.hayagriva': '全件 Hayagriva',
     // エクスポート（詳細）
     'export.one.title': 'このエントリをエクスポート',
-    // カウント（関数）
-    'count': n => `${n} 件表示`,
+    // カウント（関数）: shown=表示件数, total=絞り込み後の全件数
+    'count': (shown, total) => shown < total ? `${shown} / ${total} 件表示` : `${shown} 件表示`,
     // サマリー（関数）
     'summary.total': n => `全 <strong>${n}</strong> 件`,
+    // ページネーション
+    'btn.show.more': 'さらに表示',
+    'btn.show.all':  '全件表示',
     // 詳細ラベル
     'detail.authors':          '著者',
     'detail.date':             '日付',
@@ -140,9 +143,12 @@ const MESSAGES = {
     // Export (detail)
     'export.one.title': 'Export this entry',
     // Count (function)
-    'count': n => `Showing ${n} ${n === 1 ? 'entry' : 'entries'}`,
+    'count': (shown, total) => shown < total ? `Showing ${shown} of ${total}` : `Showing ${shown} ${shown === 1 ? 'entry' : 'entries'}`,
     // Summary (function)
     'summary.total': n => `Total <strong>${n}</strong> ${n === 1 ? 'entry' : 'entries'}`,
+    // Pagination
+    'btn.show.more': 'Show more',
+    'btn.show.all':  'Show all',
     // Detail labels
     'detail.authors':          'Authors',
     'detail.date':             'Date',
@@ -223,8 +229,10 @@ function applyLanguage(lang) {
 
   // サマリーと件数表示を再描画（ページにその関数が存在する場合）
   if (typeof buildSummary === 'function') buildSummary();
-  if (typeof updateCount === 'function' && typeof _lastVisibleCount !== 'undefined') {
-    updateCount(_lastVisibleCount);
+  if (typeof updateCount === 'function') {
+    const shown = typeof _lastShown !== 'undefined' ? _lastShown : (_lastVisibleCount || 0);
+    const total = typeof _lastTotal !== 'undefined' ? _lastTotal : shown;
+    updateCount(shown, total);
   }
 }
 

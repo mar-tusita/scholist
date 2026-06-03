@@ -100,6 +100,30 @@ header a {
 .summary-chip-misc       { background: #4b5563; }
 .summary-chip-other      { background: #4b5563; }
 
+/* ページネーション */
+.pagination-controls {
+  padding: 16px 24px;
+  display: flex;
+  gap: 10px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.pagination-controls button {
+  padding: 6px 20px;
+  border: 1px solid #1a3a5c;
+  background: #fff;
+  color: #1a3a5c;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.pagination-controls button:hover {
+  background: #1a3a5c;
+  color: #fff;
+}
+
 .controls {
   padding: 16px 24px;
   background: #fff;
