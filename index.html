@@ -15,31 +15,35 @@
 <body>
   <header>
     <h1>研究業績一覧</h1>
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="ja" onclick="applyLanguage('ja')">JA</button>
+      <button class="lang-btn" data-lang="en" onclick="applyLanguage('en')">EN</button>
+    </div>
   </header>
 
   <div id="summary" class="summary"></div>
 
   <div class="controls">
     <div class="filters">
-      <label>種別:
+      <label><span data-i18n="filter.label.type">種別</span>:
         <select id="filter-type">
-          <option value="">すべて</option>
-          <option value="conference">会議</option>
-          <option value="journal">論文誌</option>
-          <option value="talk">講演</option>
-          <option value="patent">特許</option>
-          <option value="award">受賞</option>
-          <option value="book">書籍</option>
-          <option value="misc">解説等</option>
-          <option value="thesis">学位論文</option>
-          <option value="report">技術レポート</option>
-          <option value="other">その他</option>
+          <option value="" data-i18n="filter.all">すべて</option>
+          <option value="conference" data-i18n="type.conference">会議</option>
+          <option value="journal"    data-i18n="type.journal">論文誌</option>
+          <option value="talk"       data-i18n="type.talk">講演</option>
+          <option value="patent"     data-i18n="type.patent">特許</option>
+          <option value="award"      data-i18n="type.award">受賞</option>
+          <option value="book"       data-i18n="type.book">書籍</option>
+          <option value="misc"       data-i18n="type.misc">解説等</option>
+          <option value="thesis"     data-i18n="type.thesis">学位論文</option>
+          <option value="report"     data-i18n="type.report">技術レポート</option>
+          <option value="other"      data-i18n="type.other">その他</option>
         </select>
       </label>
 
-      <label>年:
+      <label><span data-i18n="filter.label.year">年</span>:
         <select id="filter-year">
-          <option value="">すべて</option>
+          <option value="" data-i18n="filter.all">すべて</option>
           
           
             
@@ -131,40 +135,42 @@
         </select>
       </label>
 
-      <label>国内/国際:
+      <label><span data-i18n="filter.label.scope">国内/国際</span>:
         <select id="filter-scope">
-          <option value="">すべて</option>
-          <option value="domestic">国内</option>
-          <option value="international">国際</option>
+          <option value="" data-i18n="filter.all">すべて</option>
+          <option value="domestic"      data-i18n="filter.domestic">国内</option>
+          <option value="international" data-i18n="filter.international">国際</option>
         </select>
       </label>
 
-      <label>査読:
+      <label><span data-i18n="filter.label.reviewed">査読</span>:
         <select id="filter-reviewed">
-          <option value="">すべて</option>
-          <option value="true">査読あり</option>
-          <option value="false">査読なし</option>
+          <option value="" data-i18n="filter.all">すべて</option>
+          <option value="true"  data-i18n="filter.reviewed.yes">査読あり</option>
+          <option value="false" data-i18n="filter.reviewed.no">査読なし</option>
         </select>
       </label>
 
-      <label>招待:
+      <label><span data-i18n="filter.label.invited">招待</span>:
         <select id="filter-invited">
-          <option value="">すべて</option>
-          <option value="true">招待あり</option>
-          <option value="false">招待なし</option>
+          <option value="" data-i18n="filter.all">すべて</option>
+          <option value="true"  data-i18n="filter.invited.yes">招待あり</option>
+          <option value="false" data-i18n="filter.invited.no">招待なし</option>
         </select>
       </label>
     </div>
 
     <div class="search-box">
-      <input type="search" id="search-input" placeholder="タイトル・著者・会議名で検索...">
+      <input type="search" id="search-input"
+             placeholder="タイトル・著者・会議名で検索..."
+             data-i18n-placeholder="search.placeholder">
     </div>
 
     <div class="export-all">
-      <button onclick="exportAll('yaml')">全件 YAML</button>
-      <button onclick="exportAll('json')">全件 JSON</button>
-      <button onclick="exportAll('bibtex')">全件 BibTeX</button>
-      <button onclick="exportAll('hayagriva')">全件 Hayagriva</button>
+      <button onclick="exportAll('yaml')"      data-i18n="export.all.yaml">全件 YAML</button>
+      <button onclick="exportAll('json')"      data-i18n="export.all.json">全件 JSON</button>
+      <button onclick="exportAll('bibtex')"    data-i18n="export.all.bibtex">全件 BibTeX</button>
+      <button onclick="exportAll('hayagriva')" data-i18n="export.all.hayagriva">全件 Hayagriva</button>
     </div>
   </div>
 
@@ -173,11 +179,11 @@
   <table id="entries-table">
     <thead>
       <tr>
-        <th>年</th>
-        <th>種別</th>
-        <th>タイトル</th>
-        <th>著者</th>
-        <th>掲載先・会議</th>
+        <th data-i18n="col.year">年</th>
+        <th data-i18n="col.type">種別</th>
+        <th data-i18n="col.title">タイトル</th>
+        <th data-i18n="col.authors">著者</th>
+        <th data-i18n="col.venue">掲載先・会議</th>
       </tr>
     </thead>
     <tbody>
@@ -191,9 +197,9 @@
           data-searchtext="サンプル：国内会議（査読あり・招待あり） sample: domestic conference (reviewed, invited)  山田 太郎 鈴木 花子 情報処理学会 第86回全国大会 情報処理学会">
         <td class="col-year">2024</td>
         <td class="col-type">
-          <span class="badge badge-conference">conference</span>
-          <span class="badge badge-invited">招待</span>
-          <span class="badge badge-reviewed">査読</span>
+          <span class="badge badge-conference" data-i18n-type="conference">conference</span>
+          <span class="badge badge-invited" data-i18n="badge.invited">招待</span>
+          <span class="badge badge-reviewed" data-i18n="badge.reviewed">査読</span>
         </td>
         <td class="col-title">
           <a href="entries/sample-2024-a-conf-domestic/">サンプル：国内会議（査読あり・招待あり）</a>
@@ -221,9 +227,9 @@
           data-searchtext=" sample: international conference (title_en only)  t. yamada h. suzuki sample international conference (sic 2024) ieee">
         <td class="col-year">2024</td>
         <td class="col-type">
-          <span class="badge badge-conference">conference</span>
+          <span class="badge badge-conference" data-i18n-type="conference">conference</span>
           
-          <span class="badge badge-reviewed">査読</span>
+          <span class="badge badge-reviewed" data-i18n="badge.reviewed">査読</span>
         </td>
         <td class="col-title">
           <a href="entries/sample-2024-b-conf-intl/">Sample: International Conference (title_en only)</a>
@@ -249,9 +255,9 @@
           data-searchtext="サンプル：国内論文誌（査読あり・フルペーパー） sample: domestic journal article (full paper) これはアブストラクトのサンプルです。abstract フィールドを設定すると詳細ページに表示され、bibtex エクスポートにも含まれます。また ogp の og:description にも優先的に使用されます。 山田 太郎 田中 次郎  情報処理学会">
         <td class="col-year">2023</td>
         <td class="col-type">
-          <span class="badge badge-journal">journal</span>
+          <span class="badge badge-journal" data-i18n-type="journal">journal</span>
           
-          <span class="badge badge-reviewed">査読</span>
+          <span class="badge badge-reviewed" data-i18n="badge.reviewed">査読</span>
         </td>
         <td class="col-title">
           <a href="entries/sample-2023-journal/">サンプル：国内論文誌（査読あり・フルペーパー）</a>
@@ -279,8 +285,8 @@
           data-searchtext="サンプル：招待講演   山田 太郎 サンプル研究会 ">
         <td class="col-year">2022</td>
         <td class="col-type">
-          <span class="badge badge-talk">talk</span>
-          <span class="badge badge-invited">招待</span>
+          <span class="badge badge-talk" data-i18n-type="talk">talk</span>
+          <span class="badge badge-invited" data-i18n="badge.invited">招待</span>
           
         </td>
         <td class="col-title">
@@ -306,7 +312,7 @@
           data-searchtext="サンプル：特許（登録）   山田 太郎  特許庁">
         <td class="col-year">2021</td>
         <td class="col-type">
-          <span class="badge badge-patent">patent</span>
+          <span class="badge badge-patent" data-i18n-type="patent">patent</span>
           
           
         </td>
@@ -333,7 +339,7 @@
           data-searchtext="サンプル：受賞   山田 太郎 鈴木 花子  情報処理学会">
         <td class="col-year">2021</td>
         <td class="col-type">
-          <span class="badge badge-award">award</span>
+          <span class="badge badge-award" data-i18n-type="award">award</span>
           
           
         </td>
@@ -361,7 +367,7 @@
           data-searchtext="サンプル：博士論文の記述例   山田 太郎  ">
         <td class="col-year">2021</td>
         <td class="col-type">
-          <span class="badge badge-thesis">thesis</span>
+          <span class="badge badge-thesis" data-i18n-type="thesis">thesis</span>
           
           
         </td>
@@ -388,7 +394,7 @@
           data-searchtext="サンプル：技術レポートの記述例 sample: technical report entry  山田 太郎 鈴木 花子  ○○研究所">
         <td class="col-year">2020</td>
         <td class="col-type">
-          <span class="badge badge-report">report</span>
+          <span class="badge badge-report" data-i18n-type="report">report</span>
           
           
         </td>
@@ -418,7 +424,7 @@
           data-searchtext="サンプル：書籍（分担執筆） sample: book chapter  山田 太郎  ">
         <td class="col-year">2020</td>
         <td class="col-type">
-          <span class="badge badge-book">book</span>
+          <span class="badge badge-book" data-i18n-type="book">book</span>
           
           
         </td>
@@ -447,7 +453,7 @@
           data-searchtext="サンプル：解説記事   山田 太郎  ">
         <td class="col-year">2019</td>
         <td class="col-type">
-          <span class="badge badge-misc">misc</span>
+          <span class="badge badge-misc" data-i18n-type="misc">misc</span>
           
           
         </td>
@@ -474,7 +480,7 @@
           data-searchtext="サンプル：その他   山田 太郎  ">
         <td class="col-year">2018</td>
         <td class="col-type">
-          <span class="badge badge-other">other</span>
+          <span class="badge badge-other" data-i18n-type="other">other</span>
           
           
         </td>
@@ -501,7 +507,7 @@
           data-searchtext="サンプル：日付なしエントリ（末尾ソートのテスト用）   山田 太郎  ">
         <td class="col-year">—</td>
         <td class="col-type">
-          <span class="badge badge-misc">misc</span>
+          <span class="badge badge-misc" data-i18n-type="misc">misc</span>
           
           
         </td>
@@ -522,40 +528,33 @@
     </tbody>
   </table>
 
+  <script src="static/i18n.js"></script>
   <script>
-    // 全エントリデータ（エクスポート用）
     const ALL_ENTRIES = [{"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}, {"highlight": false, "name": "\u9234\u6728 \u82b1\u5b50", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce", "\u9234\u6728 \u82b1\u5b50"], "date": "2024-03-15", "files": [{"label": "\u767a\u8868\u30b9\u30e9\u30a4\u30c9", "path": "files/sample-2024-a-slides.pdf"}], "id": "sample-2024-a-conf-domestic", "invited": true, "location": "\u6771\u4eac", "note": "\u540c\u65e5 2 \u4ef6\u306e\u3046\u3061 1 \u4ef6\u76ee\uff08YAML \u8a18\u8ff0\u9806\u30c6\u30b9\u30c8\u7528\uff09", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "presenter": "\u5c71\u7530 \u592a\u90ce", "registered_at": "2024-03-20", "reviewed": true, "scope": "domestic", "source": {"pages": "1-1 -- 1-2", "proceedings": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a\u7b2c86\u56de\u5168\u56fd\u5927\u4f1a\u8b1b\u6f14\u8ad6\u6587\u96c6"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u56fd\u5185\u4f1a\u8b70\uff08\u67fb\u8aad\u3042\u308a\u30fb\u62db\u5f85\u3042\u308a\uff09", "title_en": "Sample: Domestic Conference (Reviewed, Invited)", "type": "conference", "venue": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a \u7b2c86\u56de\u5168\u56fd\u5927\u4f1a", "venue_abbr": "IPSJ"}, {"_authors_hl": [{"highlight": true, "name": "T. Yamada", "style": "underline"}, {"highlight": false, "name": "H. Suzuki", "style": "underline"}], "authors": ["T. Yamada", "H. Suzuki"], "date": "2024-03-15", "id": "sample-2024-b-conf-intl", "invited": false, "language": "en", "location": "Kyoto, Japan", "note": "\u540c\u65e5 2 \u4ef6\u306e\u3046\u3061 2 \u4ef6\u76ee\uff08YAML \u8a18\u8ff0\u9806\u30c6\u30b9\u30c8\u7528\uff09", "organization": "IEEE", "presenter": "T. Yamada", "registered_at": "2024-03-21", "reviewed": true, "scope": "international", "source": {"pages": "100-111", "proceedings": "Proceedings of SIC 2024"}, "title_en": "Sample: International Conference (title_en only)", "type": "conference", "venue": "Sample International Conference (SIC 2024)", "venue_abbr": "SIC"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}, {"highlight": false, "name": "\u7530\u4e2d \u6b21\u90ce", "style": "underline"}], "abstract": "\u3053\u308c\u306f\u30a2\u30d6\u30b9\u30c8\u30e9\u30af\u30c8\u306e\u30b5\u30f3\u30d7\u30eb\u3067\u3059\u3002abstract \u30d5\u30a3\u30fc\u30eb\u30c9\u3092\u8a2d\u5b9a\u3059\u308b\u3068\u8a73\u7d30\u30da\u30fc\u30b8\u306b\u8868\u793a\u3055\u308c\u3001BibTeX \u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u306b\u3082\u542b\u307e\u308c\u307e\u3059\u3002\u307e\u305f OGP \u306e og:description \u306b\u3082\u512a\u5148\u7684\u306b\u4f7f\u7528\u3055\u308c\u307e\u3059\u3002", "authors": ["\u5c71\u7530 \u592a\u90ce", "\u7530\u4e2d \u6b21\u90ce"], "date": "2023-09", "id": "sample-2023-journal", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "paper_type": "full", "registered_at": "2023-10-01", "reviewed": true, "scope": "domestic", "source": {"doi": "10.xxxx/sample.64.1", "journal_name": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a\u8ad6\u6587\u8a8c", "number": 9, "pages": "1-12", "volume": 64}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u56fd\u5185\u8ad6\u6587\u8a8c\uff08\u67fb\u8aad\u3042\u308a\u30fb\u30d5\u30eb\u30da\u30fc\u30d1\u30fc\uff09", "title_en": "Sample: Domestic Journal Article (Full Paper)", "type": "journal", "url": "https://doi.org/10.xxxx/sample.64.1"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2022-06-10", "id": "sample-2022-talk", "invited": true, "location": "\u5927\u962a", "presenter": "\u5c71\u7530 \u592a\u90ce", "registered_at": "2022-06-15", "source": {"description": "\u30b5\u30f3\u30d7\u30eb\u7814\u7a76\u4f1a \u7b2c10\u56de"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u62db\u5f85\u8b1b\u6f14", "type": "talk", "venue": "\u30b5\u30f3\u30d7\u30eb\u7814\u7a76\u4f1a"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2021-11-01", "id": "sample-2021-patent", "organization": "\u7279\u8a31\u5e81", "registered_at": "2021-11-05", "source": {"country": "JP", "patent_number": "\u7279\u8a31\u7b2c1234567\u53f7", "status": "granted"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u7279\u8a31\uff08\u767b\u9332\uff09", "type": "patent"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}, {"highlight": false, "name": "\u9234\u6728 \u82b1\u5b50", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce", "\u9234\u6728 \u82b1\u5b50"], "date": "2021-03-05", "id": "sample-2021-award", "note": "\u300c\u30b5\u30f3\u30d7\u30eb\u8ad6\u6587\u300d\u306b\u5bfe\u3057\u3066\u6388\u4e0e", "organization": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a", "registered_at": "2021-03-10", "source": {"award_name": "\u512a\u79c0\u8ad6\u6587\u8cde", "org_giving_award": "\u60c5\u5831\u51e6\u7406\u5b66\u4f1a"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u53d7\u8cde", "type": "award"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2021-03", "id": "sample-2021-thesis", "registered_at": "2021-04-01", "source": {"degree": "doctoral", "institution": "\u25cb\u25cb\u5927\u5b66\u5927\u5b66\u9662"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u535a\u58eb\u8ad6\u6587\u306e\u8a18\u8ff0\u4f8b", "type": "thesis"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}, {"highlight": false, "name": "\u9234\u6728 \u82b1\u5b50", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce", "\u9234\u6728 \u82b1\u5b50"], "date": "2020-09", "id": "sample-2020-report", "note": "\u3053\u308c\u306f\u30b5\u30f3\u30d7\u30eb\u30a8\u30f3\u30c8\u30ea\u3067\u3059\u3002", "organization": "\u25cb\u25cb\u7814\u7a76\u6240", "registered_at": "2020-10-01", "source": {"institution": "\u25cb\u25cb\u5927\u5b66\u60c5\u5831\u5b66\u7814\u7a76\u79d1", "number": "TR-2020-001"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u6280\u8853\u30ec\u30dd\u30fc\u30c8\u306e\u8a18\u8ff0\u4f8b", "title_en": "Sample: Technical Report Entry", "type": "report"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2020-04", "id": "sample-2020-book", "registered_at": "2020-05-01", "source": {"chapter": "\u7b2c3\u7ae0", "editors": ["\u7de8\u8005 \u4e00\u90ce"], "isbn": "978-4-000-00000-0", "pages": "45-89", "publisher": "\u30b5\u30f3\u30d7\u30eb\u51fa\u7248\u793e"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u66f8\u7c4d\uff08\u5206\u62c5\u57f7\u7b46\uff09", "title_en": "Sample: Book Chapter", "type": "book"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2019-07-01", "id": "sample-2019-misc", "source": {"description": "\u30b5\u30f3\u30d7\u30eb\u5b66\u4f1a\u8a8c Vol.60 No.7"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u89e3\u8aac\u8a18\u4e8b", "type": "misc"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": "2018-01-15", "id": "sample-2018-other", "source": {"description": "\u305d\u306e\u4ed6\u306e\u5a92\u4f53"}, "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u305d\u306e\u4ed6", "type": "other"}, {"_authors_hl": [{"highlight": true, "name": "\u5c71\u7530 \u592a\u90ce", "style": "underline"}], "authors": ["\u5c71\u7530 \u592a\u90ce"], "date": null, "id": "sample-no-date", "note": "date \u304c null \u306e\u30a8\u30f3\u30c8\u30ea\u306f\u4e00\u89a7\u306e\u672b\u5c3e\u306b\u8868\u793a\u3055\u308c\u308b", "title": "\u30b5\u30f3\u30d7\u30eb\uff1a\u65e5\u4ed8\u306a\u3057\u30a8\u30f3\u30c8\u30ea\uff08\u672b\u5c3e\u30bd\u30fc\u30c8\u306e\u30c6\u30b9\u30c8\u7528\uff09", "type": "misc"}];
 
-    (function () {
-      const TYPE_LABELS = {
-        conference: '会議', journal: '論文誌', talk: '講演',
-        patent: '特許', award: '受賞', book: '書籍',
-        thesis: '学位論文', report: '技術レポート',
-        misc: '解説等', other: 'その他',
-      };
-      const TYPE_ORDER = ['conference', 'journal', 'talk', 'patent', 'award', 'book', 'thesis', 'report', 'misc', 'other'];
+    const TYPE_ORDER = ['conference', 'journal', 'talk', 'patent', 'award', 'book', 'thesis', 'report', 'misc', 'other'];
+    const _counts = {};
+    let _minYear = Infinity, _maxYear = -Infinity;
+    ALL_ENTRIES.forEach(e => {
+      _counts[e.type] = (_counts[e.type] || 0) + 1;
+      if (e.date) {
+        const y = parseInt(String(e.date).slice(0, 4));
+        if (!isNaN(y)) { _minYear = Math.min(_minYear, y); _maxYear = Math.max(_maxYear, y); }
+      }
+    });
+    const _total = ALL_ENTRIES.length;
+    const _yearRange = _minYear <= _maxYear ? `${_minYear}–${_maxYear}` : '';
 
-      const counts = {};
-      let minYear = Infinity, maxYear = -Infinity;
-      ALL_ENTRIES.forEach(e => {
-        counts[e.type] = (counts[e.type] || 0) + 1;
-        if (e.date) {
-          const y = parseInt(String(e.date).slice(0, 4));
-          if (!isNaN(y)) { minYear = Math.min(minYear, y); maxYear = Math.max(maxYear, y); }
-        }
-      });
-
-      const total = ALL_ENTRIES.length;
-      const yearRange = minYear <= maxYear ? `${minYear}–${maxYear}` : '';
+    function buildSummary() {
       const chips = TYPE_ORDER
-        .filter(t => counts[t])
-        .map(t => `<span class="summary-chip summary-chip-${t}">${TYPE_LABELS[t]} <strong>${counts[t]}</strong></span>`)
+        .filter(type => _counts[type])
+        .map(type => `<span class="summary-chip summary-chip-${type}" data-i18n-type="${type}">${t('type.' + type)} <strong>${_counts[type]}</strong></span>`)
         .join('');
-
       document.getElementById('summary').innerHTML =
-        `<span class="summary-meta">全 <strong>${total}</strong> 件${yearRange ? `&ensp;·&ensp;${yearRange}` : ''}</span>`
+        `<span class="summary-meta">${t('summary.total', _total)}${_yearRange ? `&ensp;·&ensp;${_yearRange}` : ''}</span>`
         + `<span class="summary-chips">${chips}</span>`;
-    })();
+    }
+    buildSummary();
   </script>
   <footer>
     <p>Generated by <a href="https://github.com/mar-tusita/scholist">scholist</a> 0.3.0</p>
@@ -566,9 +565,11 @@
   <script>
     const rows = Array.from(document.querySelectorAll('.entry-row'));
     const countDisplay = document.getElementById('count-display');
+    let _lastVisibleCount = 0;
 
     function updateCount(visible) {
-      countDisplay.textContent = `${visible} 件表示`;
+      _lastVisibleCount = visible;
+      countDisplay.textContent = t('count', visible);
     }
 
     function saveFiltersToUrl() {
@@ -634,6 +635,7 @@
 
     loadFiltersFromUrl();
     applyFilters();
+    initLang();
   </script>
 </body>
 </html>
