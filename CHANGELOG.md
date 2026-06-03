@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### ドキュメント
+
+- `README.md`・`README.en.md`：ページネーション・前後ナビゲーション・Atom フィードを主な機能一覧に追記
+- `README.md`・`README.en.md`：`base_url` の説明に `feed.xml` 生成の記述を追加
+
 ### 追加
 
 - `build.py`：Atom フィード（`public/feed.xml`）の生成

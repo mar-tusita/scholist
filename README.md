@@ -159,7 +159,11 @@ base_url: ""
 
 `highlight_authors` に列挙した名前は一覧・詳細ページで強調表示されます。表記ゆれを複数列挙できます。
 
-`base_url` を設定すると、詳細ページの OGP タグに `og:url` が追加され、SNS での URL プレビューが正確になります。GitHub Pages で運用する場合は `https://username.github.io/repository-name` を設定してください。
+`base_url` を設定すると以下が有効になります。GitHub Pages で運用する場合は `https://username.github.io/repository-name` を設定してください。
+
+- 詳細ページの OGP タグに `og:url` を追加（SNS での URL プレビューが正確になる）
+- `public/sitemap.xml` の自動生成
+- `public/feed.xml`（Atom フィード）の自動生成
 
 ## ビルド
 
@@ -346,11 +350,14 @@ jobs:
 - **統計サマリー**：一覧ページ上部に総件数・年範囲・種別ごとの件数チップを表示
 - **フィルタ**：種別・年・国内/国際・査読有無・招待有無で絞り込み（条件は URL に保持・共有可能）
 - **インクリメンタル検索**：タイトル・著者・会議名・誌名・アブストラクトを横断検索
+- **ページネーション**：`entries_per_page` 件ずつ表示し「さらに表示」「全件表示」で読み込む
+- **前後ナビゲーション**：詳細ページ下部に「← 前の業績」「次の業績 →」リンクを表示
 - **エクスポート**：全件または1件を YAML / JSON / BibTeX / Hayagriva でダウンロード
 - **著者ハイライト**：設定した著者名を太字またはアンダーライン表示
 - **言語切り替え**：ページ上の JA / EN ボタンで日本語と英語を切り替え（`localStorage` で保持）
 - **OGP 対応**：詳細ページを SNS で共有するとタイトル・著者・会議名のプレビューを表示
 - **sitemap.xml 生成**：`base_url` を設定すると検索エンジン向け sitemap を自動生成
+- **Atom フィード生成**：`base_url` を設定すると `feed.xml` を自動生成（日付のあるエントリを bibliography 形式で収録）
 
 ## 開発者向け
 

@@ -156,7 +156,11 @@ base_url: ""
 
 `highlight_authors` lists name variants to highlight in the author list. Multiple variants for the same person can be listed.
 
-Setting `base_url` adds `og:url` to OGP tags on detail pages, improving URL previews when shared on social media. For GitHub Pages, set it to `https://username.github.io/repository-name`.
+Setting `base_url` enables the following features. For GitHub Pages, set it to `https://username.github.io/repository-name`.
+
+- Adds `og:url` to OGP tags on detail pages (improves URL previews on social media)
+- Auto-generates `public/sitemap.xml`
+- Auto-generates `public/feed.xml` (Atom feed)
 
 ## Build
 
@@ -337,11 +341,14 @@ After adding, run it from **Actions → "Sync tool files from scholist" → Run 
 - **Statistics summary**: Shows total count, year range, and per-type chips at the top of the listing page
 - **Filters**: Filter by type, year, domestic/international, review status, invited status (filter state is persisted in the URL for sharing)
 - **Incremental search**: Search across titles, authors, venues, journals, and abstracts
+- **Pagination**: Shows `entries_per_page` entries at a time with "Show more" and "Show all" buttons
+- **Entry navigation**: Previous / Next links at the bottom of each detail page
 - **Export**: Download all or individual entries as YAML / JSON / BibTeX / Hayagriva
 - **Author highlighting**: Highlight specified author names (bold or underline)
 - **Language toggle**: Visitors can switch the UI between Japanese and English on the page
 - **OGP support**: Sharing detail page URLs on social media shows a title/author/venue preview card
 - **sitemap.xml generation**: Set `base_url` to auto-generate a sitemap for search engines
+- **Atom feed generation**: Set `base_url` to auto-generate `feed.xml` (entries with dates, in bibliography format)
 
 ## For developers
 
