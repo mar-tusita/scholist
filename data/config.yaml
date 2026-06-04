@@ -3,6 +3,7 @@ highlight_authors:
   - "Taro Yamada"
   - "T. Yamada"    # . は正規表現では「任意の1文字」。厳密に一致させるには "T\. Yamada"
 highlight_style: underline   # bold または underline
+show_entry_id: false         # true: 詳細ページのバッジ右端にエントリ ID を表示（管理時に便利）
 
 site_title: "研究業績一覧"
 
