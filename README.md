@@ -304,78 +304,20 @@ git push
 
 手動でコマンドを打つ代わりに、GitHub の画面からボタン一つで同期することもできます。
 
-> **方法 A（zip ダウンロード）で始めた場合はこのファイルが既に含まれているため、追加は不要です。**
+**方法 A（zip ダウンロード）：** `.github/workflows/sync-from-scholist.yml` が既に含まれているため、追加作業は不要です。
 
-方法 B（GitHub テンプレート）で始めた場合は、自分のリポジトリに以下のファイルを追加してください。
+**方法 B（GitHub テンプレート）：** `extras/sync-from-scholist.yml` が同梱されています。
+以下でコピーしてください（方法 B の「`extras/` について」で案内している手順と同じです）。
+
+```bash
+cp extras/sync-from-scholist.yml .github/workflows/
+```
+
+追加後は、リポジトリの **Actions → "Sync tool files from scholist" → Run workflow** で実行できます。sync が完了すると自動で Build and Deploy が起動します。
 
 > **注意：** ワークフローは `.github/workflows/build.yml` を sync 対象に含みません。
 > `GITHUB_TOKEN` は GitHub のセキュリティ制限によりワークフローファイルを書き込めないためです。
 > `build.yml` に変更があった場合は、上記の手動 sync 手順でコピーしてください（手動実行なら書き込めます）。
-
-**`.github/workflows/sync-from-scholist.yml`**
-
-```yaml
-name: Sync tool files from scholist
-
-on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'scholist のブランチ・タグ・SHA（例: main, v0.2.0）'
-        default: 'main'
-        required: false
-
-permissions:
-  contents: write
-  actions: write
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Fetch scholist
-        run: |
-          git remote add upstream https://github.com/mar-tusita/scholist.git
-          git fetch upstream
-
-      - name: Sync tool files
-        run: |
-          REF="${{ github.event.inputs.ref }}"
-          REF="${REF:-main}"
-          git checkout "upstream/${REF}" -- \
-            build.py \
-            templates/ \
-            static/ \
-            requirements.txt \
-            pyproject.toml
-
-      - name: Commit and push if changed
-        run: |
-          REF="${{ github.event.inputs.ref }}"
-          REF="${REF:-main}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --cached --quiet; then
-            echo "No changes. Already up to date."
-          else
-            SCHOLIST_SHA=$(git rev-parse "upstream/${REF}")
-            git commit -m "chore: sync tool files from scholist ${SCHOLIST_SHA:0:7}"
-            git push
-          fi
-
-      - name: Trigger Build and Deploy
-        run: gh workflow run build.yml --repo "${GITHUB_REPOSITORY}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-追加後は、リポジトリの **Actions → "Sync tool files from scholist" → Run workflow** で実行できます。sync が完了すると自動で Build and Deploy が起動します。
 
 ## 主な機能
 

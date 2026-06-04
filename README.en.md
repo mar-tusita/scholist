@@ -263,78 +263,20 @@ To pin to a specific version tag, replace `upstream/main` with `upstream/v0.3.0`
 
 ### Automate with GitHub Actions (optional)
 
-If you started with **Method A (zip download)**, the sync workflow is already included — no action needed.
+**Method A (zip download):** `.github/workflows/sync-from-scholist.yml` is already included — no action needed.
 
-If you started with **Method B (GitHub template)**, add the following file to your repository:
+**Method B (GitHub template):** `extras/sync-from-scholist.yml` is included in your repository.
+Copy it to the correct location (same as the "About `extras/`" note above):
+
+```bash
+cp extras/sync-from-scholist.yml .github/workflows/
+```
+
+After that, run it from **Actions → "Sync tool files from scholist" → Run workflow**. Build and Deploy will start automatically when the sync completes.
 
 > **Note:** The workflow does not sync `.github/workflows/build.yml`.
 > The `GITHUB_TOKEN` cannot write workflow files due to GitHub's security policy.
 > If `build.yml` changes, copy it manually using the steps above (manual sync works fine).
-
-**`.github/workflows/sync-from-scholist.yml`**
-
-```yaml
-name: Sync tool files from scholist
-
-on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Branch, tag, or SHA of scholist (e.g. main, v0.3.0)'
-        default: 'main'
-        required: false
-
-permissions:
-  contents: write
-  actions: write
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Fetch scholist
-        run: |
-          git remote add upstream https://github.com/mar-tusita/scholist.git
-          git fetch upstream
-
-      - name: Sync tool files
-        run: |
-          REF="${{ github.event.inputs.ref }}"
-          REF="${REF:-main}"
-          git checkout "upstream/${REF}" -- \
-            build.py \
-            templates/ \
-            static/ \
-            requirements.txt \
-            pyproject.toml
-
-      - name: Commit and push if changed
-        run: |
-          REF="${{ github.event.inputs.ref }}"
-          REF="${REF:-main}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --cached --quiet; then
-            echo "No changes. Already up to date."
-          else
-            SCHOLIST_SHA=$(git rev-parse "upstream/${REF}")
-            git commit -m "chore: sync tool files from scholist ${SCHOLIST_SHA:0:7}"
-            git push
-          fi
-
-      - name: Trigger Build and Deploy
-        run: gh workflow run build.yml --repo "${GITHUB_REPOSITORY}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-After adding, run it from **Actions → "Sync tool files from scholist" → Run workflow**. Build and Deploy will start automatically when the sync completes.
 
 ## Features
 
