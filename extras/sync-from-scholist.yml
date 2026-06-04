@@ -35,7 +35,9 @@ jobs:
             build.py \
             templates/ \
             static/ \
+            tools/ \
             requirements.txt \
+            requirements-tools.txt \
             pyproject.toml \
             README.md \
             README.en.md

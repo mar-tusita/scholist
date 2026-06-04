@@ -50,8 +50,8 @@ jobs:
           TMPDIR=$(mktemp -d)
 
           # ツールファイルをコピー
-          cp -r build.py templates/ static/ data/ \
-                requirements.txt pyproject.toml \
+          cp -r build.py templates/ static/ data/ tools/ \
+                requirements.txt requirements-tools.txt pyproject.toml \
                 README.md README.en.md CHANGELOG.md LICENSE .gitignore "${TMPDIR}/"
 
           # GitHub Actions ワークフローをコピー

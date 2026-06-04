@@ -261,7 +261,7 @@ server {
 
 | 種別 | ファイル |
 | --- | --- |
-| **ツールファイル**（更新を取り込む） | `build.py`, `templates/`, `static/`, `requirements.txt`, `pyproject.toml`, `README.md`, `README.en.md`, `.github/workflows/build.yml` |
+| **ツールファイル**（更新を取り込む） | `build.py`, `templates/`, `static/`, `tools/`, `requirements.txt`, `requirements-tools.txt`, `pyproject.toml`, `README.md`, `README.en.md`, `.github/workflows/build.yml` |
 | **自分のデータ**（絶対に上書きしない） | `data/`, `files/`, `CHANGELOG.md` |
 
 `git merge` を使うと両方が混ざってしまうため、**ツールファイルだけを選んで取り込む**方法を使います。
@@ -283,7 +283,9 @@ git checkout upstream/main -- \
   build.py \
   templates/ \
   static/ \
+  tools/ \
   requirements.txt \
+  requirements-tools.txt \
   pyproject.toml \
   README.md \
   README.en.md \

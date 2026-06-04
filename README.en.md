@@ -225,7 +225,7 @@ Your repository contains two types of files:
 
 | Type | Files |
 | --- | --- |
-| **Tool files** (update from scholist) | `build.py`, `templates/`, `static/`, `requirements.txt`, `pyproject.toml`, `README.md`, `README.en.md`, `.github/workflows/build.yml` |
+| **Tool files** (update from scholist) | `build.py`, `templates/`, `static/`, `tools/`, `requirements.txt`, `requirements-tools.txt`, `pyproject.toml`, `README.md`, `README.en.md`, `.github/workflows/build.yml` |
 | **Your data** (never overwrite) | `data/`, `files/`, `CHANGELOG.md` |
 
 ### One-time setup: register upstream remote
@@ -245,7 +245,9 @@ git checkout upstream/main -- \
   build.py \
   templates/ \
   static/ \
+  tools/ \
   requirements.txt \
+  requirements-tools.txt \
   pyproject.toml \
   README.md \
   README.en.md \
