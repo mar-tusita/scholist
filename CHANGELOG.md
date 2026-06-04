@@ -41,6 +41,11 @@
   - 詳細ページ：アブストラクト表示・OGP・前後ナビゲーション・Hayagriva エクスポート・印刷用 CSS
   - build.py：`_searchtext` 付与ステップ・Atom feed 生成ステップを追記
 
+### 修正
+
+- `tools/import.py`：標準出力への書き込みを `sys.stdout.buffer.write(output.encode('utf-8'))` に変更
+  - `sys.stdout.write()` はターミナルのロケール設定に依存するため、Windows の CP932 等では日本語が文字化けする問題を解消
+
 ### 変更
 
 - `tools/import.py`：インポーター検出をプラグイン方式に変更（**後方互換あり**）
