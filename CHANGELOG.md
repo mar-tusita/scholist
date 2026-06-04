@@ -43,8 +43,9 @@
 
 ### 修正
 
-- `tools/import.py`：標準出力への書き込みを `sys.stdout.buffer.write(output.encode('utf-8'))` に変更
-  - `sys.stdout.write()` はターミナルのロケール設定に依存するため、Windows の CP932 等では日本語が文字化けする問題を解消
+- `tools/import.py`：`main()` 冒頭で stdout・stderr を UTF-8 に統一（`reconfigure`）
+  - `sys.stdout.reconfigure(encoding='utf-8')` と `sys.stderr.reconfigure(encoding='utf-8')` を追加
+  - ターミナルのロケール設定に依存せず、stdout への YAML 出力・stderr の警告メッセージが文字化けしない
 
 ### 変更
 

@@ -64,6 +64,9 @@ def make_header(fmt: str, filepath: str, n_entries: int, warnings: list[str]) ->
 
 
 def main():
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
+
     _fmt_list = sorted(_IMPORTERS)
     parser = argparse.ArgumentParser(
         description=f"{' / '.join(_fmt_list)} を scholist の publications.yaml に変換する"
@@ -134,7 +137,7 @@ def main():
         Path(args.output).write_text(output, encoding='utf-8')
         print(f"出力: {args.output}", file=sys.stderr)
     else:
-        sys.stdout.buffer.write(output.encode('utf-8'))
+        sys.stdout.write(output)
 
 
 if __name__ == '__main__':
