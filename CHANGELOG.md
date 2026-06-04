@@ -7,63 +7,45 @@
 
 ### 追加
 
-- `tools/import.py`：BibTeX / Hayagriva → `publications.yaml` 変換 CLI ツール
-  - `--format bibtex|hayagriva`・`--output`・`--append` オプション
-  - 変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録
-  - 著者名フォーマット・月なし日付等の問題点は警告として stderr に出力
-- `tools/importers/__init__.py`：`BaseImporter` 基底クラス
-- `tools/importers/bibtex.py`：BibTeX インポーター（`bibtexparser` v1.x 使用）
-  - `@article`（journal / conference）・`@inproceedings`・`@book`・`@incollection`・`@phdthesis`・`@mastersthesis`・`@techreport` 対応
-- `tools/importers/hayagriva.py`：Hayagriva インポーター（PyYAML のみで対応）
-  - `parent` 構造から `journal` / `conference` を判定
-- `requirements-tools.txt`：ツール用追加依存（`bibtexparser>=1.3,<2.0`）
-- `tests/test_import.py`：インポーターのユニットテスト（33件）
-
-### ドキュメント
-
-- `CLAUDE.md`：「配布パッケージ・sync の対象ファイル」セクションを追加
-  - zip と sync の対象は常に一致させるというルールを明文化
-  - 更新が必要なファイル3箇所（`release-asset.yml`・`extras/sync-from-scholist.yml`・README）を列挙
-  - 現在の対象ファイル一覧と sync しないファイル（ユーザーデータ）を記載
-- `README.md`・`CLAUDE.md`：フィルタの URL クエリパラメータ一覧表を追加（`type`・`year`・`scope`・`reviewed`・`invited`・`q`）
-- `CLAUDE.md`：全件精査による記載漏れ修正
-  - 共通フィールド表の「8種」→「10種」
-  - ディレクトリ構成に `extras/`・`test.yml`・`release-asset.yml` を追記
-  - `export.js` のコメントに Hayagriva を追加
-  - BibTeX・Hayagriva フィールドマッピング表に `abstract` を追記
-  - `build.py` 仕様にバージョン読み込みステップ・フッター出力を追記（処理手順の番号も修正）
-  - GitHub Actions 節を3ワークフロー分に拡充
-- `README.md`：「既存データのインポート」節を追加（使い方・オプション・注意点）
-- `README.md`：「主な機能」にインポート機能を追記
-- `CLAUDE.md`：`tools/` をディレクトリ構成に追加、`tools/import.py` の仕様節を追加（型マッピング表含む）
-- `CLAUDE.md`：機能仕様・build.py 仕様の記載漏れを全件修正
-  - 一覧ページ：統計サマリー・ページネーション・URL フィルタ保持・全文検索（`build_searchtext`）・Hayagriva エクスポート・言語切り替え
-  - 詳細ページ：アブストラクト表示・OGP・前後ナビゲーション・Hayagriva エクスポート・印刷用 CSS
-  - build.py：`_searchtext` 付与ステップ・Atom feed 生成ステップを追記
-
-### 修正
-
-- `tools/import.py`：`main()` 冒頭で stdout・stderr を UTF-8 に統一（`reconfigure`）
-  - `sys.stdout.reconfigure(encoding='utf-8')` と `sys.stderr.reconfigure(encoding='utf-8')` を追加
-  - ターミナルのロケール設定に依存せず、stdout への YAML 出力・stderr の警告メッセージが文字化けしない
+- `tools/` ディレクトリ：既存データから `publications.yaml` へのインポート CLI
+  - `tools/import.py`：`--format`・`--output`・`--append` オプション
+    - 変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録
+    - 著者名フォーマット・月なし日付等の問題点は警告として stderr に出力
+  - `tools/importers/__init__.py`：`BaseImporter` 基底クラス
+  - `tools/importers/bibtex.py`：BibTeX インポーター（`bibtexparser` v1.x 使用）
+    - `@article`（journal / conference）・`@inproceedings`・`@book`・`@incollection`・`@phdthesis`・`@mastersthesis`・`@techreport` 対応
+  - `tools/importers/hayagriva.py`：Hayagriva インポーター（PyYAML のみで対応）
+    - `parent` 構造から `journal` / `conference` を判定
+  - `requirements-tools.txt`：ツール用追加依存（`bibtexparser>=1.3,<2.0`）
+  - `tests/test_import.py`：インポーターのユニットテスト（33件）
 
 ### 変更
 
-- `tools/import.py`：インポーター検出をプラグイン方式に変更（**後方互換あり**）
-  - `importers/` ディレクトリを `pkgutil` で自動スキャンし、`IMPORTER_CLASS` と `format_name` を持つモジュールを動的に登録
-  - `--format` の選択肢と `description` も発見したインポーターから自動生成
-  - 新フォーマット追加時に `import.py` 本体を修正する必要がなくなった
-  - 各インポーターに `format_name` クラス属性と `IMPORTER_CLASS` モジュール変数を追加（`bibtex.py`・`hayagriva.py`）
-  - 依存パッケージが未インストールのインポーターは自動的に非表示になる
-- `tools/` と `requirements-tools.txt` を配布 zip・sync 対象に追加（`release-asset.yml`・`extras/sync-from-scholist.yml`・README 両言語版）
-- `README.md`・`README.en.md` を sync 対象に追加し、ツールファイル／ユーザーデータの分類表を更新
+- `tools/import.py`：インポーター検出をプラグイン方式に変更
+  - `importers/` を `pkgutil` で自動スキャンし `IMPORTER_CLASS`・`format_name` を持つモジュールを動的に登録
+  - 新フォーマット追加時に `import.py` 本体の修正が不要になった
+  - 依存パッケージが未インストールのインポーターは自動的に非表示
 - `build.py`：`build_searchtext()` を追加し、検索対象をエントリの全文字列値に拡大
   - `source` 内の誌名・論文集名・機関名・賞名・説明文・出版社など全て対象
-  - `note` / `presenter` / `location` / `venue` 等も対象に
-  - `id`・`type`・`date`・`scope` 等の構造フィールドは除外
-  - 内部フィールド（`_` プレフィックス）は除外
+  - `id`・`type`・`date`・`scope` 等の構造フィールドと内部フィールド（`_`）は除外
 - `templates/index.html.j2`：`data-searchtext` を `{{ e._searchtext }}` の1行に簡略化
 - `tests/test_build.py`：`TestBuildSearchtext` クラスを追加（13件、計112件）
+- `tools/`・`README.md`・`README.en.md`・`requirements-tools.txt` を配布 zip・sync 対象に追加
+  - ツールファイル／ユーザーデータの分類表を更新（`CHANGELOG.md` は sync しない）
+
+### 修正
+
+- `tools/import.py`：`main()` 冒頭で stdout・stderr を UTF-8 に統一
+  - `sys.stdout.reconfigure(encoding='utf-8')` と `sys.stderr.reconfigure(encoding='utf-8')` を追加
+  - Windows 等の非 UTF-8 ロケールでの文字化けを防止
+
+### ドキュメント
+
+- `CLAUDE.md`：「配布パッケージ・sync の対象ファイル」セクションを追加（zip と sync は常に一致させるルールを明文化）
+- `CLAUDE.md`：`tools/import.py` 仕様にプラグインアーキテクチャの説明・追加手順を追記
+- `CLAUDE.md`：機能仕様・build.py 仕様・ディレクトリ構成の記載漏れを全件修正
+- `README.md`・`README.en.md`：「既存データのインポート」節・「カスタムインポーターの追加」節を追加
+- `README.md`・`README.en.md`：フィルタの URL クエリパラメータ一覧表を追加
 
 ## [0.5.2] - 2026-06-03
 
