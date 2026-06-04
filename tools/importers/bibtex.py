@@ -38,6 +38,7 @@ def _normalize_pages(pages: str) -> str:
 
 
 class BibTeXImporter(BaseImporter):
+    format_name = 'bibtex'
 
     def load(self, filepath: str) -> list[dict]:
         parser = BibTexParser(common_strings=True)
@@ -210,3 +211,6 @@ class BibTeXImporter(BaseImporter):
             entry['note'] = ' / '.join(note_parts)
 
         return entry
+
+
+IMPORTER_CLASS = BibTeXImporter

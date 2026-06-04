@@ -9,6 +9,8 @@
 
 import argparse
 import datetime
+import importlib
+import pkgutil
 import sys
 from pathlib import Path
 
@@ -17,15 +19,34 @@ import yaml
 # importers を tools/ 直下からも呼べるようにパスを通す
 sys.path.insert(0, str(Path(__file__).parent))
 
+import importers as _importers_pkg
+
+
+def _discover_importers() -> dict:
+    """importers/ をスキャンし {format_name: class} を返す。
+    IMPORTER_CLASS と format_name を持つモジュールのみ対象とする。"""
+    result = {}
+    for _, name, _ in pkgutil.iter_modules(_importers_pkg.__path__):
+        if name.startswith('_'):
+            continue
+        try:
+            mod = importlib.import_module(f'importers.{name}')
+            cls = getattr(mod, 'IMPORTER_CLASS', None)
+            if cls and hasattr(cls, 'format_name'):
+                result[cls.format_name] = cls
+        except Exception:
+            pass
+    return result
+
+
+_IMPORTERS = _discover_importers()
+
 
 def load_importer(fmt: str):
-    if fmt == 'bibtex':
-        from importers.bibtex import BibTeXImporter
-        return BibTeXImporter()
-    if fmt == 'hayagriva':
-        from importers.hayagriva import HayagrivaImporter
-        return HayagrivaImporter()
-    raise ValueError(f"未対応のフォーマット: {fmt}。対応: bibtex, hayagriva")
+    cls = _IMPORTERS.get(fmt)
+    if cls is None:
+        raise ValueError(f"未対応のフォーマット: {fmt}。対応: {', '.join(sorted(_IMPORTERS))}")
+    return cls()
 
 
 def make_header(fmt: str, filepath: str, n_entries: int, warnings: list[str]) -> str:
@@ -43,12 +64,13 @@ def make_header(fmt: str, filepath: str, n_entries: int, warnings: list[str]) ->
 
 
 def main():
+    _fmt_list = sorted(_IMPORTERS)
     parser = argparse.ArgumentParser(
-        description="BibTeX / Hayagriva を scholist の publications.yaml に変換する"
+        description=f"{' / '.join(_fmt_list)} を scholist の publications.yaml に変換する"
     )
     parser.add_argument('input', help='入力ファイルパス')
     parser.add_argument('--format', '-f', required=True,
-                        choices=['bibtex', 'hayagriva'],
+                        choices=_fmt_list,
                         help='入力フォーマット')
     parser.add_argument('--output', '-o',
                         help='出力先ファイル（省略時: 標準出力）')

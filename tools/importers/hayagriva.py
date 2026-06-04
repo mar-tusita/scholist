@@ -49,6 +49,7 @@ def _get_serial(item: dict, key: str) -> str:
 
 
 class HayagrivaImporter(BaseImporter):
+    format_name = 'hayagriva'
 
     def load(self, filepath: str) -> list[dict]:
         with open(filepath, encoding='utf-8') as f:
@@ -194,3 +195,6 @@ class HayagrivaImporter(BaseImporter):
             entry['note'] = ' / '.join(note_parts)
 
         return entry
+
+
+IMPORTER_CLASS = HayagrivaImporter
