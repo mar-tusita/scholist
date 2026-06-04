@@ -223,7 +223,8 @@ function entryToHayagriva(entry) {
 // ---- ダウンロード共通 ----
 
 function download(filename, content, mimetype) {
-  const blob = new Blob([content], { type: mimetype });
+  const type = mimetype.startsWith('text/') ? mimetype + '; charset=utf-8' : mimetype;
+  const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
