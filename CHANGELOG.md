@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### 追加
+
+- 詳細ページ：エントリ ID の表示機能（`config.yaml` の `show_entry_id: true` で有効化）
+  - バッジ行の右端にモノスペースで `ID: entry-id-value` を表示
+  - デフォルト `false`（公開サイトでは非表示、管理・開発時にオンにする想定）
+  - 印刷時は非表示、i18n 対応
+
 ### 修正
 
 - `static/export.js`：YAML・BibTeX・Hayagriva エクスポート時の文字化けを修正

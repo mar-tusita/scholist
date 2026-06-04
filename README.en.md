@@ -163,6 +163,8 @@ highlight_authors:
   - "T\\. Yamada"  # use \. to match a literal period
 ```
 
+Setting `show_entry_id: true` displays the entry ID at the right end of the badge row on detail pages. Useful when manually editing the YAML file or verifying IDs during `import.py --append`. Defaults to `false` (hidden).
+
 Setting `base_url` enables the following features. For GitHub Pages, set it to `https://username.github.io/repository-name`.
 
 - Adds `og:url` to OGP tags on detail pages (improves URL previews on social media)

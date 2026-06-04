@@ -44,11 +44,16 @@
     </h2>
 
     <div class="badges">
-      <span class="badge badge-{{ entry.type }}" data-i18n-type="{{ entry.type }}">{{ entry.type }}</span>
-      {% if entry.invited %}<span class="badge badge-invited" data-i18n="badge.invited.detail">招待講演</span>{% endif %}
-      {% if entry.reviewed %}<span class="badge badge-reviewed" data-i18n="badge.reviewed.detail">査読あり</span>{% endif %}
-      {% if entry.scope == 'international' %}<span class="badge badge-intl" data-i18n="badge.international">国際</span>{% endif %}
-      {% if entry.scope == 'domestic' %}<span class="badge badge-dom" data-i18n="badge.domestic">国内</span>{% endif %}
+      <div>
+        <span class="badge badge-{{ entry.type }}" data-i18n-type="{{ entry.type }}">{{ entry.type }}</span>
+        {% if entry.invited %}<span class="badge badge-invited" data-i18n="badge.invited.detail">招待講演</span>{% endif %}
+        {% if entry.reviewed %}<span class="badge badge-reviewed" data-i18n="badge.reviewed.detail">査読あり</span>{% endif %}
+        {% if entry.scope == 'international' %}<span class="badge badge-intl" data-i18n="badge.international">国際</span>{% endif %}
+        {% if entry.scope == 'domestic' %}<span class="badge badge-dom" data-i18n="badge.domestic">国内</span>{% endif %}
+      </div>
+      {% if config.show_entry_id %}
+      <code class="entry-id"><span data-i18n="detail.id">ID</span>: {{ entry.id }}</code>
+      {% endif %}
     </div>
 
     <table class="detail-table">

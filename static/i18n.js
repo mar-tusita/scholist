@@ -95,6 +95,8 @@ const MESSAGES = {
     'degree.doctoral': '博士論文',
     'degree.master':   '修士論文',
     'degree.bachelor': '学士論文',
+    // エントリ ID
+    'detail.id': 'ID',
     // 添付ファイル
     'section.files': '添付ファイル',
   },
@@ -192,6 +194,8 @@ const MESSAGES = {
     'degree.doctoral': 'Doctoral dissertation',
     'degree.master':   "Master's thesis",
     'degree.bachelor': "Bachelor's thesis",
+    // Entry ID
+    'detail.id': 'ID',
     // Files section
     'section.files': 'Attachments',
   },

@@ -166,6 +166,8 @@ highlight_authors:
   - "T\\. Yamada"  # ピリオドを文字通りに使うには \. と書く
 ```
 
+`show_entry_id: true` にすると詳細ページのバッジ右端にエントリ ID が表示されます。YAML ファイルの手動編集時や `import.py --append` 時の確認に便利です。デフォルトは `false`（非表示）です。
+
 `base_url` を設定すると以下が有効になります。GitHub Pages で運用する場合は `https://username.github.io/repository-name` を設定してください。
 
 - 詳細ページの OGP タグに `og:url` を追加（SNS での URL プレビューが正確になる）
