@@ -36,7 +36,9 @@ jobs:
             templates/ \
             static/ \
             requirements.txt \
-            pyproject.toml
+            pyproject.toml \
+            README.md \
+            README.en.md
 
       - name: Commit and push if changed
         run: |
