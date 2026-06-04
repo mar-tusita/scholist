@@ -215,6 +215,35 @@ server {
 }
 ```
 
+### Adding a custom importer
+
+You can add your own importers for custom formats. Just create a file in `tools/importers/` with the structure below — `import.py` detects it automatically. **No changes to `import.py` itself are needed.**
+
+```python
+# tools/importers/my_format.py
+from . import BaseImporter
+
+class MyFormatImporter(BaseImporter):
+    format_name = 'my_format'  # name to pass to --format
+
+    def load(self, filepath: str) -> list[dict]:
+        # Read filepath and return a list of scholist entry dicts
+        entries = []
+        # ... conversion logic ...
+        return entries
+
+IMPORTER_CLASS = MyFormatImporter  # required: this module variable enables discovery
+```
+
+After adding, install any required dependencies and verify:
+
+```bash
+python tools/import.py --help
+# my_format should appear in --format choices
+```
+
+> **Sync compatibility:** `importers/my_format.py` does not exist in scholist, so it will never be overwritten or deleted by sync.
+
 ## Updating the tool
 
 When scholist itself is updated, here is how to pull the changes into your repository.
