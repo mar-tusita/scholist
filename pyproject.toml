@@ -1,6 +1,6 @@
 [project]
 name = "scholist"
-version = "0.5.2"
+version = "0.6.0"
 description = "YAML-driven static research publication list generator"
 requires-python = ">=3.10"
 dependencies = [

@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-06-03
+
 ### 追加
 
 - `tools/` ディレクトリ：既存データから `publications.yaml` へのインポート CLI
