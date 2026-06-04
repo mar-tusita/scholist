@@ -1,5 +1,5 @@
 highlight_authors:
-  - "山田.?太郎"    # 正規表現可。「山田太郎」「山田 太郎」どちらもマッチ
+  - "山田 ?太郎"    # 正規表現可。「山田太郎」「山田 太郎」どちらもマッチ（. より安全）
   - "Taro Yamada"
   - "T. Yamada"    # . は正規表現では「任意の1文字」。厳密に一致させるには "T\. Yamada"
 highlight_style: underline   # bold または underline

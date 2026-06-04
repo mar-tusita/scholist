@@ -158,7 +158,7 @@ base_url: ""
 
 ```yaml
 highlight_authors:
-  - "山田.?太郎"   # matches "山田太郎" and "山田 太郎"
+  - "山田 ?太郎"   # matches "山田太郎" and "山田 太郎" (safer than .)
   - "Taro Yamada"
   - "T\\. Yamada"  # use \. to match a literal period
 ```
