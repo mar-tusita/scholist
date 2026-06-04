@@ -154,7 +154,14 @@ entries_per_page: 30
 base_url: ""
 ```
 
-`highlight_authors` lists name variants to highlight in the author list. Multiple variants for the same person can be listed.
+`highlight_authors` lists patterns to highlight in the author list. Each entry is evaluated as a **regular expression**.
+
+```yaml
+highlight_authors:
+  - "山田.?太郎"   # matches "山田太郎" and "山田 太郎"
+  - "Taro Yamada"
+  - "T\\. Yamada"  # use \. to match a literal period
+```
 
 Setting `base_url` enables the following features. For GitHub Pages, set it to `https://username.github.io/repository-name`.
 

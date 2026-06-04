@@ -411,6 +411,22 @@ class TestHighlightAuthors:
         result = highlight_authors(authors, ["A"], "underline")
         assert [r["name"] for r in result] == ["C", "A", "B"]
 
+    def test_regex_optional_space(self):
+        pat = ["山田.?太郎"]
+        assert highlight_authors(["山田太郎"], pat, "bold")[0]["highlight"] is True
+        assert highlight_authors(["山田 太郎"], pat, "bold")[0]["highlight"] is True
+        assert highlight_authors(["山田　太郎"], pat, "bold")[0]["highlight"] is True
+
+    def test_regex_invalid_falls_back_to_literal(self):
+        # 無効な正規表現は literal 文字列として扱う
+        result = highlight_authors(["[invalid"], ["[invalid"], "bold")
+        assert result[0]["highlight"] is True
+
+    def test_regex_fullmatch_not_partial(self):
+        # fullmatch なので部分一致はヒットしない
+        result = highlight_authors(["山田 太郎 教授"], ["山田.?太郎"], "bold")
+        assert result[0]["highlight"] is False
+
 
 # ── read_version ──────────────────────────────────────────────────────────
 

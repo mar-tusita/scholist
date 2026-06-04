@@ -175,12 +175,17 @@ def build_searchtext(entry):
 
 
 def highlight_authors(authors, highlight_list, style):
+    patterns = []
+    for pat in highlight_list:
+        try:
+            patterns.append(re.compile(pat))
+        except re.error:
+            patterns.append(re.compile(re.escape(pat)))
+
     result = []
     for author in authors:
-        if author in highlight_list:
-            result.append({"name": author, "highlight": True, "style": style})
-        else:
-            result.append({"name": author, "highlight": False, "style": style})
+        matched = any(p.fullmatch(author) for p in patterns)
+        result.append({"name": author, "highlight": matched, "style": style})
     return result
 
 

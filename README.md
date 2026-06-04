@@ -157,7 +157,14 @@ entries_per_page: 30
 base_url: ""
 ```
 
-`highlight_authors` に列挙した名前は一覧・詳細ページで強調表示されます。表記ゆれを複数列挙できます。
+`highlight_authors` に列挙した名前は一覧・詳細ページで強調表示されます。各エントリは**正規表現**として評価されます。
+
+```yaml
+highlight_authors:
+  - "山田.?太郎"   # 「山田太郎」「山田 太郎」どちらもマッチ
+  - "Taro Yamada"
+  - "T\\. Yamada"  # ピリオドを文字通りに使うには \. と書く
+```
 
 `base_url` を設定すると以下が有効になります。GitHub Pages で運用する場合は `https://username.github.io/repository-name` を設定してください。
 

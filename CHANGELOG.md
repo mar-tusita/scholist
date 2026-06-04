@@ -5,6 +5,15 @@
 
 ## [Unreleased]
 
+### 変更
+
+- `build.py`：`highlight_authors` の照合を完全一致から `re.fullmatch()` による正規表現マッチに変更
+  - `"山田.?太郎"` のように書くと「山田太郎」「山田 太郎」どちらもハイライト可能
+  - 無効な正規表現はリテラル文字列にフォールバック（後方互換）
+  - `"T. Yamada"` の `.` は正規表現では任意の1文字を意味する点に注意（厳密には `"T\. Yamada"`）
+- `data/config.yaml`：`highlight_authors` のサンプルを正規表現の使用例に更新
+- `tests/test_build.py`：`TestHighlightAuthors` に正規表現テスト3件を追加（計148件）
+
 ## [0.6.0] - 2026-06-03
 
 ### 追加
