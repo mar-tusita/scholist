@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### 修正
+
+- `static/export.js`：YAML・BibTeX・Hayagriva エクスポート時の文字化けを修正
+  - `download()` 関数で `text/` 系 MIME タイプに `; charset=utf-8` を自動付与
+  - JSON は `application/json`（RFC で UTF-8 必須）のため影響なし
+
 ### 変更
 
 - `build.py`：`highlight_authors` の照合を完全一致から `re.fullmatch()` による正規表現マッチに変更
