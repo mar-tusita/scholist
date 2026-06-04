@@ -21,6 +21,10 @@
 
 ### ドキュメント
 
+- `CLAUDE.md`：「配布パッケージ・sync の対象ファイル」セクションを追加
+  - zip と sync の対象は常に一致させるというルールを明文化
+  - 更新が必要なファイル3箇所（`release-asset.yml`・`extras/sync-from-scholist.yml`・README）を列挙
+  - 現在の対象ファイル一覧と sync しないファイル（ユーザーデータ）を記載
 - `README.md`・`CLAUDE.md`：フィルタの URL クエリパラメータ一覧表を追加（`type`・`year`・`scope`・`reviewed`・`invited`・`q`）
 - `CLAUDE.md`：全件精査による記載漏れ修正
   - 共通フィールド表の「8種」→「10種」
@@ -39,6 +43,8 @@
 
 ### 変更
 
+- `tools/` と `requirements-tools.txt` を配布 zip・sync 対象に追加（`release-asset.yml`・`extras/sync-from-scholist.yml`・README 両言語版）
+- `README.md`・`README.en.md` を sync 対象に追加し、ツールファイル／ユーザーデータの分類表を更新
 - `build.py`：`build_searchtext()` を追加し、検索対象をエントリの全文字列値に拡大
   - `source` 内の誌名・論文集名・機関名・賞名・説明文・出版社など全て対象
   - `note` / `presenter` / `location` / `venue` 等も対象に
