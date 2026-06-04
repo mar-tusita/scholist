@@ -437,7 +437,7 @@ BibTeXのフィールドマッピング（主要なもの）：
 使い方: python tools/import.py --format <形式> <入力ファイル> [オプション]
 
 オプション:
-  --format, -f  bibtex | hayagriva（必須）
+  --format, -f  利用可能な形式（起動時に自動検出）（必須）
   --output, -o  出力先ファイル（省略時: 標準出力）
   --append, -a  既存の publications.yaml に追記（ID 重複はスキップ）
 
@@ -447,6 +447,31 @@ BibTeXのフィールドマッピング（主要なもの）：
 - 月なし日付（year のみ）は YYYY-01 に設定し警告
 - stderr に WARNING として問題点を出力
 ```
+
+### プラグインアーキテクチャ
+
+`import.py` は起動時に `importers/` ディレクトリを `pkgutil.iter_modules` でスキャンし、
+`IMPORTER_CLASS` 変数と `format_name` クラス属性を持つモジュールを自動登録する。
+`--format` の選択肢と description はその結果から動的に生成される。
+
+**新フォーマットの追加方法：**
+
+```python
+# tools/importers/my_format.py
+from . import BaseImporter
+
+class MyFormatImporter(BaseImporter):
+    format_name = 'my_format'   # --format に渡す名前
+
+    def load(self, filepath: str) -> list[dict]:
+        ...  # エントリ dict のリストを返す
+
+IMPORTER_CLASS = MyFormatImporter  # このモジュール変数で検出される
+```
+
+- `import.py` 本体を修正する必要はない
+- 依存パッケージが未インストールの場合、そのインポーターは自動的に非表示になる
+- ユーザーが `importers/` に追加したファイルは sync で消えない（scholist にないファイルは git checkout で削除されない）
 
 ### 型マッピング（BibTeX → scholist）
 

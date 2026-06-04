@@ -251,6 +251,35 @@ server {
 }
 ```
 
+### カスタムインポーターの追加
+
+独自フォーマットのインポーターを追加できます。`tools/importers/` に以下の形式でファイルを作成するだけで、`import.py` が自動的に検出します。**`import.py` 本体の修正は不要です。**
+
+```python
+# tools/importers/my_format.py
+from . import BaseImporter
+
+class MyFormatImporter(BaseImporter):
+    format_name = 'my_format'  # --format に渡す名前
+
+    def load(self, filepath: str) -> list[dict]:
+        # filepath を読み込み、scholist エントリ形式の dict のリストを返す
+        entries = []
+        # ... 変換処理 ...
+        return entries
+
+IMPORTER_CLASS = MyFormatImporter  # 必須：このモジュール変数で検出される
+```
+
+追加後は依存パッケージをインストールして確認：
+
+```bash
+python tools/import.py --help
+# --format に my_format が追加されていれば成功
+```
+
+> **sync との共存：** `importers/my_format.py` は scholist にないファイルなので、sync で上書き・削除されることはありません。
+
 ## ツールのアップデート
 
 このリポジトリをテンプレートとして使い始めた場合、scholist 本体が更新されたときにその変更を取り込む手順を説明します。

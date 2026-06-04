@@ -43,6 +43,12 @@
 
 ### 変更
 
+- `tools/import.py`：インポーター検出をプラグイン方式に変更（**後方互換あり**）
+  - `importers/` ディレクトリを `pkgutil` で自動スキャンし、`IMPORTER_CLASS` と `format_name` を持つモジュールを動的に登録
+  - `--format` の選択肢と `description` も発見したインポーターから自動生成
+  - 新フォーマット追加時に `import.py` 本体を修正する必要がなくなった
+  - 各インポーターに `format_name` クラス属性と `IMPORTER_CLASS` モジュール変数を追加（`bibtex.py`・`hayagriva.py`）
+  - 依存パッケージが未インストールのインポーターは自動的に非表示になる
 - `tools/` と `requirements-tools.txt` を配布 zip・sync 対象に追加（`release-asset.yml`・`extras/sync-from-scholist.yml`・README 両言語版）
 - `README.md`・`README.en.md` を sync 対象に追加し、ツールファイル／ユーザーデータの分類表を更新
 - `build.py`：`build_searchtext()` を追加し、検索対象をエントリの全文字列値に拡大
