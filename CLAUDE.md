@@ -526,6 +526,12 @@ server {
 
 ## 実装上の注意事項
 
+- `extras/sync-from-scholist.yml` は **ユーザーのリポジトリ向けワークフロー**であり、scholist 自身の `.github/workflows/` には置かない。
+  もし scholist の `.github/workflows/` に置くと GitHub Actions がここで実行しようとするため、
+  「scholist が scholist から自分自身へ sync する」という無意味な動作になる。
+  そのため `extras/` を"配布物専用の置き場"として使い、`release-asset.yml` が zip 作成時に
+  `.github/workflows/` へコピーする構造にしている。
+
 - `public/` ディレクトリは生成物なので `.gitignore` に含めるか、GitHub Pages デプロイ専用ブランチ（`gh-pages`）に出力する
 - エクスポート機能（YAML/JSON/BibTeX）はすべてクライアントサイドJavaScriptで実装し、サーバサイド処理を不要にする
 - BibTeXの `author` フィールドは `山田 太郎 and 鈴木 花子` のように ` and ` で結合する（姓名の順序はデータそのままを使用）
