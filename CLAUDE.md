@@ -524,6 +524,45 @@ server {
 
 ---
 
+## 配布パッケージ・sync の対象ファイル
+
+**「配布パッケージ（template zip）に含まれるファイル」と「sync-from-scholist.yml の取り込み対象」は常に一致させる。**
+新しいファイルやディレクトリを追加したとき、以下を忘れずに更新すること。
+
+| 更新先 | ファイル |
+| --- | --- |
+| `.github/workflows/release-asset.yml` | `cp -r` の列挙 |
+| `extras/sync-from-scholist.yml` | `git checkout upstream/${REF} --` の列挙 |
+| `README.md`・`README.en.md` | ツールファイル表と手動 sync コマンド |
+
+**現在の対象ファイル一覧：**
+
+```text
+build.py
+templates/
+static/
+tools/                  ← BibTeX/Hayagriva インポート CLI
+requirements.txt
+requirements-tools.txt  ← tools/ の依存パッケージ
+pyproject.toml
+README.md
+README.en.md
+LICENSE
+.gitignore
+.github/workflows/build.yml   （手動のみ：GITHUB_TOKEN 制限）
+.github/workflows/sync-from-scholist.yml  （extras/ 経由のみ）
+```
+
+**sync しない（ユーザーデータ）：**
+
+```text
+data/
+files/
+CHANGELOG.md
+```
+
+---
+
 ## 実装上の注意事項
 
 - `extras/sync-from-scholist.yml` は **ユーザーのリポジトリ向けワークフロー**であり、scholist 自身の `.github/workflows/` には置かない。
