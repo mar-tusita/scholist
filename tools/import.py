@@ -134,7 +134,7 @@ def main():
         Path(args.output).write_text(output, encoding='utf-8')
         print(f"出力: {args.output}", file=sys.stderr)
     else:
-        sys.stdout.write(output)
+        sys.stdout.buffer.write(output.encode('utf-8'))
 
 
 if __name__ == '__main__':
