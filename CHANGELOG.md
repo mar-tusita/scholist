@@ -7,66 +7,33 @@
 
 ### 追加
 
-- エクスポート機能（`static/export.js`）に参考文献テキスト形式を追加（ボタン名：「参考文献」）
-  - `著者: "タイトル", 出典情報 (年).` 形式の人間可読テキスト（`.txt`）を出力
-  - 著者名は加工なし（略称化しない）、種別ごとに出典情報をフォーマット
-  - award のみ award_name を主体として引用符なしで出力
-  - thesis の degree → `博士論文` / `修士論文` / `学士論文`
+- エクスポート形式の拡張（`static/export.js`）：全件・1件エクスポートに **RIS**・**CSL-JSON**・**参考文献テキスト** を追加
+  - 参考文献テキスト（`.txt`）：`著者: "タイトル", 出典情報 (年).` 形式、種別ごとに出典を整形、ボタン名「参考文献」/ "All Bibliography"
+  - RIS：TY タグによる種別マッピング、日付 `YYYY/MM/DD/` 形式、SP/EP でページ範囲分割
+  - CSL-JSON：著者名 `{"literal": "..."}` 形式（family/given 分割なし）、`issued.date-parts` 形式の日付
 
-- エクスポート機能（`static/export.js`）に RIS・CSL-JSON 形式を追加
-  - 一覧ページ：「全件 RIS」「全件 CSL-JSON」ボタン
-  - 詳細ページ：「RIS」「CSL-JSON」ボタン
-  - RIS：TY タグによる種別マッピング、日付は `YYYY/MM/DD/` 形式、SP/EP でページ範囲分割
-  - CSL-JSON：著者名は `{"literal": "..."}` 形式（family/given 分割なし）、`issued.date-parts` 形式の日付
+- インポーター追加：**RIS**（`tools/importers/ris.py`）・**CSL-JSON**（`tools/importers/csl_json.py`）に対応
+  - RIS：`TY` タグによる種別マッピング、`YYYY/MM/DD/`・`YYYY/MM/`・`YYYY` の日付形式をすべて解析、ID 不在時は自動付与
+  - CSL-JSON：`type` フィールドによる種別マッピング、`language: ja` のエントリはタイトルを `title` に格納
+  - 両者とも外部依存なし（標準ライブラリのみ）、変換不能フィールドは `note` に `[import: field=value]` 形式で記録
+  - `tests/test_import.py` に計 53 件のテストを追加（累計 201 件）
 
-- `tools/importers/csl_json.py`：CSL-JSON 形式インポーターを追加（`--format csl-json`）
-  - Zotero・Pandoc・Mendeley 等が出力する CSL-JSON（`.json`）を `publications.yaml` に変換
-  - 標準ライブラリのみ使用（追加依存なし）
-  - `type` フィールドによる種別マッピング：`article-journal` → `journal`、`paper-conference` → `conference`、`book`/`chapter` → `book`、`thesis` → `thesis`、`report` → `report`、`patent` → `patent`、`speech` → `talk`
-  - `author` の `family`/`given` を `family given` 形式（スペース区切り）に結合
-  - `language: ja` のエントリはタイトルを `title`（日本語）として格納
-  - `issued.date-parts` の `[年, 月, 日]` 形式を解析
-  - `tests/test_import.py` に 28 件のテストを追加（計201件）
-
-- `tools/importers/ris.py`：RIS 形式インポーターを追加
-  - Zotero・Mendeley・EndNote 等からのエクスポートファイル（`.ris`）を `publications.yaml` に変換
-  - 標準ライブラリのみ使用（追加依存なし）
-  - `TY` タグによる種別マッピング：`JOUR/EJOU/MGZN` → `journal`、`CONF/CPAPER` → `conference`、`BOOK/CHAP` → `book`、`THES` → `thesis`、`RPRT` → `report`、`PAT` → `patent`
-  - 日付形式 `YYYY/MM/DD/`・`YYYY/MM/`・`YYYY` をすべて解析
-  - ID タグ不在時の自動 ID 付与、ID 使用不可文字の自動置換
-  - 変換不能フィールドは `note` に `[import: ...]` 形式で記録
-  - `tests/test_import.py` に 25 件のテストを追加（計173件）
-
-- 詳細ページ：エントリ ID の表示機能（`config.yaml` の `show_entry_id: true` で有効化）
-  - バッジ行の右端にモノスペースで `ID: entry-id-value` を表示
-  - デフォルト `false`（公開サイトでは非表示、管理・開発時にオンにする想定）
-  - 印刷時は非表示、i18n 対応
+- 詳細ページ：エントリ ID の表示機能（`config.yaml` の `show_entry_id: true` で有効化、デフォルト `false`）
+  - バッジ行の右端にモノスペースで `ID: entry-id-value` を表示（管理・開発時に便利、印刷時は非表示）
 
 ### 修正
 
-- `static/export.js`：YAML・BibTeX・Hayagriva エクスポート時の文字化けを修正
-  - `download()` 関数で `text/` 系 MIME タイプに `; charset=utf-8` を自動付与
-  - JSON は `application/json`（RFC で UTF-8 必須）のため影響なし
+- `static/export.js`：テキスト系エクスポート（YAML・BibTeX・Hayagriva 等）でダウンロードファイルの MIME タイプに `; charset=utf-8` が付与されていなかった問題を修正
 
 ### 変更
 
 - `build.py`：`highlight_authors` の照合を完全一致から `re.fullmatch()` による正規表現マッチに変更
-  - `"山田.?太郎"` のように書くと「山田太郎」「山田 太郎」どちらもハイライト可能
-  - 無効な正規表現はリテラル文字列にフォールバック（後方互換）
-  - `"T. Yamada"` の `.` は正規表現では任意の1文字を意味する点に注意（厳密には `"T\. Yamada"`）
-- `data/config.yaml`：`highlight_authors` のサンプルを `"山田 ?太郎"` 形式に更新（`.?` より安全：「山田一太郎」等への誤マッチを防ぐ）
-- `tests/test_build.py`：`TestHighlightAuthors` に正規表現テスト3件を追加（計148件）
+  - `"山田 ?太郎"` のように書くと表記ゆれをまとめてマッチ可能（無効な正規表現はリテラルにフォールバック）
+  - `"T. Yamada"` の `.` は任意の1文字にマッチする点に注意（厳密には `"T\. Yamada"`）
 
 ### ドキュメント
 
-- `CLAUDE.md`：ディレクトリ構成に `ris.py`・`csl_json.py` を追記、`export.js` と `import.py` のコメントを現状に更新
-- `CLAUDE.md`：`config.yaml` スキーマに `show_entry_id` フィールドを追記
-- `CLAUDE.md`：`base_url` 未設定時の説明に `feed.xml` を追記
-- `CLAUDE.md`：著者ハイライト仕様を「完全一致」から `re.fullmatch()` 正規表現マッチに更新（実装と整合）
-- `README.md`：インポート節冒頭の対応形式に RIS・CSL-JSON を追記
-- `README.md`：`config.yaml` サンプルコメントの「将来の」を削除、`feed.xml` を追記
-- `README.en.md`：インポート節冒頭の対応形式に CSL-JSON を追記
-- `data/config.yaml`：`base_url` コメントに `feed.xml` を追記
+- `CLAUDE.md`・`README.md`・`README.en.md`：RIS/CSL-JSON インポーター追加・エクスポート形式拡張・`show_entry_id`・`highlight_authors` 正規表現化・`feed.xml` を現状に合わせて更新
 
 ## [0.6.0] - 2026-06-03
 
