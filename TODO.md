@@ -9,8 +9,7 @@
 ## インポートツール
 
 - **インポートツールの拡張フォーマット対応** ― 優先度: 低 / 難度: 中
-  現在 `bibtex` / `hayagriva` に対応済み。`importers/` に新モジュールを追加するだけで拡張できる。
-  - `csl-json`：CSL-JSON 形式（Pandoc・Zotero の汎用形式）
+  現在 `bibtex` / `hayagriva` / `ris` / `csl-json` に対応済み。`importers/` に新モジュールを追加するだけで拡張できる。
 
 ---
 

@@ -193,6 +193,7 @@ pip install -r requirements-tools.txt
 | `bibtex` | BibTeX（`.bib`） | `bibtexparser`（`requirements-tools.txt`） |
 | `hayagriva` | Hayagriva YAML（`.yml`） | なし |
 | `ris` | RIS（`.ris`）— Zotero・Mendeley・EndNote 等 | なし |
+| `csl-json` | CSL-JSON（`.json`）— Zotero・Pandoc 等 | なし |
 
 ### 使い方
 
@@ -211,6 +212,9 @@ python tools/import.py --format hayagriva refs.yml --append data/publications.ya
 
 # RIS から変換（Zotero・Mendeley 等のエクスポートファイル）
 python tools/import.py --format ris refs.ris --append data/publications.yaml
+
+# CSL-JSON から変換（Zotero・Pandoc 等のエクスポートファイル）
+python tools/import.py --format csl-json refs.json --append data/publications.yaml
 ```
 
 変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録されます。

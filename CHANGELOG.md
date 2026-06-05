@@ -7,6 +7,15 @@
 
 ### 追加
 
+- `tools/importers/csl_json.py`：CSL-JSON 形式インポーターを追加（`--format csl-json`）
+  - Zotero・Pandoc・Mendeley 等が出力する CSL-JSON（`.json`）を `publications.yaml` に変換
+  - 標準ライブラリのみ使用（追加依存なし）
+  - `type` フィールドによる種別マッピング：`article-journal` → `journal`、`paper-conference` → `conference`、`book`/`chapter` → `book`、`thesis` → `thesis`、`report` → `report`、`patent` → `patent`、`speech` → `talk`
+  - `author` の `family`/`given` を `family given` 形式（スペース区切り）に結合
+  - `language: ja` のエントリはタイトルを `title`（日本語）として格納
+  - `issued.date-parts` の `[年, 月, 日]` 形式を解析
+  - `tests/test_import.py` に 28 件のテストを追加（計201件）
+
 - `tools/importers/ris.py`：RIS 形式インポーターを追加
   - Zotero・Mendeley・EndNote 等からのエクスポートファイル（`.ris`）を `publications.yaml` に変換
   - 標準ライブラリのみ使用（追加依存なし）

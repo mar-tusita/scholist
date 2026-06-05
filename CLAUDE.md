@@ -519,6 +519,22 @@ IMPORTER_CLASS = MyFormatImporter  # このモジュール変数で検出され�
 日付形式 `YYYY/MM/DD/`・`YYYY/MM/`・`YYYY` を解析。`YYYY` のみの場合は `YYYY-01` に設定して警告。
 ID タグ不在時は `ris-import-N` を自動割当て。外部依存なし（標準ライブラリのみ）。
 
+### 型マッピング（CSL-JSON → scholist）
+
+| CSL-JSON `type` | scholist 型 |
+| --- | --- |
+| `article-journal` | `journal` |
+| `paper-conference` | `conference` |
+| `book` / `chapter` / `entry-encyclopedia` | `book` |
+| `thesis` | `thesis`（`genre` フィールドから degree を推定） |
+| `report` | `report` |
+| `patent` | `patent` |
+| `speech` | `talk` |
+| その他 | `misc` |
+
+主なフィールドマッピング：`author[{family,given}]` → `authors`（`family given` 形式に結合）、`title` → `title_en`（`language: ja` の場合は `title`）、`issued.date-parts` → `date`、`DOI` → `url`（DOI）、`container-title` → `source.journal_name`（journal）または `source.proceedings`（conference）、`volume`/`issue` → `source.volume`/`source.number`、`publisher` → `source.institution`（thesis/report）または `organization`（conference）、`genre` → `source.degree`（thesis）。
+`issued.date-parts` が年のみの場合は `YYYY-01` に設定して警告。`id` 不在時は `csl-import-N` を自動割当て。外部依存なし（標準ライブラリのみ）。
+
 依存パッケージ（requirements-tools.txt に記載）:
   bibtexparser >= 1.3, < 2.0（BibTeX インポート時のみ必要）
 

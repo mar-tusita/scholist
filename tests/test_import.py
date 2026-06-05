@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'tools'))
 
 from importers.hayagriva import HayagrivaImporter
 from importers.ris import RISImporter
+from importers.csl_json import CSLJSONImporter
 
 
 # ---- Hayagriva (PyYAML のみ必要なので常に実行) ----
@@ -517,6 +518,247 @@ class TestRISYearOnly:
 
     def test_date_fallback(self):
         assert self.e['date'] == '2019-01'
+
+    def test_warn_month_unknown(self):
+        assert any('月情報がない' in w for w in self.warnings)
+
+
+# ---- CSL-JSON (標準ライブラリのみ・常に実行) ----
+
+import json as _json
+
+CSL_JOURNAL = _json.dumps([{
+    "id": "yamada2023csl",
+    "type": "article-journal",
+    "title": "Sample CSL Journal Article",
+    "author": [
+        {"family": "Yamada", "given": "Taro"},
+        {"family": "Suzuki", "given": "Hanako"},
+    ],
+    "issued": {"date-parts": [[2023, 9]]},
+    "container-title": "IPSJ Journal",
+    "volume": "64",
+    "issue": "9",
+    "page": "1-12",
+    "DOI": "10.xxxx/sample",
+    "abstract": "This is an abstract.",
+}])
+
+CSL_CONFERENCE = _json.dumps([{
+    "id": "yamada2024cslconf",
+    "type": "paper-conference",
+    "title": "Sample CSL Conference Paper",
+    "author": [{"family": "Yamada", "given": "Taro"}],
+    "issued": {"date-parts": [[2024, 3, 15]]},
+    "container-title": "Proceedings of SIC 2024",
+    "page": "100-110",
+    "publisher": "IEEE",
+    "publisher-place": "Tokyo",
+}])
+
+CSL_THESIS = _json.dumps([{
+    "id": "yamada2021cslphd",
+    "type": "thesis",
+    "title": "Doctoral Thesis Title",
+    "author": [{"family": "Yamada", "given": "Taro"}],
+    "issued": {"date-parts": [[2021, 3]]},
+    "publisher": "University of Example",
+    "genre": "Doctoral dissertation",
+}])
+
+CSL_BOOK = _json.dumps([{
+    "id": "yamada2020cslbook",
+    "type": "book",
+    "title": "Sample Book",
+    "author": [{"family": "Yamada", "given": "Taro"}],
+    "issued": {"date-parts": [[2020, 4]]},
+    "publisher": "Sample Publisher",
+    "ISBN": "978-4-000-00000-0",
+    "page": "45-89",
+}])
+
+CSL_JAPANESE_TITLE = _json.dumps([{
+    "id": "yamada2022cslja",
+    "type": "article-journal",
+    "title": "日本語タイトル",
+    "language": "ja",
+    "author": [{"family": "山田", "given": "太郎"}],
+    "issued": {"date-parts": [[2022]]},
+    "container-title": "情報処理学会論文誌",
+}])
+
+CSL_UNKNOWN_TYPE = _json.dumps([{
+    "id": "yamada2019cslweb",
+    "type": "webpage",
+    "title": "Web Page",
+    "author": [{"family": "Yamada", "given": "Taro"}],
+    "issued": {"date-parts": [[2019, 7, 1]]},
+}])
+
+CSL_NO_ID = _json.dumps([{
+    "type": "article-journal",
+    "title": "No ID Entry",
+    "author": [{"family": "Yamada", "given": "Taro"}],
+    "issued": {"date-parts": [[2022]]},
+}])
+
+CSL_YEAR_ONLY = _json.dumps([{
+    "id": "yamada2018cslyear",
+    "type": "article-journal",
+    "title": "Year Only",
+    "author": [{"family": "Yamada", "given": "Taro"}],
+    "issued": {"date-parts": [[2018]]},
+    "container-title": "Some Journal",
+}])
+
+
+def _load_csl_str(csl_str: str):
+    import tempfile, os
+    importer = CSLJSONImporter()
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json',
+                                     delete=False, encoding='utf-8') as f:
+        f.write(csl_str)
+        name = f.name
+    try:
+        return importer.load(name), importer.warnings
+    finally:
+        os.unlink(name)
+
+
+class TestCSLJSONJournal:
+    def setup_method(self):
+        self.entries, self.warnings = _load_csl_str(CSL_JOURNAL)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'journal'
+
+    def test_id(self):
+        assert self.e['id'] == 'yamada2023csl'
+
+    def test_title_en(self):
+        assert self.e.get('title_en') == 'Sample CSL Journal Article'
+
+    def test_authors_assembled(self):
+        assert self.e['authors'] == ['Yamada Taro', 'Suzuki Hanako']
+
+    def test_date(self):
+        assert self.e['date'] == '2023-09'
+
+    def test_source(self):
+        src = self.e['source']
+        assert src['journal_name'] == 'IPSJ Journal'
+        assert src['volume'] == 64
+        assert src['number'] == 9
+        assert src['pages'] == '1-12'
+        assert src['doi'] == '10.xxxx/sample'
+
+    def test_doi_url(self):
+        assert self.e['url'] == 'https://doi.org/10.xxxx/sample'
+
+    def test_abstract(self):
+        assert self.e['abstract'] == 'This is an abstract.'
+
+
+class TestCSLJSONConference:
+    def setup_method(self):
+        self.entries, _ = _load_csl_str(CSL_CONFERENCE)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'conference'
+
+    def test_source_proceedings(self):
+        assert self.e['source']['proceedings'] == 'Proceedings of SIC 2024'
+
+    def test_pages(self):
+        assert self.e['source']['pages'] == '100-110'
+
+    def test_date_full(self):
+        assert self.e['date'] == '2024-03-15'
+
+    def test_organization_and_location(self):
+        assert self.e['organization'] == 'IEEE'
+        assert self.e['location'] == 'Tokyo'
+
+
+class TestCSLJSONThesis:
+    def setup_method(self):
+        self.entries, _ = _load_csl_str(CSL_THESIS)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'thesis'
+
+    def test_institution(self):
+        assert self.e['source']['institution'] == 'University of Example'
+
+    def test_degree_from_genre(self):
+        assert self.e['source']['degree'] == 'doctoral'
+
+
+class TestCSLJSONBook:
+    def setup_method(self):
+        self.entries, _ = _load_csl_str(CSL_BOOK)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'book'
+
+    def test_publisher(self):
+        assert self.e['source']['publisher'] == 'Sample Publisher'
+
+    def test_isbn(self):
+        assert self.e['source']['isbn'] == '978-4-000-00000-0'
+
+
+class TestCSLJSONJapaneseTitle:
+    def setup_method(self):
+        self.entries, self.warnings = _load_csl_str(CSL_JAPANESE_TITLE)
+        self.e = self.entries[0]
+
+    def test_title_ja_when_language_ja(self):
+        assert self.e.get('title') == '日本語タイトル'
+        assert 'title_en' not in self.e
+
+    def test_authors_assembled_japanese(self):
+        assert self.e['authors'] == ['山田 太郎']
+
+    def test_date_year_only_fallback(self):
+        assert self.e['date'] == '2022-01'
+
+    def test_warn_month_unknown(self):
+        assert any('月情報がない' in w for w in self.warnings)
+
+
+class TestCSLJSONUnknownType:
+    def setup_method(self):
+        self.entries, self.warnings = _load_csl_str(CSL_UNKNOWN_TYPE)
+        self.e = self.entries[0]
+
+    def test_type_fallback_to_misc(self):
+        assert self.e['type'] == 'misc'
+
+
+class TestCSLJSONNoID:
+    def setup_method(self):
+        self.entries, self.warnings = _load_csl_str(CSL_NO_ID)
+        self.e = self.entries[0]
+
+    def test_auto_id_assigned(self):
+        assert self.e['id'].startswith('csl-import-')
+
+    def test_warn_no_id(self):
+        assert any('id がない' in w for w in self.warnings)
+
+
+class TestCSLJSONYearOnly:
+    def setup_method(self):
+        self.entries, self.warnings = _load_csl_str(CSL_YEAR_ONLY)
+        self.e = self.entries[0]
+
+    def test_date_fallback(self):
+        assert self.e['date'] == '2018-01'
 
     def test_warn_month_unknown(self):
         assert any('月情報がない' in w for w in self.warnings)

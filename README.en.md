@@ -190,6 +190,7 @@ This installs `bibtexparser` in addition to the production dependencies (require
 | `bibtex` | BibTeX (`.bib`) | `bibtexparser` (in `requirements-tools.txt`) |
 | `hayagriva` | Hayagriva YAML (`.yml`) | none |
 | `ris` | RIS (`.ris`) — Zotero, Mendeley, EndNote, etc. | none |
+| `csl-json` | CSL-JSON (`.json`) — Zotero, Pandoc, etc. | none |
 
 ### Usage
 
@@ -208,6 +209,9 @@ python tools/import.py --format hayagriva refs.yml --append data/publications.ya
 
 # Convert from RIS (exported from Zotero, Mendeley, etc.)
 python tools/import.py --format ris refs.ris --append data/publications.yaml
+
+# Convert from CSL-JSON (exported from Zotero, Pandoc, etc.)
+python tools/import.py --format csl-json refs.json --append data/publications.yaml
 ```
 
 Fields that cannot be mapped are recorded in `note` as `[import: field=value]`.
