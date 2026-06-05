@@ -396,7 +396,7 @@ cp extras/sync-from-scholist.yml .github/workflows/
 - **インクリメンタル検索**：タイトル・著者・会議名・誌名・アブストラクトを横断検索
 - **ページネーション**：`entries_per_page` 件ずつ表示し「さらに表示」「全件表示」で読み込む
 - **前後ナビゲーション**：詳細ページ下部に「← 前の業績」「次の業績 →」リンクを表示
-- **エクスポート**：全件または1件を YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON でダウンロード
+- **エクスポート**：全件または1件を YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON / 参考文献テキスト でダウンロード
 - **インポート**：BibTeX・Hayagriva・RIS・CSL-JSON 形式から `publications.yaml` に変換（`tools/import.py`）
 - **著者ハイライト**：設定した著者名を太字またはアンダーライン表示
 - **言語切り替え**：ページ上の JA / EN ボタンで日本語と英語を切り替え（`localStorage` で保持）

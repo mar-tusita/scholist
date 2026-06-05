@@ -48,6 +48,7 @@ const MESSAGES = {
     'export.all.hayagriva': '全件 Hayagriva',
     'export.all.ris':       '全件 RIS',
     'export.all.csljson':   '全件 CSL-JSON',
+    'export.all.reftext':   '全件 参考文献',
     // エクスポート（詳細）
     'export.one.title': 'このエントリをエクスポート',
     // カウント（関数）: shown=表示件数, total=絞り込み後の全件数
@@ -149,6 +150,7 @@ const MESSAGES = {
     'export.all.hayagriva': 'All Hayagriva',
     'export.all.ris':       'All RIS',
     'export.all.csljson':   'All CSL-JSON',
+    'export.all.reftext':   'All Bibliography',
     // Export (detail)
     'export.one.title': 'Export this entry',
     // Count (function)

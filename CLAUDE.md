@@ -320,7 +320,7 @@ entries:
 - インクリメンタル検索（JavaScript）：`build_searchtext()` で生成した全文字列を対象
   - title・title_en・abstract・authors・venue・organization・source 内の全文字列フィールド等
   - id・type・date・scope 等の構造フィールドは除外
-- 全件エクスポートボタン：YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON
+- 全件エクスポートボタン：YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON / 参考文献テキスト
 - 各行には詳細ページへのリンクを含む
 - ページ上部に JA / EN 言語切り替えボタン（`default_language` 設定に連動）
 
@@ -330,7 +330,7 @@ entries:
 - 添付ファイルへのリンク（`files/` 内のパスは相対パスで解決）
 - 外部URL（DOI等）へのリンク
 - 著者ハイライト：`config.yaml` の `highlight_authors` リストと照合し、一致する著者名に `highlight_style` を適用
-- 「このエントリをエクスポート」ボタン：YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON（1件）
+- 「このエントリをエクスポート」ボタン：YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON / 参考文献テキスト（1件）
 - 前後ナビゲーション：一覧と同じソート順で「← 前の業績」「次の業績 →」リンクを表示
 - OGP / Twitter Card メタタグ：`og:title`・`og:description`（abstract 優先）・`og:url`（`base_url` 設定時）
 - 印刷用 CSS（`@media print`）
@@ -423,6 +423,27 @@ BibTeXのフィールドマッピング（主要なもの）：
 | `award` / `misc` / `other` | `article` | |
 
 著者名は `{"literal": "山田 太郎"}` 形式（family/given への分割なし）。日付は `issued.date-parts` 形式。
+
+**参考文献テキスト（reftext）**：日本語学術論文風の人間可読テキスト（`.txt`）を出力
+
+出力形式：`著者1, 著者2: "タイトル", 出典情報 (年).`
+
+- 著者名は加工なし（略称化・並び順変更なし）
+- ページ数は `pp.X-Y` 形式（全種別で統一）
+- `award` は award_name を引用符なしで主体とし `org_giving_award` を続ける
+- `thesis` は degree → `博士論文` / `修士論文` / `学士論文` に変換
+
+| 種別 | 出典部の構成 |
+| --- | --- |
+| `journal` | 誌名, Vol.X, No.Y, pp.P1-P2 |
+| `conference` | 論文集名（または会議名）, 開催地, pp.P1-P2 |
+| `talk` | 説明（または会場名）, 開催地 |
+| `thesis` | 学位種別（博士論文等）, 機関名 |
+| `report` | Technical Report 番号, 機関名 |
+| `patent` | 特許番号, 国 |
+| `book` | 出版社, 章, pp.P1-P2 |
+| `misc` / `other` | source.description |
+| `award` | award_name, org_giving_award（タイトルに引用符なし） |
 
 ---
 
@@ -662,6 +683,6 @@ CHANGELOG.md
   `.github/workflows/` へコピーする構造にしている。
 
 - `public/` ディレクトリは生成物なので `.gitignore` に含めるか、GitHub Pages デプロイ専用ブランチ（`gh-pages`）に出力する
-- エクスポート機能（YAML/JSON/BibTeX）はすべてクライアントサイドJavaScriptで実装し、サーバサイド処理を不要にする
+- エクスポート機能（YAML/JSON/BibTeX/Hayagriva/RIS/CSL-JSON/参考文献テキスト）はすべてクライアントサイドJavaScriptで実装し、サーバサイド処理を不要にする
 - BibTeXの `author` フィールドは `山田 太郎 and 鈴木 花子` のように ` and ` で結合する（姓名の順序はデータそのままを使用）
 - GitHub Pages と nginx の両対応のため、すべてのリンクはルート相対パス（`/entries/xxx/`）ではなく相対パスで記述する（`../` 等）か、`config.yaml` に `base_url` を設けて切り替えられるようにする

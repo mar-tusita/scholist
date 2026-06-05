@@ -220,6 +220,84 @@ function entryToHayagriva(entry) {
   return { [entry.id]: obj };
 }
 
+// ---- 参考文献形式（テキスト）変換 ----
+
+function entryToRefText(entry) {
+  const src = entry.source || {};
+  const authors = (entry.authors || []).join(', ');
+  const title   = entry.title || entry.title_en || '';
+  const year    = entry.date ? String(entry.date).slice(0, 4) : '';
+
+  // award のみ特殊: award_name を主体とし引用符なし
+  if (entry.type === 'award') {
+    let ref = '';
+    if (authors) ref += authors + ': ';
+    ref += src.award_name || title || '';
+    if (src.org_giving_award) ref += ', ' + src.org_giving_award;
+    if (year) ref += ` (${year})`;
+    return ref + '.';
+  }
+
+  // 種別ごとの出典情報
+  const pieces = [];
+  switch (entry.type) {
+    case 'journal':
+      if (src.journal_name)         pieces.push(src.journal_name);
+      if (src.volume !== undefined)  pieces.push(`Vol.${src.volume}`);
+      if (src.number !== undefined)  pieces.push(`No.${src.number}`);
+      if (src.pages)                 pieces.push(`pp.${src.pages}`);
+      break;
+
+    case 'conference':
+      if (src.proceedings) pieces.push(src.proceedings);
+      else if (entry.venue) pieces.push(entry.venue);
+      if (entry.location)  pieces.push(entry.location);
+      if (src.pages)       pieces.push(`pp.${src.pages}`);
+      break;
+
+    case 'talk':
+      if (src.description) pieces.push(src.description);
+      else if (entry.venue) pieces.push(entry.venue);
+      if (entry.location)  pieces.push(entry.location);
+      break;
+
+    case 'thesis': {
+      const dm = { doctoral: '博士論文', master: '修士論文', bachelor: '学士論文' };
+      pieces.push(dm[src.degree] || '学位論文');
+      if (src.institution) pieces.push(src.institution);
+      break;
+    }
+
+    case 'report':
+      if (src.number)      pieces.push(`Technical Report ${src.number}`);
+      if (src.institution) pieces.push(src.institution);
+      break;
+
+    case 'patent':
+      if (src.patent_number) pieces.push(src.patent_number);
+      if (src.country)       pieces.push(src.country);
+      break;
+
+    case 'book':
+      if (src.publisher) pieces.push(src.publisher);
+      if (src.chapter)   pieces.push(src.chapter);
+      if (src.pages)     pieces.push(`pp.${src.pages}`);
+      break;
+
+    default: // misc, other
+      if (src.description) pieces.push(src.description);
+      break;
+  }
+
+  let ref = '';
+  if (authors) ref += authors + ': ';
+  if (title)   ref += `"${title}"`;
+  if (pieces.length) ref += ', ' + pieces.join(', ');
+  if (year)    ref += ` (${year})`;
+  ref += '.';
+  return ref;
+}
+
 // ---- RIS 変換 ----
 
 const RIS_TYPE_MAP = {
@@ -462,6 +540,9 @@ function exportEntries(entries, format) {
     const merged = Object.assign({}, ...entries.map(entryToHayagriva));
     const text = jsyaml.dump(merged, { indent: 2, lineWidth: -1, noRefs: true });
     download('publications-hayagriva.yml', text, 'text/yaml');
+  } else if (format === 'reftext') {
+    const text = entries.map(entryToRefText).join('\n\n');
+    download('publications-refs.txt', text, 'text/plain');
   } else if (format === 'ris') {
     const text = entries.map(entryToRIS).join('\n\n');
     download('publications.ris', text, 'text/plain');
