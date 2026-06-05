@@ -3,7 +3,7 @@
 このファイルはプロジェクトのすべての変更を記録します。
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に基づいています。
 
-## [Unreleased]
+## [0.6.1] - 2026-06-05
 
 ### 追加
 
