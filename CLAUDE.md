@@ -500,6 +500,25 @@ IMPORTER_CLASS = MyFormatImporter  # このモジュール変数で検出され�
 | `book` / `chapter` | `book` |
 | その他 | `misc` |
 
+### 型マッピング（RIS → scholist）
+
+| RIS `TY` | scholist 型 |
+| --- | --- |
+| `JOUR` / `EJOU` / `MGZN` / `ABST` / `JFULL` | `journal` |
+| `CONF` / `CPAPER` | `conference` |
+| `BOOK` / `EBOOK` | `book` |
+| `CHAP` / `ECHAP` | `book`（chapter 相当） |
+| `THES` | `thesis`（`M1` / `ET` フィールドから degree を推定） |
+| `RPRT` | `report` |
+| `PAT` | `patent` |
+| その他 | `misc` |
+
+主なタグマッピング：`AU` → `authors`、`TI`/`T1` → `title_en`、`PY`/`Y1`/`DA` → `date`、`DO` → `url`（DOI）、
+`JO`/`JF` → `source.journal_name`（journal）、`T2`/`BT` → `source.proceedings`（conference）、
+`VL` → `source.volume`、`IS` → `source.number`、`SP`/`EP` → `source.pages`。
+日付形式 `YYYY/MM/DD/`・`YYYY/MM/`・`YYYY` を解析。`YYYY` のみの場合は `YYYY-01` に設定して警告。
+ID タグ不在時は `ris-import-N` を自動割当て。外部依存なし（標準ライブラリのみ）。
+
 依存パッケージ（requirements-tools.txt に記載）:
   bibtexparser >= 1.3, < 2.0（BibTeX インポート時のみ必要）
 

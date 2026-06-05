@@ -10,7 +10,6 @@
 
 - **インポートツールの拡張フォーマット対応** ― 優先度: 低 / 難度: 中
   現在 `bibtex` / `hayagriva` に対応済み。`importers/` に新モジュールを追加するだけで拡張できる。
-  - `ris`：RIS 形式（Zotero・Mendeley 等からのエクスポート）
   - `csl-json`：CSL-JSON 形式（Pandoc・Zotero の汎用形式）
 
 ---

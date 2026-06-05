@@ -7,6 +7,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent / 'tools'))
 
 from importers.hayagriva import HayagrivaImporter
+from importers.ris import RISImporter
 
 
 # ---- Hayagriva (PyYAML のみ必要なので常に実行) ----
@@ -300,3 +301,222 @@ class TestBibTeXUnmapped:
 
     def test_date_no_month_warn(self):
         assert any('month' in w for w in self.warnings)
+
+
+# ---- RIS (標準ライブラリのみ・常に実行) ----
+
+RIS_JOURNAL = """\
+TY  - JOUR
+ID  - yamada2023ris
+AU  - Yamada, Taro
+AU  - Suzuki, Hanako
+TI  - Sample RIS Journal Article
+JO  - IPSJ Journal
+VL  - 64
+IS  - 9
+SP  - 1
+EP  - 12
+PY  - 2023/09/
+DO  - 10.xxxx/sample
+AB  - This is an abstract.
+ER  -
+"""
+
+RIS_CONFERENCE = """\
+TY  - CONF
+ID  - yamada2024risconf
+AU  - Yamada, Taro
+TI  - Sample RIS Conference Paper
+T2  - Proceedings of SIC 2024
+SP  - 100
+EP  - 110
+PY  - 2024/03/15/
+PB  - IEEE
+CY  - Tokyo
+ER  -
+"""
+
+RIS_THESIS = """\
+TY  - THES
+ID  - yamada2021risphd
+AU  - Yamada, Taro
+TI  - Doctoral Thesis Title
+PB  - University of Example
+PY  - 2021
+M1  - PhD Dissertation
+ER  -
+"""
+
+RIS_PATENT = """\
+TY  - PAT
+ID  - yamada2021rispat
+AU  - Yamada, Taro
+TI  - Sample Patent
+M1  - 特許第1234567号
+CY  - JP
+PY  - 2021/11/
+ER  -
+"""
+
+RIS_UNKNOWN_TY = """\
+TY  - ELEC
+ID  - yamada2020risweb
+AU  - Yamada, Taro
+TI  - Web Page Entry
+PY  - 2020
+ER  -
+"""
+
+RIS_NO_ID = """\
+TY  - MISC
+AU  - Yamada, Taro
+TI  - No ID Entry
+PY  - 2022
+ER  -
+"""
+
+RIS_YEAR_ONLY = """\
+TY  - JOUR
+ID  - yamada2019risyear
+AU  - Yamada, Taro
+TI  - Year Only Date
+JO  - Some Journal
+PY  - 2019
+ER  -
+"""
+
+
+def _load_ris_str(ris_str: str):
+    import tempfile, os
+    importer = RISImporter()
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.ris',
+                                     delete=False, encoding='utf-8') as f:
+        f.write(ris_str)
+        name = f.name
+    try:
+        return importer.load(name), importer.warnings
+    finally:
+        os.unlink(name)
+
+
+class TestRISJournal:
+    def setup_method(self):
+        self.entries, self.warnings = _load_ris_str(RIS_JOURNAL)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'journal'
+
+    def test_id(self):
+        assert self.e['id'] == 'yamada2023ris'
+
+    def test_title_en(self):
+        assert self.e.get('title_en') == 'Sample RIS Journal Article'
+
+    def test_authors(self):
+        assert self.e['authors'] == ['Yamada, Taro', 'Suzuki, Hanako']
+
+    def test_date(self):
+        assert self.e['date'] == '2023-09'
+
+    def test_source(self):
+        src = self.e['source']
+        assert src['journal_name'] == 'IPSJ Journal'
+        assert src['volume'] == 64
+        assert src['number'] == 9
+        assert src['pages'] == '1-12'
+        assert src['doi'] == '10.xxxx/sample'
+
+    def test_doi_url(self):
+        assert self.e['url'] == 'https://doi.org/10.xxxx/sample'
+
+    def test_abstract(self):
+        assert self.e['abstract'] == 'This is an abstract.'
+
+
+class TestRISConference:
+    def setup_method(self):
+        self.entries, _ = _load_ris_str(RIS_CONFERENCE)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'conference'
+
+    def test_source_proceedings(self):
+        assert self.e['source']['proceedings'] == 'Proceedings of SIC 2024'
+
+    def test_pages(self):
+        assert self.e['source']['pages'] == '100-110'
+
+    def test_date_full(self):
+        assert self.e['date'] == '2024-03-15'
+
+    def test_organization_and_location(self):
+        assert self.e['organization'] == 'IEEE'
+        assert self.e['location'] == 'Tokyo'
+
+
+class TestRISThesis:
+    def setup_method(self):
+        self.entries, _ = _load_ris_str(RIS_THESIS)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'thesis'
+
+    def test_institution(self):
+        assert self.e['source']['institution'] == 'University of Example'
+
+    def test_degree_from_m1(self):
+        assert self.e['source']['degree'] == 'doctoral'
+
+
+class TestRISPatent:
+    def setup_method(self):
+        self.entries, _ = _load_ris_str(RIS_PATENT)
+        self.e = self.entries[0]
+
+    def test_type(self):
+        assert self.e['type'] == 'patent'
+
+    def test_patent_number(self):
+        assert self.e['source']['patent_number'] == '特許第1234567号'
+
+    def test_country(self):
+        assert self.e['source']['country'] == 'JP'
+
+
+class TestRISUnknownType:
+    def setup_method(self):
+        self.entries, self.warnings = _load_ris_str(RIS_UNKNOWN_TY)
+        self.e = self.entries[0]
+
+    def test_type_fallback_to_misc(self):
+        assert self.e['type'] == 'misc'
+
+    def test_warn_unknown_ty(self):
+        assert any('ELEC' in w for w in self.warnings)
+
+
+class TestRISNoID:
+    def setup_method(self):
+        self.entries, self.warnings = _load_ris_str(RIS_NO_ID)
+        self.e = self.entries[0]
+
+    def test_auto_id_assigned(self):
+        assert self.e['id'].startswith('ris-import-')
+
+    def test_warn_no_id(self):
+        assert any('ID タグがない' in w for w in self.warnings)
+
+
+class TestRISYearOnly:
+    def setup_method(self):
+        self.entries, self.warnings = _load_ris_str(RIS_YEAR_ONLY)
+        self.e = self.entries[0]
+
+    def test_date_fallback(self):
+        assert self.e['date'] == '2019-01'
+
+    def test_warn_month_unknown(self):
+        assert any('月情報がない' in w for w in self.warnings)

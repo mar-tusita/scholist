@@ -171,6 +171,48 @@ Setting `base_url` enables the following features. For GitHub Pages, set it to `
 - Auto-generates `public/sitemap.xml`
 - Auto-generates `public/feed.xml` (Atom feed)
 
+## Importing existing data
+
+You can convert publication data from BibTeX, Hayagriva, or RIS format into `publications.yaml`.
+
+### Setup
+
+```bash
+pip install -r requirements-tools.txt
+```
+
+This installs `bibtexparser` in addition to the production dependencies (required for BibTeX only; RIS and Hayagriva have no extra dependencies).
+
+### Supported formats
+
+| `--format` | Format | Extra dependency |
+| --- | --- | --- |
+| `bibtex` | BibTeX (`.bib`) | `bibtexparser` (in `requirements-tools.txt`) |
+| `hayagriva` | Hayagriva YAML (`.yml`) | none |
+| `ris` | RIS (`.ris`) — Zotero, Mendeley, EndNote, etc. | none |
+
+### Usage
+
+```bash
+# Convert from BibTeX and print to stdout
+python tools/import.py --format bibtex refs.bib
+
+# Write to a file
+python tools/import.py --format bibtex refs.bib --output data/publications.yaml
+
+# Append to an existing publications.yaml (duplicate IDs are skipped)
+python tools/import.py --format bibtex refs.bib --append data/publications.yaml
+
+# Convert from Hayagriva
+python tools/import.py --format hayagriva refs.yml --append data/publications.yaml
+
+# Convert from RIS (exported from Zotero, Mendeley, etc.)
+python tools/import.py --format ris refs.ris --append data/publications.yaml
+```
+
+Fields that cannot be mapped are recorded in `note` as `[import: field=value]`.
+Issues such as author name format ("Last, First" style) or missing month information are printed to stderr as warnings.
+
 ## Build
 
 ```bash

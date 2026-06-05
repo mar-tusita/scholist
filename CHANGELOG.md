@@ -7,6 +7,15 @@
 
 ### 追加
 
+- `tools/importers/ris.py`：RIS 形式インポーターを追加
+  - Zotero・Mendeley・EndNote 等からのエクスポートファイル（`.ris`）を `publications.yaml` に変換
+  - 標準ライブラリのみ使用（追加依存なし）
+  - `TY` タグによる種別マッピング：`JOUR/EJOU/MGZN` → `journal`、`CONF/CPAPER` → `conference`、`BOOK/CHAP` → `book`、`THES` → `thesis`、`RPRT` → `report`、`PAT` → `patent`
+  - 日付形式 `YYYY/MM/DD/`・`YYYY/MM/`・`YYYY` をすべて解析
+  - ID タグ不在時の自動 ID 付与、ID 使用不可文字の自動置換
+  - 変換不能フィールドは `note` に `[import: ...]` 形式で記録
+  - `tests/test_import.py` に 25 件のテストを追加（計173件）
+
 - 詳細ページ：エントリ ID の表示機能（`config.yaml` の `show_entry_id: true` で有効化）
   - バッジ行の右端にモノスペースで `ID: entry-id-value` を表示
   - デフォルト `false`（公開サイトでは非表示、管理・開発時にオンにする想定）

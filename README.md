@@ -184,7 +184,15 @@ BibTeX や Hayagriva 形式で管理していた文献データを `publications
 pip install -r requirements-tools.txt
 ```
 
-`bibtexparser` が追加でインストールされます（BibTeX のみ必要、Hayagriva は不要）。
+`bibtexparser` が追加でインストールされます（BibTeX のみ必要、RIS・Hayagriva は不要）。
+
+### 対応フォーマット
+
+| `--format` | 形式 | 外部依存 |
+| --- | --- | --- |
+| `bibtex` | BibTeX（`.bib`） | `bibtexparser`（`requirements-tools.txt`） |
+| `hayagriva` | Hayagriva YAML（`.yml`） | なし |
+| `ris` | RIS（`.ris`）— Zotero・Mendeley・EndNote 等 | なし |
 
 ### 使い方
 
@@ -200,6 +208,9 @@ python tools/import.py --format bibtex refs.bib --append data/publications.yaml
 
 # Hayagriva から変換
 python tools/import.py --format hayagriva refs.yml --append data/publications.yaml
+
+# RIS から変換（Zotero・Mendeley 等のエクスポートファイル）
+python tools/import.py --format ris refs.ris --append data/publications.yaml
 ```
 
 変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録されます。
