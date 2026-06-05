@@ -320,7 +320,7 @@ entries:
 - インクリメンタル検索（JavaScript）：`build_searchtext()` で生成した全文字列を対象
   - title・title_en・abstract・authors・venue・organization・source 内の全文字列フィールド等
   - id・type・date・scope 等の構造フィールドは除外
-- 全件エクスポートボタン：YAML / JSON / BibTeX / Hayagriva
+- 全件エクスポートボタン：YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON
 - 各行には詳細ページへのリンクを含む
 - ページ上部に JA / EN 言語切り替えボタン（`default_language` 設定に連動）
 
@@ -330,7 +330,7 @@ entries:
 - 添付ファイルへのリンク（`files/` 内のパスは相対パスで解決）
 - 外部URL（DOI等）へのリンク
 - 著者ハイライト：`config.yaml` の `highlight_authors` リストと照合し、一致する著者名に `highlight_style` を適用
-- 「このエントリをエクスポート」ボタン：YAML / JSON / BibTeX / Hayagriva（1件）
+- 「このエントリをエクスポート」ボタン：YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON（1件）
 - 前後ナビゲーション：一覧と同じソート順で「← 前の業績」「次の業績 →」リンクを表示
 - OGP / Twitter Card メタタグ：`og:title`・`og:description`（abstract 優先）・`og:url`（`base_url` 設定時）
 - 印刷用 CSS（`@media print`）
@@ -393,6 +393,36 @@ BibTeXのフィールドマッピング（主要なもの）：
 - `title` / `title_en` のどちらを使うかは `language` フィールドで制御（`en` → `title_en`、それ以外 → `title`）
 - `abstract` がある場合は Hayagriva の `abstract` フィールドに出力
 - `url` が `https://doi.org/...` の場合は `serial-number.doi` に変換
+
+**RIS**：種別ごとに `TY` タグにマッピング
+
+| scholist 種別 | RIS `TY` | 備考 |
+| --- | --- | --- |
+| `journal` | `JOUR` | |
+| `conference` | `CONF` | |
+| `book` | `BOOK` / `CHAP` | `source.chapter` or `source.pages` があれば `CHAP` |
+| `thesis` | `THES` | `source.degree` → `M1`（"Doctoral dissertation" 等） |
+| `report` | `RPRT` | |
+| `patent` | `PAT` | |
+| `talk` / `award` | `GEN` | |
+| `misc` / `other` | `MISC` | |
+
+日付は `YYYY/MM/DD/`・`YYYY/MM/`・`YYYY/` 形式。ページは `SP`/`EP` に分割（` -- ` 区切り対応）。
+
+**CSL-JSON**：種別ごとに CSL type にマッピング
+
+| scholist 種別 | CSL `type` | 備考 |
+| --- | --- | --- |
+| `journal` | `article-journal` | |
+| `conference` | `paper-conference` | |
+| `book` | `book` / `chapter` | `source.chapter` or `source.pages` があれば `chapter` |
+| `thesis` | `thesis` | `source.degree` → `genre` |
+| `report` | `report` | |
+| `patent` | `patent` | |
+| `talk` | `speech` | |
+| `award` / `misc` / `other` | `article` | |
+
+著者名は `{"literal": "山田 太郎"}` 形式（family/given への分割なし）。日付は `issued.date-parts` 形式。
 
 ---
 
