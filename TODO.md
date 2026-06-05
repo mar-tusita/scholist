@@ -17,11 +17,28 @@
 
 - **添付ファイルのアクセス制御（ドキュメント）** ― 優先度: 低 / 難度: 小
   `files/` 以下のファイルをパスワードや IP アドレスで保護する方法を README に記載する。
-  - **nginx**：`location /files/ { auth_basic ...; }` または `allow`/`deny` で対応可能。
-    `satisfy all`（AND）/ `satisfy any`（OR）で両条件の組み合わせも可能。HTTPS 必須。
-  - **GitHub Pages**：静的ホスティングのためサーバーサイド制御は不可。
-    保護が必要なファイルは外部サービスに置き、YAML の `files[].url` に限定公開 URL を書く分離運用が現実解。
-  コード変更は不要。nginx 設定例のドキュメント追加のみ。
+  コード変更は不要（`shutil.copytree` がサブディレクトリを再帰コピーするため、現状のまま動く）。
+
+  **推奨パターン：`files/restricted/` サブディレクトリ規約**
+  - 公開ファイルは `files/foo.pdf`、制限ファイルは `files/restricted/bar.pptx` に配置
+  - YAML では `path: "files/restricted/bar.pptx"` と書くだけ（テンプレートの相対リンクも正しく解決される）
+  - nginx 側で `location /files/restricted/` にだけアクセス制御をかける
+
+  **nginx 設定例：**
+  ```nginx
+  # /files/ は公開（location ブロックなし、または明示的に allow all）
+  location /files/restricted/ {
+      auth_basic "Restricted";
+      auth_basic_user_file /etc/nginx/.htpasswd;
+      # IP 制限と組み合わせる場合：
+      # satisfy any;   # OR 条件（IP が通れば認証不要）
+      # allow 203.0.113.0/24;
+      # deny all;
+  }
+  ```
+
+  **GitHub Pages**：静的ホスティングのためサーバーサイド制御は不可。
+  保護が必要なファイルは外部サービスに置き、YAML の `files[].url` に限定公開 URL を書く分離運用が現実解。
 
 ---
 
