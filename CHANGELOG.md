@@ -7,6 +7,12 @@
 
 ### 追加
 
+- エクスポート機能（`static/export.js`）に RIS・CSL-JSON 形式を追加
+  - 一覧ページ：「全件 RIS」「全件 CSL-JSON」ボタン
+  - 詳細ページ：「RIS」「CSL-JSON」ボタン
+  - RIS：TY タグによる種別マッピング、日付は `YYYY/MM/DD/` 形式、SP/EP でページ範囲分割
+  - CSL-JSON：著者名は `{"literal": "..."}` 形式（family/given 分割なし）、`issued.date-parts` 形式の日付
+
 - `tools/importers/csl_json.py`：CSL-JSON 形式インポーターを追加（`--format csl-json`）
   - Zotero・Pandoc・Mendeley 等が出力する CSL-JSON（`.json`）を `publications.yaml` に変換
   - 標準ライブラリのみ使用（追加依存なし）

@@ -220,6 +220,212 @@ function entryToHayagriva(entry) {
   return { [entry.id]: obj };
 }
 
+// ---- RIS 変換 ----
+
+const RIS_TYPE_MAP = {
+  journal:    'JOUR',
+  conference: 'CONF',
+  book:       'BOOK',
+  thesis:     'THES',
+  report:     'RPRT',
+  patent:     'PAT',
+  talk:       'GEN',
+  award:      'GEN',
+  misc:       'MISC',
+  other:      'MISC',
+};
+
+function _dateToRISPY(date) {
+  if (!date) return null;
+  const parts = String(date).split('-');
+  const y = parts[0];
+  const m = parts[1] ? parts[1].padStart(2, '0') : null;
+  const d = parts[2] ? parts[2].padStart(2, '0') : null;
+  if (m && d) return `${y}/${m}/${d}/`;
+  if (m)      return `${y}/${m}/`;
+  return `${y}/`;
+}
+
+function _risPages(pages) {
+  if (!pages) return [null, null];
+  // scholist 形式 "1-1 -- 1-2" 等の二重ダッシュ
+  let m = pages.match(/^(.+?)\s*--\s*(.+)$/);
+  if (m) return [m[1].trim(), m[2].trim()];
+  // 単純な "100-110"
+  m = pages.match(/^([^-]+)-([^-]+)$/);
+  if (m) return [m[1].trim(), m[2].trim()];
+  return [pages, null];
+}
+
+function entryToRIS(entry) {
+  const src = entry.source || {};
+  const lines = [];
+  const f = (tag, val) => {
+    if (val != null && String(val).trim()) lines.push(`${tag}  - ${val}`);
+  };
+
+  let ty = RIS_TYPE_MAP[entry.type] || 'GEN';
+  if (entry.type === 'book' && (src.chapter || src.pages)) ty = 'CHAP';
+  f('TY', ty);
+  f('ID', entry.id);
+  f('TI', entry.title || entry.title_en || '');
+  (entry.authors || []).forEach(a => f('AU', a));
+  f('PY', _dateToRISPY(entry.date));
+  f('AB', entry.abstract);
+  f('N1', entry.note);
+
+  const doiMatch = entry.url && entry.url.match(/^https?:\/\/doi\.org\/(.+)$/);
+  if (doiMatch) {
+    f('DO', doiMatch[1]);
+    f('UR', entry.url);
+  } else if (entry.url) {
+    f('UR', entry.url);
+  }
+
+  const [sp, ep] = _risPages(src.pages);
+  switch (entry.type) {
+    case 'journal':
+      f('JO', src.journal_name);
+      if (src.volume !== undefined) f('VL', src.volume);
+      if (src.number !== undefined) f('IS', src.number);
+      f('SP', sp); f('EP', ep);
+      break;
+    case 'conference':
+      f('T2', src.proceedings);
+      f('SP', sp); f('EP', ep);
+      f('PB', entry.organization);
+      f('CY', entry.location);
+      break;
+    case 'book':
+      f('PB', src.publisher);
+      f('SN', src.isbn);
+      f('SP', sp); f('EP', ep);
+      break;
+    case 'thesis': {
+      f('PB', src.institution);
+      const dm = { doctoral: 'Doctoral dissertation', master: "Master's thesis", bachelor: "Bachelor's thesis" };
+      f('M1', dm[src.degree] || '');
+      break;
+    }
+    case 'report':
+      f('PB', src.institution);
+      f('M1', src.number);
+      break;
+    case 'patent':
+      f('M1', src.patent_number);
+      f('CY', src.country);
+      break;
+    case 'talk':
+      f('T2', entry.venue);
+      f('CY', entry.location);
+      break;
+    case 'award':
+      f('PB', (src.org_giving_award || ''));
+      break;
+  }
+
+  lines.push('ER  - ');
+  return lines.join('\n');
+}
+
+// ---- CSL-JSON 変換 ----
+
+const CSL_TYPE_MAP = {
+  journal:    'article-journal',
+  conference: 'paper-conference',
+  book:       'book',
+  thesis:     'thesis',
+  report:     'report',
+  patent:     'patent',
+  talk:       'speech',
+  award:      'article',
+  misc:       'article',
+  other:      'article',
+};
+
+function _dateToCSLIssued(date) {
+  if (!date) return null;
+  const parts = String(date).split('-').map(Number);
+  return { 'date-parts': [parts] };
+}
+
+function entryToCSLJSON(entry) {
+  const src = entry.source || {};
+  const obj = {};
+
+  obj.id = entry.id;
+  obj.type = CSL_TYPE_MAP[entry.type] || 'article';
+  if (entry.type === 'book' && (src.chapter || src.pages)) obj.type = 'chapter';
+
+  const title = entry.title || entry.title_en || '';
+  if (title) obj.title = title;
+
+  if (entry.authors && entry.authors.length) {
+    obj.author = entry.authors.map(a => ({ literal: a }));
+  }
+
+  const issued = _dateToCSLIssued(entry.date);
+  if (issued) obj.issued = issued;
+
+  if (entry.abstract) obj.abstract = entry.abstract;
+  if (entry.language) obj.language = entry.language;
+
+  const doiMatch = entry.url && entry.url.match(/^https?:\/\/doi\.org\/(.+)$/);
+  if (doiMatch) {
+    obj.DOI = doiMatch[1];
+    obj.URL = entry.url;
+  } else if (entry.url) {
+    obj.URL = entry.url;
+  }
+
+  switch (entry.type) {
+    case 'journal':
+      if (src.journal_name) obj['container-title'] = src.journal_name;
+      if (src.volume !== undefined) obj.volume = String(src.volume);
+      if (src.number !== undefined) obj.issue = String(src.number);
+      if (src.pages) obj.page = src.pages;
+      if (src.doi) obj.DOI = src.doi;
+      break;
+    case 'conference':
+      if (src.proceedings)     obj['container-title'] = src.proceedings;
+      if (src.pages)           obj.page = src.pages;
+      if (entry.organization)  obj.publisher = entry.organization;
+      if (entry.location)      obj['publisher-place'] = entry.location;
+      break;
+    case 'book':
+      if (src.publisher) obj.publisher = src.publisher;
+      if (src.isbn)      obj.ISBN = src.isbn;
+      if (src.editors && src.editors.length) obj.editor = src.editors.map(e => ({ literal: e }));
+      if (src.chapter)   obj['chapter-number'] = src.chapter;
+      if (src.pages)     obj.page = src.pages;
+      break;
+    case 'thesis': {
+      if (src.institution) obj.publisher = src.institution;
+      const dm = { doctoral: 'Doctoral dissertation', master: "Master's thesis", bachelor: "Bachelor's thesis" };
+      if (src.degree && dm[src.degree]) obj.genre = dm[src.degree];
+      break;
+    }
+    case 'report':
+      if (src.institution) obj.publisher = src.institution;
+      if (src.number)      obj.number = src.number;
+      break;
+    case 'patent':
+      if (src.patent_number) obj.number = src.patent_number;
+      if (src.country)       obj.jurisdiction = src.country;
+      break;
+    case 'talk':
+      if (entry.venue)    obj['event-title'] = entry.venue;
+      if (entry.location) obj['event-place'] = entry.location;
+      break;
+    case 'award':
+      if (src.org_giving_award) obj.publisher = src.org_giving_award;
+      break;
+  }
+
+  if (entry.note) obj.note = entry.note;
+  return obj;
+}
+
 // ---- ダウンロード共通 ----
 
 function download(filename, content, mimetype) {
@@ -256,6 +462,12 @@ function exportEntries(entries, format) {
     const merged = Object.assign({}, ...entries.map(entryToHayagriva));
     const text = jsyaml.dump(merged, { indent: 2, lineWidth: -1, noRefs: true });
     download('publications-hayagriva.yml', text, 'text/yaml');
+  } else if (format === 'ris') {
+    const text = entries.map(entryToRIS).join('\n\n');
+    download('publications.ris', text, 'text/plain');
+  } else if (format === 'csl-json') {
+    const arr = entries.map(entryToCSLJSON);
+    download('publications.csl.json', JSON.stringify(arr, null, 2), 'application/json');
   }
 }
 

@@ -373,7 +373,7 @@ After that, run it from **Actions → "Sync tool files from scholist" → Run wo
 - **Incremental search**: Search across titles, authors, venues, journals, and abstracts
 - **Pagination**: Shows `entries_per_page` entries at a time with "Show more" and "Show all" buttons
 - **Entry navigation**: Previous / Next links at the bottom of each detail page
-- **Export**: Download all or individual entries as YAML / JSON / BibTeX / Hayagriva
+- **Export**: Download all or individual entries as YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON
 - **Author highlighting**: Highlight specified author names (bold or underline)
 - **Language toggle**: Visitors can switch the UI between Japanese and English on the page
 - **OGP support**: Sharing detail page URLs on social media shows a title/author/venue preview card
