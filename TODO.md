@@ -63,7 +63,7 @@
   - `docs/development.md` ― 開発者向け（テスト実行・ファイル構成・リリース手順）
 
   **注意点**
-  - `docs/` 英語版も用意するか（`docs/en/` など）は検討が必要
+  - 英語版（`docs/en/import.md` 等）も必ず日本語版と同時に作成する（README.en.md と同様）
   - アクセス制御 TODO の nginx 設定例は `docs/deployment.md` に移す想定
 
 ---
