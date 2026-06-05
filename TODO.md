@@ -42,6 +42,32 @@
 
 ---
 
+## ドキュメント
+
+- **README の docs/ 分割** ― 優先度: 低 / 難度: 小
+  README.md（および README.en.md）が肥大化してきたため、詳細説明を `docs/` フォルダへ分割する。
+  `docs/` は sync 対象に追加することでユーザーにも配布される。
+
+  **README に残すもの（概要 + 入口）**
+  - 概要・動作環境
+  - セットアップ（方法 A / B）
+  - 業績データの編集（基本的な YAML 記述）
+  - サイト設定（`config.yaml` の主要項目）
+  - 主な機能一覧
+  - `docs/` 各ページへのリンク集
+
+  **`docs/` に移すもの**
+  - `docs/import.md` ― 既存データのインポート（`tools/import.py` の使い方・対応フォーマット・カスタムインポーター追加手順）
+  - `docs/deployment.md` ― デプロイ詳細（GitHub Pages・nginx 設定例・アクセス制御）
+  - `docs/update.md` ― ツールのアップデート手順（upstream sync・GitHub Actions 自動化）
+  - `docs/development.md` ― 開発者向け（テスト実行・ファイル構成・リリース手順）
+
+  **注意点**
+  - `docs/` 英語版も用意するか（`docs/en/` など）は検討が必要
+  - アクセス制御 TODO の nginx 設定例は `docs/deployment.md` に移す想定
+
+---
+
 ## 品質・堅牢性
 
 - **ウォッチモード** ― 優先度: 低 / 難度: 中
