@@ -19,5 +19,5 @@ entries_per_page: 30
 
 # サイトの公開 URL（og:url / sitemap 用）末尾スラッシュなし
 # 例: https://username.github.io/publications
-# 空文字または未設定の場合、og:url と sitemap.xml は出力しない
+# 空文字または未設定の場合、og:url と sitemap.xml と feed.xml は出力しない
 base_url: ""

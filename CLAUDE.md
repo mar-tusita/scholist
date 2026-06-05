@@ -29,16 +29,18 @@ publications/
 │   └── entry.html.j2                # 詳細ページテンプレート
 ├── static/
 │   ├── style.css
-│   └── export.js                    # YAML/JSON/BibTeX/Hayagriva書き出し処理
+│   └── export.js                    # YAML/JSON/BibTeX/Hayagriva/RIS/CSL-JSON/参考文献テキスト書き出し処理
 ├── build.py                         # 静的サイト生成スクリプト
 ├── extras/
 │   └── sync-from-scholist.yml       # template zip に同梱する sync ワークフローのマスター
 ├── tools/                           # 補助ツール
-│   ├── import.py                    # BibTeX/Hayagriva インポート CLI
+│   ├── import.py                    # BibTeX/Hayagriva/RIS/CSL-JSON インポート CLI
 │   └── importers/
 │       ├── __init__.py              # BaseImporter 基底クラス
 │       ├── bibtex.py                # BibTeX 変換
-│       └── hayagriva.py             # Hayagriva 変換
+│       ├── hayagriva.py             # Hayagriva 変換
+│       ├── ris.py                   # RIS 変換
+│       └── csl_json.py             # CSL-JSON 変換
 ├── public/                          # 生成物（nginxまたはGitHub Pagesで配信）
 │   ├── index.html
 │   ├── entries/
@@ -66,6 +68,10 @@ highlight_authors:
   - "T. Yamada"
 highlight_style: underline   # bold または underline
 
+# 詳細ページのバッジ右端にエントリ ID を表示するか（デフォルト false）
+# true にすると管理・編集時に便利。公開サイトでは通常 false
+show_entry_id: false
+
 # サイト設定
 site_title: "研究業績一覧"
 
@@ -80,7 +86,7 @@ entries_per_page: 30
 
 # サイトの公開 URL（og:url / sitemap 用）末尾スラッシュなし
 # 例: https://username.github.io/publications
-# 空文字または未設定の場合、og:url と sitemap.xml は出力しない
+# 空文字または未設定の場合、og:url と sitemap.xml と feed.xml は出力しない
 base_url: ""
 ```
 
@@ -339,7 +345,9 @@ entries:
 
 - `config.yaml` の `highlight_authors` に複数の表記ゆれを列挙できる
 - 著者リストを表示する際、一致する名前に `bold` または `underline` のスタイルを適用
-- 完全一致で照合（大文字小文字を区別する）
+- `re.fullmatch()` による正規表現マッチで照合（大文字小文字を区別する）
+  - 無効な正規表現はリテラル文字列にフォールバック（後方互換）
+  - `"T. Yamada"` の `.` は任意の1文字を意味するため、厳密に使う場合は `"T\. Yamada"` と書く
 
 ### エクスポート機能（JavaScript、クライアントサイド）
 

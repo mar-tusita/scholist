@@ -173,7 +173,7 @@ Setting `base_url` enables the following features. For GitHub Pages, set it to `
 
 ## Importing existing data
 
-You can convert publication data from BibTeX, Hayagriva, or RIS format into `publications.yaml`.
+You can convert publication data from BibTeX, Hayagriva, RIS, or CSL-JSON format into `publications.yaml`.
 
 ### Setup
 

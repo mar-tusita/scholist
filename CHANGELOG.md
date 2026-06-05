@@ -57,6 +57,17 @@
 - `data/config.yaml`：`highlight_authors` のサンプルを `"山田 ?太郎"` 形式に更新（`.?` より安全：「山田一太郎」等への誤マッチを防ぐ）
 - `tests/test_build.py`：`TestHighlightAuthors` に正規表現テスト3件を追加（計148件）
 
+### ドキュメント
+
+- `CLAUDE.md`：ディレクトリ構成に `ris.py`・`csl_json.py` を追記、`export.js` と `import.py` のコメントを現状に更新
+- `CLAUDE.md`：`config.yaml` スキーマに `show_entry_id` フィールドを追記
+- `CLAUDE.md`：`base_url` 未設定時の説明に `feed.xml` を追記
+- `CLAUDE.md`：著者ハイライト仕様を「完全一致」から `re.fullmatch()` 正規表現マッチに更新（実装と整合）
+- `README.md`：インポート節冒頭の対応形式に RIS・CSL-JSON を追記
+- `README.md`：`config.yaml` サンプルコメントの「将来の」を削除、`feed.xml` を追記
+- `README.en.md`：インポート節冒頭の対応形式に CSL-JSON を追記
+- `data/config.yaml`：`base_url` コメントに `feed.xml` を追記
+
 ## [0.6.0] - 2026-06-03
 
 ### 追加

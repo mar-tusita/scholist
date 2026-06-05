@@ -151,7 +151,7 @@ default_language: auto
 # 0 または未設定の場合は全件表示
 entries_per_page: 30
 
-# サイトの公開 URL（og:url / 将来の sitemap.xml 用）末尾スラッシュなし
+# サイトの公開 URL（og:url / sitemap.xml / feed.xml 用）末尾スラッシュなし
 # 例: https://username.github.io/publications
 # 空文字または未設定の場合、og:url は出力しない
 base_url: ""
@@ -176,7 +176,7 @@ highlight_authors:
 
 ## 既存データのインポート
 
-BibTeX や Hayagriva 形式で管理していた文献データを `publications.yaml` に変換できます。
+BibTeX・Hayagriva・RIS・CSL-JSON 形式で管理していた文献データを `publications.yaml` に変換できます。
 
 ### セットアップ
 
