@@ -3,6 +3,20 @@
 このファイルはプロジェクトのすべての変更を記録します。
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に基づいています。
 
+## [Unreleased]
+
+### ドキュメント
+
+- `docs/` ディレクトリを追加し、README の詳細節を分割
+  - `docs/import.md` / `docs/en/import.md`：インポート CLI の使い方・対応フォーマット・カスタムインポーター追加手順
+  - `docs/deployment.md` / `docs/en/deployment.md`：ビルド・GitHub Pages・nginx 設定例・添付ファイルのアクセス制御（`files/restricted/` パターン）
+  - `docs/update.md` / `docs/en/update.md`：upstream sync 手順・GitHub Actions 自動化
+  - `docs/development.md` / `docs/en/development.md`：テスト実行・ファイル構成・リリース手順
+- `README.md`・`README.en.md`：インポート・デプロイ・アップデート・開発者向けの各節を `docs/` へのリンクに簡略化
+- `CLAUDE.md`：配布対象ファイル一覧に `docs/` を追加
+- `.github/workflows/release-asset.yml`：template zip に `docs/` を含めるよう更新
+- `extras/sync-from-scholist.yml`：sync 対象に `docs/` を追加
+
 ## [0.6.1] - 2026-06-05
 
 ### 追加

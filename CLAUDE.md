@@ -661,6 +661,7 @@ build.py
 templates/
 static/
 tools/                  ← BibTeX/Hayagriva インポート CLI
+docs/                   ← 詳細ドキュメント（日英）
 requirements.txt
 requirements-tools.txt  ← tools/ の依存パッケージ
 pyproject.toml

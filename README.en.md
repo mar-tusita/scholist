@@ -171,52 +171,6 @@ Setting `base_url` enables the following features. For GitHub Pages, set it to `
 - Auto-generates `public/sitemap.xml`
 - Auto-generates `public/feed.xml` (Atom feed)
 
-## Importing existing data
-
-You can convert publication data from BibTeX, Hayagriva, RIS, or CSL-JSON format into `publications.yaml`.
-
-### Setup
-
-```bash
-pip install -r requirements-tools.txt
-```
-
-This installs `bibtexparser` in addition to the production dependencies (required for BibTeX only; RIS and Hayagriva have no extra dependencies).
-
-### Supported formats
-
-| `--format` | Format | Extra dependency |
-| --- | --- | --- |
-| `bibtex` | BibTeX (`.bib`) | `bibtexparser` (in `requirements-tools.txt`) |
-| `hayagriva` | Hayagriva YAML (`.yml`) | none |
-| `ris` | RIS (`.ris`) — Zotero, Mendeley, EndNote, etc. | none |
-| `csl-json` | CSL-JSON (`.json`) — Zotero, Pandoc, etc. | none |
-
-### Usage
-
-```bash
-# Convert from BibTeX and print to stdout
-python tools/import.py --format bibtex refs.bib
-
-# Write to a file
-python tools/import.py --format bibtex refs.bib --output data/publications.yaml
-
-# Append to an existing publications.yaml (duplicate IDs are skipped)
-python tools/import.py --format bibtex refs.bib --append data/publications.yaml
-
-# Convert from Hayagriva
-python tools/import.py --format hayagriva refs.yml --append data/publications.yaml
-
-# Convert from RIS (exported from Zotero, Mendeley, etc.)
-python tools/import.py --format ris refs.ris --append data/publications.yaml
-
-# Convert from CSL-JSON (exported from Zotero, Pandoc, etc.)
-python tools/import.py --format csl-json refs.json --append data/publications.yaml
-```
-
-Fields that cannot be mapped are recorded in `note` as `[import: field=value]`.
-Issues such as author name format ("Last, First" style) or missing month information are printed to stderr as warnings.
-
 ## Build
 
 ```bash
@@ -241,139 +195,46 @@ To change the output directory:
 python build.py --output /var/www/html
 ```
 
+## Importing existing data
+
+You can convert publication data from BibTeX, Hayagriva, RIS, or CSL-JSON format into `publications.yaml`.
+
+See **[docs/en/import.md](docs/en/import.md)** for details (usage, supported formats, adding a custom importer).
+
 ## Deployment
 
-### GitHub Pages
+Publish your site via GitHub Pages or nginx.
 
-The included `.github/workflows/build.yml` automatically builds on push to `data/` or `files/` and deploys to the `gh-pages` branch.
-
-Go to the repository Settings → Pages → Branch and select `gh-pages`.
-
-### nginx
-
-```bash
-python build.py --output /var/www/scholist
-```
-
-Example nginx config:
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.example.com;
-    root /var/www/scholist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-```
-
-### Adding a custom importer
-
-You can add your own importers for custom formats. Just create a file in `tools/importers/` with the structure below — `import.py` detects it automatically. **No changes to `import.py` itself are needed.**
-
-```python
-# tools/importers/my_format.py
-from . import BaseImporter
-
-class MyFormatImporter(BaseImporter):
-    format_name = 'my_format'  # name to pass to --format
-
-    def load(self, filepath: str) -> list[dict]:
-        # Read filepath and return a list of scholist entry dicts
-        entries = []
-        # ... conversion logic ...
-        return entries
-
-IMPORTER_CLASS = MyFormatImporter  # required: this module variable enables discovery
-```
-
-After adding, install any required dependencies and verify:
-
-```bash
-python tools/import.py --help
-# my_format should appear in --format choices
-```
-
-> **Sync compatibility:** `importers/my_format.py` does not exist in scholist, so it will never be overwritten or deleted by sync.
+See **[docs/en/deployment.md](docs/en/deployment.md)** for details (GitHub Pages, nginx config, restricting access to attached files).
 
 ## Updating the tool
 
-When scholist itself is updated, here is how to pull the changes into your repository.
+When scholist itself is updated, pull only the tool files into your repository.
 
-### Concept
-
-Your repository contains two types of files:
-
-| Type | Files |
-| --- | --- |
-| **Tool files** (update from scholist) | `build.py`, `templates/`, `static/`, `tools/`, `requirements.txt`, `requirements-tools.txt`, `pyproject.toml`, `README.md`, `README.en.md`, `.github/workflows/build.yml` |
-| **Your data** (never overwrite) | `data/`, `files/`, `CHANGELOG.md` |
-
-### One-time setup: register upstream remote
-
-```bash
-git remote add upstream https://github.com/mar-tusita/scholist.git
-```
-
-### Syncing when scholist is updated
-
-```bash
-# 1. Fetch latest commits from scholist
-git fetch upstream
-
-# 2. Overwrite only tool files (leaves data/ and files/ untouched)
-git checkout upstream/main -- \
-  build.py \
-  templates/ \
-  static/ \
-  tools/ \
-  requirements.txt \
-  requirements-tools.txt \
-  pyproject.toml \
-  README.md \
-  README.en.md \
-  .github/workflows/build.yml
-
-# 3. Commit and push
-git commit -m "chore: sync tool files from scholist vX.Y.Z"
-git push
-```
-
-To pin to a specific version tag, replace `upstream/main` with `upstream/v0.3.0`.
-
-> **Note (manual sync):** After `git push`, you need to manually trigger a Build and Deploy run.
-> Bot commits do not trigger the path-filtered push event in GitHub Actions.
-> Go to **Actions → "Build and Deploy" → Run workflow** after pushing.
-> If you use the sync workflow (see below), this step is handled automatically.
-
-### Automate with GitHub Actions (optional)
-
-**Method A (zip download):** `.github/workflows/sync-from-scholist.yml` is already included — no action needed.
-
-**Method B (GitHub template):** `extras/sync-from-scholist.yml` is included in your repository.
-Copy it to the correct location (same as the "About `extras/`" note above):
-
-```bash
-cp extras/sync-from-scholist.yml .github/workflows/
-```
-
-After that, run it from **Actions → "Sync tool files from scholist" → Run workflow**. Build and Deploy will start automatically when the sync completes.
-
-> **Note:** The workflow does not sync `.github/workflows/build.yml`.
-> The `GITHUB_TOKEN` cannot write workflow files due to GitHub's security policy.
-> If `build.yml` changes, copy it manually using the steps above (manual sync works fine).
+See **[docs/en/update.md](docs/en/update.md)** for details (manual sync, GitHub Actions automation).
 
 ## Features
 
 - **Statistics summary**: Shows total count, year range, and per-type chips at the top of the listing page
 - **Filters**: Filter by type, year, domestic/international, review status, invited status (filter state is persisted in the URL for sharing)
+  Filter conditions can also be set directly via query parameters:
+
+  | Parameter | Example | Description |
+  | --- | --- | --- |
+  | `type` | `journal` | Type (`conference` / `journal` / `talk` / `patent` / `award` / `book` / `thesis` / `report` / `misc` / `other`) |
+  | `year` | `2024` | Year (4 digits) |
+  | `scope` | `domestic` | Scope (`domestic` / `international`) |
+  | `reviewed` | `true` | Peer-reviewed (`true` / `false`) |
+  | `invited` | `true` | Invited (`true` / `false`) |
+  | `q` | `yamada` | Search term (full text: title, authors, abstract, etc.) |
+
+  Example: `https://example.github.io/publications/?type=journal&year=2023`
+
 - **Incremental search**: Search across titles, authors, venues, journals, and abstracts
 - **Pagination**: Shows `entries_per_page` entries at a time with "Show more" and "Show all" buttons
 - **Entry navigation**: Previous / Next links at the bottom of each detail page
 - **Export**: Download all or individual entries as YAML / JSON / BibTeX / Hayagriva / RIS / CSL-JSON / Bibliography text
+- **Import**: Convert BibTeX, Hayagriva, RIS, or CSL-JSON data into `publications.yaml` (`tools/import.py`)
 - **Author highlighting**: Highlight specified author names (bold or underline)
 - **Language toggle**: Visitors can switch the UI between Japanese and English on the page
 - **OGP support**: Sharing detail page URLs on social media shows a title/author/venue preview card
@@ -382,44 +243,9 @@ After that, run it from **Actions → "Sync tool files from scholist" → Run wo
 
 ## For developers
 
-### Setup
+Running tests, local build verification, and release procedure.
 
-```bash
-pip install -r requirements-dev.txt
-```
-
-This installs `pytest` in addition to the production dependencies.
-
-### Running tests
-
-```bash
-pytest -v
-```
-
-`tests/test_build.py` contains unit tests for `build.py` logic functions (`validate`, `sort_entries`, `highlight_authors`, `read_version`, `generate_sitemap`).
-
-When modifying `build.py`, verify that all tests continue to pass.
-
-### Local build verification
-
-```bash
-python build.py
-```
-
-Open `public/index.html` in a browser to verify behavior.
-
-### File structure (tool side)
-
-| File | Purpose |
-| --- | --- |
-| `build.py` | Static site generator |
-| `templates/` | Jinja2 templates |
-| `static/` | CSS and JavaScript |
-| `data/` | Sample data (used as test fixtures) |
-| `tests/` | pytest test suite |
-| `pyproject.toml` | Version and pytest configuration |
-| `requirements.txt` | Production dependencies (PyYAML, Jinja2) |
-| `requirements-dev.txt` | Development dependencies (pytest) |
+See **[docs/en/development.md](docs/en/development.md)** for details.
 
 ## Acknowledgements
 

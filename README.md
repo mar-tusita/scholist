@@ -174,53 +174,6 @@ highlight_authors:
 - `public/sitemap.xml` の自動生成
 - `public/feed.xml`（Atom フィード）の自動生成
 
-## 既存データのインポート
-
-BibTeX・Hayagriva・RIS・CSL-JSON 形式で管理していた文献データを `publications.yaml` に変換できます。
-
-### セットアップ
-
-```bash
-pip install -r requirements-tools.txt
-```
-
-`bibtexparser` が追加でインストールされます（BibTeX のみ必要、RIS・Hayagriva は不要）。
-
-### 対応フォーマット
-
-| `--format` | 形式 | 外部依存 |
-| --- | --- | --- |
-| `bibtex` | BibTeX（`.bib`） | `bibtexparser`（`requirements-tools.txt`） |
-| `hayagriva` | Hayagriva YAML（`.yml`） | なし |
-| `ris` | RIS（`.ris`）— Zotero・Mendeley・EndNote 等 | なし |
-| `csl-json` | CSL-JSON（`.json`）— Zotero・Pandoc 等 | なし |
-
-### 使い方
-
-```bash
-# BibTeX から変換して標準出力に出力
-python tools/import.py --format bibtex refs.bib
-
-# ファイルに書き出す
-python tools/import.py --format bibtex refs.bib --output data/publications.yaml
-
-# 既存の publications.yaml に追記（ID 重複をチェックしてスキップ）
-python tools/import.py --format bibtex refs.bib --append data/publications.yaml
-
-# Hayagriva から変換
-python tools/import.py --format hayagriva refs.yml --append data/publications.yaml
-
-# RIS から変換（Zotero・Mendeley 等のエクスポートファイル）
-python tools/import.py --format ris refs.ris --append data/publications.yaml
-
-# CSL-JSON から変換（Zotero・Pandoc 等のエクスポートファイル）
-python tools/import.py --format csl-json refs.json --append data/publications.yaml
-```
-
-変換できなかったフィールドは `note` に `[import: field=value]` 形式で記録されます。
-著者名フォーマット（BibTeX: 「姓, 名」形式）や月なし日付など、確認が必要な点は
-stderr に警告として出力されます。
-
 ## ビルド
 
 ```bash
@@ -245,136 +198,23 @@ public/
 python build.py --output /var/www/html
 ```
 
+## 既存データのインポート
+
+BibTeX・Hayagriva・RIS・CSL-JSON 形式のデータを `publications.yaml` に変換できます。
+
+詳細は **[docs/import.md](docs/import.md)** を参照してください（使い方・対応フォーマット・カスタムインポーターの追加）。
+
 ## デプロイ
 
-### GitHub Pages
+GitHub Pages または nginx でサイトを公開できます。
 
-`.github/workflows/build.yml` が含まれています。`data/` または `files/` への push 時に
-自動でビルドし、`gh-pages` ブランチにデプロイします。
-
-リポジトリの Settings → Pages → Branch を `gh-pages` に設定してください。
-
-### nginx
-
-```bash
-python build.py --output /var/www/scholist
-```
-
-nginx 設定例：
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.example.com;
-    root /var/www/scholist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-```
-
-### カスタムインポーターの追加
-
-独自フォーマットのインポーターを追加できます。`tools/importers/` に以下の形式でファイルを作成するだけで、`import.py` が自動的に検出します。**`import.py` 本体の修正は不要です。**
-
-```python
-# tools/importers/my_format.py
-from . import BaseImporter
-
-class MyFormatImporter(BaseImporter):
-    format_name = 'my_format'  # --format に渡す名前
-
-    def load(self, filepath: str) -> list[dict]:
-        # filepath を読み込み、scholist エントリ形式の dict のリストを返す
-        entries = []
-        # ... 変換処理 ...
-        return entries
-
-IMPORTER_CLASS = MyFormatImporter  # 必須：このモジュール変数で検出される
-```
-
-追加後は依存パッケージをインストールして確認：
-
-```bash
-python tools/import.py --help
-# --format に my_format が追加されていれば成功
-```
-
-> **sync との共存：** `importers/my_format.py` は scholist にないファイルなので、sync で上書き・削除されることはありません。
+詳細は **[docs/deployment.md](docs/deployment.md)** を参照してください（GitHub Pages・nginx 設定例・添付ファイルのアクセス制御）。
 
 ## ツールのアップデート
 
-このリポジトリをテンプレートとして使い始めた場合、scholist 本体が更新されたときにその変更を取り込む手順を説明します。
+scholist 本体が更新されたとき、ツールファイルのみを取り込む手順です。
 
-### 基本的な考え方
-
-自分のリポジトリの中身は2種類に分かれます。
-
-| 種別 | ファイル |
-| --- | --- |
-| **ツールファイル**（更新を取り込む） | `build.py`, `templates/`, `static/`, `tools/`, `requirements.txt`, `requirements-tools.txt`, `pyproject.toml`, `README.md`, `README.en.md`, `.github/workflows/build.yml` |
-| **自分のデータ**（絶対に上書きしない） | `data/`, `files/`, `CHANGELOG.md` |
-
-`git merge` を使うと両方が混ざってしまうため、**ツールファイルだけを選んで取り込む**方法を使います。
-
-### 初回のみ：upstream リモートを登録する
-
-```bash
-git remote add upstream https://github.com/mar-tusita/scholist.git
-```
-
-### scholist が更新されたときの手順
-
-```bash
-# 1. scholist の最新コミットを取得
-git fetch upstream
-
-# 2. ツールファイルだけを上書き（data/ と files/ は触れない）
-git checkout upstream/main -- \
-  build.py \
-  templates/ \
-  static/ \
-  tools/ \
-  requirements.txt \
-  requirements-tools.txt \
-  pyproject.toml \
-  README.md \
-  README.en.md \
-  .github/workflows/build.yml
-
-# 3. 変更をコミット・プッシュ
-git commit -m "chore: sync tool files from scholist vX.Y.Z"
-git push
-```
-
-特定のバージョンタグに合わせたい場合は `upstream/main` の代わりに `upstream/v0.2.0` のように指定します。
-
-> **注意（手動 sync の場合）：** `git push` 後は GitHub Pages の再ビルドを手動で起動する必要があります。
-> push によるコミットはツールファイルを更新しますが、
-> GitHub Actions はボット以外のコミットでないとビルドワークフローを自動起動しません。
-> push 後にリポジトリの **Actions → "Build and Deploy" → Run workflow** を実行してください。
-> ワークフローを使って sync する場合はこの手順は不要です（自動でビルドが起動します）。
-
-### GitHub Actions で自動化する（任意）
-
-手動でコマンドを打つ代わりに、GitHub の画面からボタン一つで同期することもできます。
-
-**方法 A（zip ダウンロード）：** `.github/workflows/sync-from-scholist.yml` が既に含まれているため、追加作業は不要です。
-
-**方法 B（GitHub テンプレート）：** `extras/sync-from-scholist.yml` が同梱されています。
-以下でコピーしてください（方法 B の「`extras/` について」で案内している手順と同じです）。
-
-```bash
-cp extras/sync-from-scholist.yml .github/workflows/
-```
-
-追加後は、リポジトリの **Actions → "Sync tool files from scholist" → Run workflow** で実行できます。sync が完了すると自動で Build and Deploy が起動します。
-
-> **注意：** ワークフローは `.github/workflows/build.yml` を sync 対象に含みません。
-> `GITHUB_TOKEN` は GitHub のセキュリティ制限によりワークフローファイルを書き込めないためです。
-> `build.yml` に変更があった場合は、上記の手動 sync 手順でコピーしてください（手動実行なら書き込めます）。
+詳細は **[docs/update.md](docs/update.md)** を参照してください（手動 sync・GitHub Actions 自動化）。
 
 ## 主な機能
 
@@ -406,65 +246,9 @@ cp extras/sync-from-scholist.yml .github/workflows/
 
 ## 開発者向け
 
-### 開発環境のセットアップ
+テスト実行・ローカルビルド確認・リリース手順など。
 
-```bash
-pip install -r requirements-dev.txt
-```
-
-`requirements.txt`（本番依存）に加えて `pytest` がインストールされます。
-
-### テストの実行
-
-```bash
-pytest -v
-```
-
-`tests/test_build.py` に `build.py` のロジック関数（`validate`・`sort_entries`・`highlight_authors`・`read_version`）のユニットテストが含まれています。
-
-`build.py` を変更するときは、テストが引き続き通ることを確認してください。
-
-### ローカルビルドの確認
-
-```bash
-python build.py
-```
-
-`public/` に HTML が生成されます。ブラウザで `public/index.html` を開いて動作を確認できます。
-
-### ファイル構成（ツール側）
-
-| ファイル | 役割 |
-| --- | --- |
-| `build.py` | 静的サイト生成スクリプト本体 |
-| `templates/` | Jinja2 テンプレート |
-| `static/` | CSS・JavaScript |
-| `data/` | サンプルデータ（テスト兼ドキュメント） |
-| `tests/` | pytest テストスイート |
-| `pyproject.toml` | バージョン・pytest 設定 |
-| `requirements.txt` | 本番依存（PyYAML, Jinja2） |
-| `requirements-dev.txt` | 開発依存（pytest） |
-
-### リリース手順
-
-1. `pyproject.toml` のバージョンを更新する
-2. `CHANGELOG.md` の `[Unreleased]` を `[vX.Y.Z] - YYYY-MM-DD` に確定する
-3. コミット・push する
-
-   ```bash
-   git add pyproject.toml CHANGELOG.md
-   git commit -m "chore: release X.Y.Z"
-   git push origin main
-   ```
-
-4. タグを作成・push する（これだけで Release 作成と template zip の配布まで自動完結）
-
-   ```bash
-   git tag vX.Y.Z
-   git push origin vX.Y.Z
-   ```
-
-> **リリースノートを手書きする場合：** 手順 4 の前に `gh release create vX.Y.Z --title "..." --notes "..."` を実行しておくと、ワークフローは Release 作成をスキップして zip のアップロードだけ行います。
+詳細は **[docs/development.md](docs/development.md)** を参照してください。
 
 ## 謝辞
 

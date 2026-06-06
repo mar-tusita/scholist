@@ -36,6 +36,7 @@ jobs:
             templates/ \
             static/ \
             tools/ \
+            docs/ \
             requirements.txt \
             requirements-tools.txt \
             pyproject.toml \
