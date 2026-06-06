@@ -59,3 +59,14 @@ python build.py
    ```
 
 > **リリースノートを手書きする場合：** 手順 4 の前に `gh release create vX.Y.Z --title "..." --notes "..."` を実行しておくと、ワークフローは Release 作成をスキップして zip のアップロードだけ行います。
+
+### CHANGELOG の書き方：ワークフローファイルを変更した場合
+
+`build.yml` または `extras/sync-from-scholist.yml` を変更したときは、CHANGELOG にユーザーへの手動更新通知を必ず明記する。
+
+```markdown
+- `.github/workflows/build.yml` を更新 — **手動更新が必要**：[docs/update.md](docs/update.md)
+- `extras/sync-from-scholist.yml` を更新 — **手動更新が必要**：[docs/update.md](docs/update.md)
+```
+
+これらのファイルは sync ワークフローで自動配布されないため、ユーザーが気づかずに古いバージョンのまま使い続けるリスクがある。リリースノート（= CHANGELOG の該当バージョン節）に書いておくことで、GitHub Release 上でも周知できる。

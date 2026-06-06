@@ -15,7 +15,7 @@
 - `README.md`・`README.en.md`：インポート・デプロイ・アップデート・開発者向けの各節を `docs/` へのリンクに簡略化
 - `CLAUDE.md`：配布対象ファイル一覧に `docs/` を追加
 - `.github/workflows/release-asset.yml`：template zip に `docs/` を含めるよう更新
-- `extras/sync-from-scholist.yml`：sync 対象に `docs/` を追加
+- `extras/sync-from-scholist.yml`：sync 対象に `docs/` を追加 — **手動更新が必要**：[更新手順](docs/update.md)
 
 ## [0.6.1] - 2026-06-05
 

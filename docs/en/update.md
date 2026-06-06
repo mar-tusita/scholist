@@ -64,6 +64,19 @@ cp extras/sync-from-scholist.yml .github/workflows/
 
 After that, run it from **Actions → "Sync tool files from scholist" → Run workflow**. Build and Deploy will start automatically when the sync completes.
 
-> **Note:** The workflow does not sync `.github/workflows/build.yml`.
-> The `GITHUB_TOKEN` cannot write workflow files due to GitHub's security policy.
-> If `build.yml` changes, copy it manually using the steps above (manual sync works fine).
+> **Note:** The sync workflow cannot update workflow files themselves due to GitHub's security policy.
+> If either file below changes, update it manually. Changes will always be noted in the release notes (CHANGELOG).
+>
+> **If `build.yml` has changed:**
+> Run the manual sync command above, including `.github/workflows/build.yml` in the file list — manual pushes are allowed to write workflow files.
+>
+> **If `sync-from-scholist.yml` has changed:**
+> In the scholist repository it lives under `extras/`, so the path differs. Run:
+>
+> ```bash
+> git fetch upstream
+> git show upstream/main:extras/sync-from-scholist.yml > .github/workflows/sync-from-scholist.yml
+> git add .github/workflows/sync-from-scholist.yml
+> git commit -m "chore: update sync-from-scholist.yml"
+> git push
+> ```

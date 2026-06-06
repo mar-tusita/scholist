@@ -67,6 +67,19 @@ cp extras/sync-from-scholist.yml .github/workflows/
 
 追加後は、リポジトリの **Actions → "Sync tool files from scholist" → Run workflow** で実行できます。sync が完了すると自動で Build and Deploy が起動します。
 
-> **注意：** ワークフローは `.github/workflows/build.yml` を sync 対象に含みません。
-> `GITHUB_TOKEN` は GitHub のセキュリティ制限によりワークフローファイルを書き込めないためです。
-> `build.yml` に変更があった場合は、上記の手動 sync 手順でコピーしてください（手動実行なら書き込めます）。
+> **注意：** sync ワークフローは GitHub のセキュリティ制限により、ワークフローファイル自身を自動更新できません。
+> 以下のファイルに変更があった場合は手動で更新してください。変更があるときはリリースノート（CHANGELOG）に明記されます。
+>
+> **`build.yml` が変更された場合：**
+> 上記の手動 sync 手順（`git checkout upstream/main -- ... .github/workflows/build.yml`）をそのまま実行できます。
+>
+> **`sync-from-scholist.yml` が変更された場合：**
+> scholist では `extras/` に置かれているため、パスが異なります。以下のコマンドで取得してください。
+>
+> ```bash
+> git fetch upstream
+> git show upstream/main:extras/sync-from-scholist.yml > .github/workflows/sync-from-scholist.yml
+> git add .github/workflows/sync-from-scholist.yml
+> git commit -m "chore: update sync-from-scholist.yml"
+> git push
+> ```
