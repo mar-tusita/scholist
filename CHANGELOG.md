@@ -14,6 +14,7 @@
   - `docs/development.md` / `docs/en/development.md`：テスト実行・ファイル構成・リリース手順
 - `README.md`・`README.en.md`：インポート・デプロイ・アップデート・開発者向けの各節を `docs/` へのリンクに簡略化
 - `CLAUDE.md`：配布対象ファイル一覧に `docs/` を追加
+- `CLAUDE.md`：変更の種類ごとに更新すべき節の対応表（「変更時に更新するドキュメント」）を追加
 - `.github/workflows/release-asset.yml`：template zip に `docs/` を含めるよう更新
 - `extras/sync-from-scholist.yml`：sync 対象に `docs/` を追加 — **手動更新が必要**：[更新手順](docs/update.md)
 
